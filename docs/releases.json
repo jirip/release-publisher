@@ -1,3 +1,22 @@
 {
-  "apps": {}
+  "apps": {
+    "pdf2jpg": {
+      "releases": [
+        {
+          "version": "0.1.10",
+          "date": "2026-04-17T14:59:55Z",
+          "source_repo": "jirip/pdf2jpg",
+          "source_tag": "v0.1.10",
+          "notes": "fix(ci): use GITHUB_TOKEN for gh release view, PUBLISH_TOKEN only for dispatch",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pdf2jpg-v0.1.10",
+          "assets": [
+            {
+              "name": "pdf2jpg.exe",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pdf2jpg-v0.1.10/pdf2jpg.exe"
+            }
+          ]
+        }
+      ]
+    }
+  }
 }
