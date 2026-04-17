@@ -12,17 +12,15 @@ Live page: <https://jirip.github.io/release-publisher/>
 
 ## Wiring up a new private repo
 
-**1. Create one fine-grained PAT** with these scopes:
+**1. Create two fine-grained PATs:**
 
-- `contents: read` on the private source repo (so this repo's workflow can download the assets)
-- `contents: write` *and* `metadata: read` on `jirip/release-publisher` (so the private repo can trigger `repository_dispatch` here)
+- **`release-publisher-read`** — `contents: read` on every private source repo.
+  Stored as `SOURCE_REPO_TOKEN` in `jirip/release-publisher` → used by the republish workflow to download assets from the private release.
 
-Store it twice:
+- **`release-publisher-write`** — `contents: write` + `metadata: read` on `jirip/release-publisher`.
+  Stored as `PUBLISH_TOKEN` in *each* private source repo → used by the private repo's release workflow to trigger `repository_dispatch` here and to read its own release (`gh release view`).
 
-- In the private repo's secrets as `PUBLISH_TOKEN` — used to trigger dispatch and authenticate `gh release view`.
-- In this repo's secrets as `SOURCE_REPO_TOKEN` — used to download the private asset during republish.
-
-(Same token, two locations, because each workflow needs it in its own secret store.)
+Naming the PATs `release-publisher-read` / `release-publisher-write` in the GitHub token UI makes their purpose obvious when you come back months later.
 
 **2. Append a dispatch step** to the private repo's release workflow, after the release is created:
 
