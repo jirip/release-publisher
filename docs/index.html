@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Downloads</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header>
+      <h1>Downloads</h1>
+      <p>Public release artifacts.</p>
+    </header>
+
+    <div id="apps"></div>
+
+    <footer>
+      <a href="https://github.com/jirip/release-publisher">source</a>
+    </footer>
+  </main>
+
+  <script>
+    const fmtDate = (iso) => {
+      try { return new Date(iso).toISOString().slice(0, 10); }
+      catch { return iso; }
+    };
+
+    const assetLabel = (name) => {
+      const ext = name.split(".").pop().toLowerCase();
+      const map = { exe: "Windows (.exe)", apk: "Android (.apk)", aab: "Android (.aab)", dmg: "macOS (.dmg)", zip: "ZIP archive", tar: "tarball" };
+      return map[ext] || name;
+    };
+
+    const render = (data) => {
+      const root = document.getElementById("apps");
+      const apps = data.apps || {};
+      const names = Object.keys(apps).sort();
+
+      if (names.length === 0) {
+        root.innerHTML = '<p class="empty">No releases yet.</p>';
+        return;
+      }
+
+      root.innerHTML = names.map((name) => {
+        const app = apps[name];
+        const releases = [...(app.releases || [])].sort((a, b) => (a.date < b.date ? 1 : -1));
+        const latest = releases[0];
+        const history = releases.slice(1);
+
+        const downloads = (latest.assets || []).map((a) =>
+          `<a href="${a.url}">${assetLabel(a.name)}</a>`
+        ).join("");
+
+        const historyHtml = history.length === 0 ? "" : `
+          <details class="history">
+            <summary>Previous versions (${history.length})</summary>
+            <ul>
+              ${history.map((r) => `<li>${r.version} &mdash; ${fmtDate(r.date)}</li>`).join("")}
+            </ul>
+          </details>`;
+
+        const notes = latest.notes ? `<p class="app-notes">${escapeHtml(latest.notes)}</p>` : "";
+
+        return `
+          <section class="app">
+            <div class="app-header">
+              <h2 class="app-name">${escapeHtml(name)}</h2>
+              <span class="app-version">${escapeHtml(latest.version)} &middot; ${fmtDate(latest.date)}</span>
+            </div>
+            ${notes}
+            <div class="downloads">${downloads}</div>
+            ${historyHtml}
+          </section>`;
+      }).join("");
+    };
+
+    const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+
+    fetch("releases.json", { cache: "no-store" })
+      .then((r) => r.json())
+      .then(render)
+      .catch((e) => {
+        document.getElementById("apps").innerHTML =
+          `<p class="empty">Failed to load releases.</p>`;
+        console.error(e);
+      });
+  </script>
+</body>
+</html>

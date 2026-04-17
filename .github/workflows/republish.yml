@@ -1,0 +1,114 @@
+name: Republish release
+
+on:
+  repository_dispatch:
+    types: [publish-release]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: republish
+  cancel-in-progress: false
+
+jobs:
+  republish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate payload
+        env:
+          PAYLOAD: ${{ toJSON(github.event.client_payload) }}
+        run: |
+          echo "$PAYLOAD" | jq -e '
+            .app and .version and .source_repo and .source_tag and
+            (.assets | type == "array" and length > 0) and
+            (.assets[] | .name and .url)
+          ' > /dev/null
+
+      - name: Download assets from source repo
+        env:
+          SOURCE_TOKEN: ${{ secrets.SOURCE_REPO_TOKEN }}
+          ASSETS: ${{ toJSON(github.event.client_payload.assets) }}
+        run: |
+          mkdir -p dist
+          echo "$ASSETS" | jq -c '.[]' | while read -r asset; do
+            name=$(echo "$asset" | jq -r '.name')
+            url=$(echo "$asset" | jq -r '.url')
+            echo "Downloading $name from $url"
+            curl -fsSL \
+              -H "Authorization: Bearer $SOURCE_TOKEN" \
+              -H "Accept: application/octet-stream" \
+              -o "dist/$name" \
+              "$url"
+          done
+          ls -la dist
+
+      - name: Create public release
+        id: release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.client_payload.app }}-v${{ github.event.client_payload.version }}
+          name: ${{ github.event.client_payload.app }} v${{ github.event.client_payload.version }}
+          body: |
+            **${{ github.event.client_payload.app }}** v${{ github.event.client_payload.version }}
+
+            Source: `${{ github.event.client_payload.source_repo }}` @ `${{ github.event.client_payload.source_tag }}`
+
+            ${{ github.event.client_payload.notes }}
+          files: dist/*
+          fail_on_unmatched_files: true
+
+      - name: Update releases.json
+        env:
+          APP: ${{ github.event.client_payload.app }}
+          VERSION: ${{ github.event.client_payload.version }}
+          SOURCE_REPO: ${{ github.event.client_payload.source_repo }}
+          SOURCE_TAG: ${{ github.event.client_payload.source_tag }}
+          NOTES: ${{ github.event.client_payload.notes }}
+          RELEASE_URL: ${{ steps.release.outputs.url }}
+        run: |
+          DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+
+          # Build assets list with public release URLs
+          ASSETS_JSON="[]"
+          for f in dist/*; do
+            name=$(basename "$f")
+            encoded=$(jq -rn --arg n "$name" '$n | @uri')
+            url="https://github.com/${{ github.repository }}/releases/download/${APP}-v${VERSION}/${encoded}"
+            ASSETS_JSON=$(echo "$ASSETS_JSON" | jq --arg n "$name" --arg u "$url" '. += [{name: $n, url: $u}]')
+          done
+
+          ENTRY=$(jq -n \
+            --arg v "$VERSION" \
+            --arg d "$DATE" \
+            --arg sr "$SOURCE_REPO" \
+            --arg st "$SOURCE_TAG" \
+            --arg n "$NOTES" \
+            --arg ru "$RELEASE_URL" \
+            --argjson a "$ASSETS_JSON" \
+            '{version: $v, date: $d, source_repo: $sr, source_tag: $st, notes: $n, release_url: $ru, assets: $a}')
+
+          jq --arg app "$APP" --argjson entry "$ENTRY" '
+            .apps[$app] = (.apps[$app] // {releases: []}) |
+            .apps[$app].releases = ([$entry] + (.apps[$app].releases // []))
+          ' docs/releases.json > docs/releases.json.tmp
+          mv docs/releases.json.tmp docs/releases.json
+
+          cat docs/releases.json
+
+      - name: Commit manifest update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/releases.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git commit -m "chore: publish ${APP} v${VERSION}"
+          git push
+        env:
+          APP: ${{ github.event.client_payload.app }}
+          VERSION: ${{ github.event.client_payload.version }}
