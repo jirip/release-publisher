@@ -17,6 +17,28 @@
           ]
         }
       ]
+    },
+    "prague-mhd-dashboard": {
+      "releases": [
+        {
+          "version": "1.8.8",
+          "date": "2026-04-17T15:03:05Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.8.8",
+          "notes": "fix(ci): use GITHUB_TOKEN for gh release view, PUBLISH_TOKEN only for dispatch\nrefactor(ci): route WhatsApp notify through release-publisher\nReplace direct Windmill call with a repository_dispatch to the public\nrelease-publisher repo. Recipients are encrypted with AES-256-GCM using\nthe shared NOTIFY_KEY before inclusion in the dispatch payload.\nfeat(ui): pull-to-refresh on version history and my reports\nAlso show error message when version list fails to load, and fix\nunnecessary non-null assertions in MyReportsScreen.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.8.8",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_8_8.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.8/prague-mhd-dashboard-1_8_8.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_8_8.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.8/prague-mhd-dashboard-1_8_8.apk"
+            }
+          ]
+        }
+      ]
     }
   }
 }
