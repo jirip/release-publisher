@@ -6,9 +6,16 @@ Live page: <https://jirip.github.io/release-publisher/>
 
 ## How it works
 
-1. A private repo finishes a release build and POSTs a `repository_dispatch` event of type `publish-release` to this repo, carrying the app name, version, source tag, and asset download URLs.
+1. A private repo finishes a release build and POSTs a `repository_dispatch` event of type `publish-release` to this repo, carrying the app name, version, source tag, asset download URLs, and (optionally) an encrypted recipient list for WhatsApp notification.
 2. The `republish` workflow downloads the assets from the private repo (using `SOURCE_REPO_TOKEN`), creates a public release here tagged `<app>-v<version>`, appends an entry to `docs/releases.json`, and commits.
-3. GitHub Pages serves `docs/`, which renders cards per app with direct download links to the latest version.
+3. If recipients are included, the workflow decrypts them (using the shared `NOTIFY_KEY`), masks each number in the log, and POSTs to Windmill to send a WhatsApp notification linking to the **public** release.
+4. GitHub Pages serves `docs/`, which renders cards per app with direct download links to the latest version.
+
+## Recipient privacy
+
+Recipient phone numbers live in the private repos' `.github/notify.txt`. They are encrypted with AES-256-GCM using a shared `NOTIFY_KEY` before being placed in the `repository_dispatch` payload. The public event payload and this repo's source only ever see ciphertext. Decryption happens inside a workflow step that calls `::add-mask::` on each number before any further logging.
+
+If `NOTIFY_KEY` is ever leaked: rotate it on all three repos (regenerate with `openssl rand -base64 32`, `gh secret set NOTIFY_KEY` on each). Historical dispatch payloads remain decryptable with the old key, so treat rotation as defence-in-depth, not retroactive.
 
 ## Wiring up a new private repo
 

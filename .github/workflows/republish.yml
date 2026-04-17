@@ -112,3 +112,48 @@ jobs:
         env:
           APP: ${{ github.event.client_payload.app }}
           VERSION: ${{ github.event.client_payload.version }}
+
+      - name: Notify via Windmill
+        if: github.event.client_payload.recipients_enc != ''
+        env:
+          NOTIFY_KEY: ${{ secrets.NOTIFY_KEY }}
+          RECIPIENTS_ENC: ${{ github.event.client_payload.recipients_enc }}
+          WINDMILL_URL: ${{ secrets.WINDMILL_URL }}
+          WINDMILL_TOKEN: ${{ secrets.WINDMILL_TOKEN }}
+          APP: ${{ github.event.client_payload.app }}
+          VERSION: ${{ github.event.client_payload.version }}
+          HEADLINE: ${{ github.event.client_payload.notes }}
+          RELEASE_URL: ${{ steps.release.outputs.url }}
+          REPO: ${{ github.repository }}
+        run: |
+          pip install --quiet 'cryptography>=42'
+
+          RECIPIENTS_JSON=$(python3 <<'PY'
+          import base64, json, os, sys
+          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+          key = base64.b64decode(os.environ["NOTIFY_KEY"])
+          blob = base64.b64decode(os.environ["RECIPIENTS_ENC"])
+          nonce, ct = blob[:12], blob[12:]
+          plaintext = AESGCM(key).decrypt(nonce, ct, None).decode()
+          # Validate shape, then mask each recipient before printing
+          recipients = json.loads(plaintext)
+          assert isinstance(recipients, list) and all(isinstance(r, str) for r in recipients)
+          for r in recipients:
+              print(f"::add-mask::{r}", file=sys.stderr)
+          print(json.dumps(recipients))
+          PY
+          )
+
+          HEADLINE_FIRST=$(printf '%s' "$HEADLINE" | head -n1)
+
+          jq -n \
+            --arg repo "$REPO" \
+            --arg version_tag "${APP}-v${VERSION}" \
+            --arg url "$RELEASE_URL" \
+            --arg headline "$HEADLINE_FIRST" \
+            --argjson recipients "$RECIPIENTS_JSON" \
+            '{repo:$repo, version_tag:$version_tag, url:$url, headline:$headline, recipients:$recipients}' \
+          | curl -fsS -X POST "$WINDMILL_URL" \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer $WINDMILL_TOKEN" \
+              --data-binary @-
