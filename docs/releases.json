@@ -21,6 +21,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "1.8.11",
+          "date": "2026-04-19T14:20:30Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.8.11",
+          "notes": "feat(trip): minimized bar after dismissing route view [publish]\nDismissing the trip detail sheet shows a compact bar at the bottom\nwith route number and headsign. Tap to reopen (fetches fresh data),\nswipe to dismiss completely.\nfeat(dev): trip annotation buttons for position model tuning\nArrive/Depart buttons on each stop row (±5 from active) in developer\nmode. Saves timestamp, stop context, API state + age, and model\nprediction per tap. Auto-posts as GitHub issue (label: annotation)\nwhen session is idle for 1 hour.\nfeat(trip): time-fusion position model, developer mode, GPS fix\n- Replace spring-velocity estimator with stateless time-fusion model:\n  5 discrete states per segment (AT_STOP, DEPARTING, TRANSIT, ARRIVING),\n  blends API snapshot with schedule using confidence decay\n- Add developer mode toggle in Settings: gates Report Issue, My Reports,\n  and logcat debug output in trip detail\n- Fix GPS cold start: try cached location (getLastLocation) before\n  requesting fresh fix, reuse if younger than refresh interval (#72)\n- Rename CI notification trigger from [release] to [publish]\nfix(ci): use GITHUB_TOKEN for gh release view, PUBLISH_TOKEN only for dispatch\nrefactor(ci): route WhatsApp notify through release-publisher\nReplace direct Windmill call with a repository_dispatch to the public\nrelease-publisher repo. Recipients are encrypted with AES-256-GCM using\nthe shared NOTIFY_KEY before inclusion in the dispatch payload.\nfeat(ui): pull-to-refresh on version history and my reports\nAlso show error message when version list fails to load, and fix\nunnecessary non-null assertions in MyReportsScreen.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.8.11",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_8_11.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.11/prague-mhd-dashboard-1_8_11.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_8_11.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.11/prague-mhd-dashboard-1_8_11.apk"
+            }
+          ]
+        },
+        {
           "version": "1.8.8",
           "date": "2026-04-17T15:03:05Z",
           "source_repo": "jirip/prague-mhd-dashboard",
