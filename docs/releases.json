@@ -21,6 +21,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "1.8.13",
+          "date": "2026-04-20T18:56:38Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.8.13",
+          "notes": "feat(trip): tune position model from annotation data [publish]\nParameters tuned against 67 annotations from 2 real tram rides:\n- TRANSITION_MS: 15s → 20s (longer departing/arriving phases)\n- MAX_ALPHA: 1.0 → 0.85 (never fully snap to API)\n- MIN_API_AGE_MS: 0 → 10s (smooth API corrections)\n- Add app version to annotation data\n- Save tuning results and replay script in model-tuning/\nBackward jumps reduced 60-70%, at-stop accuracy +5%, no backward guard\n(tested — hurts accuracy more than it helps).\nfix(trip): correct phase layout and stale state in position model [publish]\n- Reorder phases: AT_STOP is now last in segment (vehicle dwells\n  before departure), DEPARTING is first (vehicle just left)\n- Fix stale captured values in tick loop with rememberUpdatedState\n- No green blinking when vehicle is not tracked (schedule-only mode)\n- Annotation upload on bar dismiss (trigger: manual) + 30min auto-stale\n- Annotation issue body includes trigger type",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.8.13",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_8_13.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.13/prague-mhd-dashboard-1_8_13.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_8_13.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.13/prague-mhd-dashboard-1_8_13.apk"
+            }
+          ]
+        },
+        {
           "version": "1.8.12",
           "date": "2026-04-20T10:29:07Z",
           "source_repo": "jirip/prague-mhd-dashboard",
