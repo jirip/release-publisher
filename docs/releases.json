@@ -21,6 +21,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "1.8.14",
+          "date": "2026-04-21T13:42:06Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.8.14",
+          "notes": "feat(update): show \"What's new\" dialog on version update [release][publish]\nMessages tied to specific versions in UpdateMessages.kt. On first\nlaunch after update, shows dialog with all messages from versions\nbetween last seen and current. Gate GitHub Release on [release] tag,\nseparate from [publish] for WhatsApp notifications.\nfeat(tools): add /annotation skill and evaluation framework\n- /annotation skill: fetch new annotations, save locally, close issues, evaluate\n- evaluate.py: replay all saved annotations against current and old model params\n- Save annotation issues #74, #75, #76 as local JSON files\nfeat(trip): tune position model from annotation data [publish]\nParameters tuned against 67 annotations from 2 real tram rides:\n- TRANSITION_MS: 15s → 20s (longer departing/arriving phases)\n- MAX_ALPHA: 1.0 → 0.85 (never fully snap to API)\n- MIN_API_AGE_MS: 0 → 10s (smooth API corrections)\n- Add app version to annotation data\n- Save tuning results and replay script in model-tuning/\nBackward jumps reduced 60-70%, at-stop accuracy +5%, no backward guard\n(tested — hurts accuracy more than it helps).",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.8.14",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_8_14.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.14/prague-mhd-dashboard-1_8_14.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_8_14.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.14/prague-mhd-dashboard-1_8_14.apk"
+            }
+          ]
+        },
+        {
           "version": "1.8.13",
           "date": "2026-04-20T18:56:38Z",
           "source_repo": "jirip/prague-mhd-dashboard",
