@@ -21,6 +21,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "1.9.0",
+          "date": "2026-04-22T00:36:42Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.9.0",
+          "notes": "feat(stops): refactor stopName to stopKey with mode-aware departures\nRename StopData.stopName to stopKey throughout all layers. Stop keys\nencode transport mode (e.g. \"Ohrada|TRAM\") enabling per-mode favorites,\nhidden stops, and filtered departure boards.\n- Departure board splits into mode cards when grouping is off\n- Search results show mode-split cards based on setting\n- Favorites stored separately per grouping mode (swap on toggle)\n- Fix navigation tab stuck state when pendingSearchRoute persists\n[release][publish]\nfeat(nearby): split stops by transport mode setting (#60)\n\"Group stops by name\" toggle in Settings (default: on). When off,\nstops with multiple transport types get separate cards with suffix\n(e.g., \"Olovnice — Bus\", \"Olovnice — Train\"). Favorites/hidden\ncheck both display name and base name for compatibility.\nfeat(annotation): include user name from report settings\nfeat(update): show \"What's new\" dialog on version update [release][publish]\nMessages tied to specific versions in UpdateMessages.kt. On first\nlaunch after update, shows dialog with all messages from versions\nbetween last seen and current. Gate GitHub Release on [release] tag,\nseparate from [publish] for WhatsApp notifications.\nfeat(tools): add /annotation skill and evaluation framework\n- /annotation skill: fetch new annotations, save locally, close issues, evaluate\n- evaluate.py: replay all saved annotations against current and old model params\n- Save annotation issues #74, #75, #76 as local JSON files",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.9.0",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_9_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.9.0/prague-mhd-dashboard-1_9_0.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_9_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.9.0/prague-mhd-dashboard-1_9_0.apk"
+            }
+          ]
+        },
+        {
           "version": "1.8.14",
           "date": "2026-04-21T13:42:06Z",
           "source_repo": "jirip/prague-mhd-dashboard",
