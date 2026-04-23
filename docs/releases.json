@@ -129,6 +129,28 @@
           ]
         }
       ]
+    },
+    "pexesongy": {
+      "releases": [
+        {
+          "version": "0.1.0",
+          "date": "2026-04-23T11:39:59Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.0",
+          "notes": "Capacitor APK of the pexesongy scanner. All 18 cards with local mp3\nplayback, rays + plane animations, works offline after first launch.\nDistributed via release-publisher.\nci: commit package-lock.json so `npm ci` works on runners\nnpm ci requires the lockfile; I had it gitignored from the first\nCapacitor commit, so the workflow failed on first build. Including\nit also means reproducible npm installs, which is the whole point.\nci: fix missing Android SDK + wipe keystore + build AAB too\nReview pass on the release workflow:\n- Add android-actions/setup-android@v3 step: gradle has no SDK without\n  it on Ubuntu runners; previous version would fail on first run.\n- Decode keystore with explicit \\$GITHUB_WORKSPACE path (matches the\n  KEYSTORE_FILE env var passed to gradle).\n- Remove keystore.jks after build regardless of success, so any later\n  step running on the same job can't read it.\n- Build bundleRelease alongside assembleRelease and include the .aab in\n  both artifact upload and GitHub release, so Play Store publishing\n  path is there later without workflow changes.\nMatches the structure of prague-mhd-dashboard's build.yml.\nci: sign release APK with user-provided keystore\n- app/android/app/build.gradle: release signingConfig reads\n  KEYSTORE_FILE/KEYSTORE_PASSWORD/KEY_ALIAS/KEY_PASSWORD env vars; inert\n  block falls back to debug signing when the env var is not set.\n- release.yml: decode KEYSTORE_BASE64 secret to keystore.jks, pass all\n  four credentials to gradle, build assembleRelease (not assembleDebug),\n  pick the release APK path.\n- .gitignore: *.jks, *.keystore, keystore.b64.\nSecrets configured on jirip/pexesongy:\n  KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD\n  (+ existing PUBLISH_TOKEN, NOTIFY_KEY).\nci: match prague-mhd-dashboard pattern — [release]/[publish] commit markers\nRewritten release workflow: builds APK on every push, only creates a\nGitHub release when commit subject contains [release], only dispatches\nto release-publisher when subject contains [publish]. versionName\npulled from app/android/app/build.gradle.\nSame notify.txt + NOTIFY_KEY encryption flow as pdf2jpg and\nprague-mhd-dashboard.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.0",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.0/pexesongy-0_1_0.aab"
+            },
+            {
+              "name": "pexesongy-0_1_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.0/pexesongy-0_1_0.apk"
+            }
+          ]
+        }
+      ]
     }
   }
 }
