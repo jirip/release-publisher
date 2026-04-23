@@ -87,6 +87,17 @@ header p {
 
 .downloads a:hover { background: var(--accent-hover); }
 
+.downloads a.web-link {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+}
+
+.downloads a.web-link:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
 details.history {
   margin-top: 1rem;
   font-size: 0.88rem;
@@ -101,6 +112,37 @@ details.history ul {
   margin: 0.5rem 0 0;
   padding-left: 1.25rem;
   color: var(--muted);
+}
+
+details.history li {
+  margin: 0.35rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+details.history .history-meta {
+  font-variant-numeric: tabular-nums;
+}
+
+details.history .history-assets {
+  display: inline-flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+details.history .history-assets a {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 0.85rem;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+details.history .history-assets a:hover {
+  border-color: var(--accent);
 }
 
 .empty {

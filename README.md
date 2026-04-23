@@ -39,6 +39,7 @@ Naming the PATs `release-publisher-read` / `release-publisher-write` in the GitH
     VERSION: ${{ steps.version.outputs.name }}     # e.g. 0.1.8 (no leading v)
     SOURCE_TAG: v${{ steps.version.outputs.name }} # matches the tag on this repo
     NOTES: ${{ steps.notes.outputs.body }}
+    WEB_URL: ""                                    # optional, see "Web-wrapped apps" below
   run: |
     ASSETS=$(gh release view "$SOURCE_TAG" \
       --repo "$GITHUB_REPOSITORY" \
@@ -51,8 +52,9 @@ Naming the PATs `release-publisher-read` / `release-publisher-write` in the GitH
       --arg source_repo "$GITHUB_REPOSITORY" \
       --arg source_tag "$SOURCE_TAG" \
       --arg notes "$NOTES" \
+      --arg web_url "$WEB_URL" \
       --argjson assets "$ASSETS" \
-      '{event_type: "publish-release", client_payload: {app: $app, version: $version, source_repo: $source_repo, source_tag: $source_tag, notes: $notes, assets: $assets}}' \
+      '{event_type: "publish-release", client_payload: ({app: $app, version: $version, source_repo: $source_repo, source_tag: $source_tag, notes: $notes, assets: $assets} + (if $web_url == "" then {} else {web_url: $web_url} end))}' \
     | curl -fsS -X POST \
         -H "Accept: application/vnd.github+json" \
         -H "Authorization: Bearer $GH_TOKEN" \
@@ -61,6 +63,18 @@ Naming the PATs `release-publisher-read` / `release-publisher-write` in the GitH
 ```
 
 Asset URLs must be API URLs (`.apiUrl`), not browser URLs — the republisher downloads them with a `Bearer` token and `Accept: application/octet-stream`.
+
+## Web-wrapped apps (optional `web_url`)
+
+Apps that ship both downloadable artifacts and a hosted web version (e.g. a Capacitor-wrapped PWA) can pass a `web_url` in the dispatch. The public page then renders an **Open Web** button on the app's card alongside the download links.
+
+Semantics of `web_url` in the dispatch payload:
+
+- **Omitted** → whatever `apps[app].webUrl` is currently stored in `docs/releases.json` is preserved unchanged. This is the default for apps with no web version.
+- **Empty string (`""`)** → clears any previously stored `webUrl` for that app.
+- **`"https://..."`** → sets/overwrites `apps[app].webUrl`.
+
+The URL lives at the app level in the manifest (not per-release) because one URL per app is enough — a hosted PWA only has one live version at a time.
 
 ## Adding a new app
 
@@ -85,9 +99,15 @@ No code changes needed — the page renders whatever apps appear in `docs/releas
           ]
         }
       ]
+    },
+    "pexesongy": {
+      "webUrl": "https://pexesongy.pages.dev/",
+      "releases": [ ... ]
     }
   }
 }
 ```
+
+`webUrl` is optional. If present, the public page renders an **Open Web** button on the app's card.
 
 Releases are kept in reverse-chronological order within each app (newest first).

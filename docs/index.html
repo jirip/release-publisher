@@ -32,6 +32,18 @@
       return map[ext] || name;
     };
 
+    const isSafeHref = (url) => {
+      try {
+        const u = new URL(url, window.location.href);
+        return u.protocol === "https:" || u.protocol === "http:";
+      } catch { return false; }
+    };
+
+    const renderAssets = (assets) => (assets || [])
+      .filter((a) => isSafeHref(a.url))
+      .map((a) => `<a href="${escapeHtml(a.url)}">${escapeHtml(assetLabel(a.name))}</a>`)
+      .join("");
+
     const render = (data) => {
       const root = document.getElementById("apps");
       const apps = data.apps || {};
@@ -48,15 +60,20 @@
         const latest = releases[0];
         const history = releases.slice(1);
 
-        const downloads = (latest.assets || []).map((a) =>
-          `<a href="${a.url}">${assetLabel(a.name)}</a>`
-        ).join("");
+        const downloads = renderAssets(latest.assets);
+
+        const webButton = app.webUrl && isSafeHref(app.webUrl)
+          ? `<a class="web-link" href="${escapeHtml(app.webUrl)}" target="_blank" rel="noopener">Open Web</a>`
+          : "";
 
         const historyHtml = history.length === 0 ? "" : `
           <details class="history">
             <summary>Previous versions (${history.length})</summary>
             <ul>
-              ${history.map((r) => `<li>${r.version} &mdash; ${fmtDate(r.date)}</li>`).join("")}
+              ${history.map((r) => `<li>
+                <span class="history-meta">${escapeHtml(r.version)} &middot; ${fmtDate(r.date)}</span>
+                <span class="history-assets">${renderAssets(r.assets)}</span>
+              </li>`).join("")}
             </ul>
           </details>`;
 
@@ -69,7 +86,7 @@
               <span class="app-version">${escapeHtml(latest.version)} &middot; ${fmtDate(latest.date)}</span>
             </div>
             ${notes}
-            <div class="downloads">${downloads}</div>
+            <div class="downloads">${downloads}${webButton}</div>
             ${historyHtml}
           </section>`;
       }).join("");

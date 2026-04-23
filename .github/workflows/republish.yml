@@ -24,7 +24,8 @@ jobs:
           echo "$PAYLOAD" | jq -e '
             .app and .version and .source_repo and .source_tag and
             (.assets | type == "array" and length > 0) and
-            (.assets[] | .name and .url)
+            (.assets[] | .name and .url) and
+            (.web_url == null or (.web_url | type == "string"))
           ' > /dev/null
 
       - name: Download assets from source repo
@@ -68,6 +69,7 @@ jobs:
           SOURCE_TAG: ${{ github.event.client_payload.source_tag }}
           NOTES: ${{ github.event.client_payload.notes }}
           RELEASE_URL: ${{ steps.release.outputs.url }}
+          WEB_URL_JSON: ${{ toJSON(github.event.client_payload.web_url) }}
         run: |
           DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
@@ -90,9 +92,17 @@ jobs:
             --argjson a "$ASSETS_JSON" \
             '{version: $v, date: $d, source_repo: $sr, source_tag: $st, notes: $n, release_url: $ru, assets: $a}')
 
-          jq --arg app "$APP" --argjson entry "$ENTRY" '
+          # web_url semantics (already type-validated in the "Validate payload" step):
+          #   null (omitted)  -> preserve existing apps[$app].webUrl
+          #   ""              -> clear apps[$app].webUrl
+          #   "https://..."   -> set apps[$app].webUrl
+          jq --arg app "$APP" --argjson entry "$ENTRY" --argjson web "$WEB_URL_JSON" '
             .apps[$app] = (.apps[$app] // {releases: []}) |
-            .apps[$app].releases = ([$entry] + (.apps[$app].releases // []))
+            .apps[$app].releases = ([$entry] + (.apps[$app].releases // [])) |
+            if $web == null then .
+            elif $web == "" then del(.apps[$app].webUrl)
+            else .apps[$app].webUrl = $web
+            end
           ' docs/releases.json > docs/releases.json.tmp
           mv docs/releases.json.tmp docs/releases.json
 
