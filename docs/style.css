@@ -73,10 +73,6 @@ details.app[open] > summary.app-header::after {
   transform: rotate(90deg);
 }
 
-details.app > summary.app-header a.web-link {
-  font-size: 0.85rem;
-  padding: 0.3rem 0.7rem;
-}
 
 details.app > .app-body {
   padding: 0 1.5rem 1.25rem;
@@ -119,13 +115,19 @@ details.app > .app-body {
 
 .downloads a:hover { background: var(--accent-hover); }
 
-.downloads a.web-link {
-  background: transparent;
+a.web-link {
+  display: inline-block;
+  background: rgba(79, 140, 255, 0.15);
   color: var(--accent);
-  border: 1px solid var(--accent);
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 0.35rem 0.95rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.downloads a.web-link:hover {
+a.web-link:hover {
   background: var(--accent);
   color: #fff;
 }
