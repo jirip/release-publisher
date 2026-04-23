@@ -133,6 +133,24 @@
     "pexesongy": {
       "releases": [
         {
+          "version": "0.1.1",
+          "date": "2026-04-23T11:49:20Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.1",
+          "notes": "ci: pass web_url in dispatch payload, bump to v0.1.1 [release] [publish]\nrelease-publisher now accepts a web_url field and renders an\n\"Open Web App\" link. Wiring pexesongy's dispatch to send\nhttps://pexesongy.pages.dev/ so the card links to the live scanner.\nPatch bump only — no scanner code changed.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.1",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_1.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.1/pexesongy-0_1_1.aab"
+            },
+            {
+              "name": "pexesongy-0_1_1.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.1/pexesongy-0_1_1.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.0",
           "date": "2026-04-23T11:39:59Z",
           "source_repo": "jirip/pexesongy",
@@ -150,7 +168,8 @@
             }
           ]
         }
-      ]
+      ],
+      "webUrl": "https://pexesongy.pages.dev/"
     }
   }
 }
