@@ -85,11 +85,12 @@
           <details class="app" data-app="${escapeHtml(name)}"${openAttr}>
             <summary class="app-header">
               <h2 class="app-name">${escapeHtml(name)}</h2>
+              ${webButton}
               <span class="app-version">${escapeHtml(latest.version)} &middot; ${fmtDate(latest.date)}</span>
             </summary>
             <div class="app-body">
               ${notes}
-              <div class="downloads">${downloads}${webButton}</div>
+              <div class="downloads">${downloads}</div>
               ${historyHtml}
             </div>
           </details>`;
@@ -98,6 +99,9 @@
       root.querySelectorAll("details.app").forEach((el) => {
         el.addEventListener("toggle", () => {
           setAppOpen(el.dataset.app, el.open);
+        });
+        el.querySelectorAll("summary.app-header a.web-link").forEach((a) => {
+          a.addEventListener("click", (e) => e.stopPropagation());
         });
       });
     };
