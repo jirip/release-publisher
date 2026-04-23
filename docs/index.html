@@ -79,17 +79,39 @@
 
         const notes = latest.notes ? `<p class="app-notes">${escapeHtml(latest.notes)}</p>` : "";
 
+        const openAttr = isAppOpen(name) ? " open" : "";
+
         return `
-          <section class="app">
-            <div class="app-header">
+          <details class="app" data-app="${escapeHtml(name)}"${openAttr}>
+            <summary class="app-header">
               <h2 class="app-name">${escapeHtml(name)}</h2>
               <span class="app-version">${escapeHtml(latest.version)} &middot; ${fmtDate(latest.date)}</span>
+            </summary>
+            <div class="app-body">
+              ${notes}
+              <div class="downloads">${downloads}${webButton}</div>
+              ${historyHtml}
             </div>
-            ${notes}
-            <div class="downloads">${downloads}${webButton}</div>
-            ${historyHtml}
-          </section>`;
+          </details>`;
       }).join("");
+
+      root.querySelectorAll("details.app").forEach((el) => {
+        el.addEventListener("toggle", () => {
+          setAppOpen(el.dataset.app, el.open);
+        });
+      });
+    };
+
+    const OPEN_KEY_PREFIX = "app-open:";
+    const isAppOpen = (name) => {
+      try { return localStorage.getItem(OPEN_KEY_PREFIX + name) === "1"; }
+      catch { return false; }
+    };
+    const setAppOpen = (name, open) => {
+      try {
+        if (open) localStorage.setItem(OPEN_KEY_PREFIX + name, "1");
+        else localStorage.removeItem(OPEN_KEY_PREFIX + name);
+      } catch { /* storage disabled; ignore */ }
     };
 
     const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => ({

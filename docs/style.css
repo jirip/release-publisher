@@ -34,20 +34,40 @@ header p {
   color: var(--muted);
 }
 
-.app {
+details.app {
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 1.25rem 1.5rem;
   margin-bottom: 1.25rem;
 }
 
-.app-header {
+details.app > summary.app-header {
+  list-style: none;
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: baseline;
   gap: 1rem;
   flex-wrap: wrap;
+  padding: 1.25rem 1.5rem;
+  user-select: none;
+}
+
+details.app > summary.app-header::-webkit-details-marker { display: none; }
+
+details.app > summary.app-header::after {
+  content: "▸";
+  margin-left: auto;
+  color: var(--muted);
+  transition: transform 0.15s ease;
+}
+
+details.app[open] > summary.app-header::after {
+  transform: rotate(90deg);
+}
+
+details.app > .app-body {
+  padding: 0 1.5rem 1.25rem;
 }
 
 .app-name {
