@@ -133,6 +133,24 @@
     "pexesongy": {
       "releases": [
         {
+          "version": "0.1.6",
+          "date": "2026-04-24T12:07:10Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.6",
+          "notes": "feat(scanner): home icon on scan screen too — back to Start [release] [publish]\n0.1.5 only had the home icon inside playback mode, so after tapping Start\nthere was no way to cancel and return to the Start screen. Add the same\nicon to the scan screen; clicking it stops MindAR and restores the Start\nscreen. Hidden during playback (exit-playback icon takes over there).\nfeat(app): in-app APK download+install, home icon, hide version label [release] [publish]\nThree UX fixes in one go:\n1. Native ApkUpdaterPlugin — JS calls\n   window.Capacitor.Plugins.ApkUpdater.downloadAndInstall({ url }), which\n   streams the APK into the app's cacheDir and fires ACTION_VIEW via\n   FileProvider, same pattern as prague-mhd-dashboard's ApkInstaller.kt.\n   User still taps \"Install\" on the system dialog (Android requirement\n   for non-Play-Store updates). No more leaving the app to a browser.\n2. Top-left home/X icon on the playback screen so the user can abandon\n   the current song and return to scan mode (matches the scan-new\n   button but more discoverable in the top-left corner).\n3. Version label hidden by default. It was showing on every load for\n   no reason. Now only surfaces when something errors (yt, audio\n   resolve, audio play, glide, update). A successful play clears it.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.6",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_6.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.6/pexesongy-0_1_6.aab"
+            },
+            {
+              "name": "pexesongy-0_1_6.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.6/pexesongy-0_1_6.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.5",
           "date": "2026-04-24T12:00:02Z",
           "source_repo": "jirip/pexesongy",
