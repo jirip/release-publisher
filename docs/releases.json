@@ -133,6 +133,24 @@
     "pexesongy": {
       "releases": [
         {
+          "version": "0.1.4",
+          "date": "2026-04-24T11:42:46Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.4",
+          "notes": "fix(app): detect native via isNativePlatform, stat cache, surface real error [release] [publish]\nThe 0.1.3 APK reported \\\"audio play blocked: Not supported\\\". Three\nchanges to diagnose and likely fix:\n- Use \\`window.Capacitor.isNativePlatform()\\` to decide web-vs-APK\n  instead of probing same-origin audio with HEAD. The probe was\n  flaky inside the WebView's asset scheme.\n- Call \\`Filesystem.stat\\` before \\`getUri\\` so a genuine cache miss\n  actually falls through to download instead of silently handing\n  \\`<audio>\\` a stale/empty URI.\n- Swap the single-line catch for a staged error: the version label\n  now shows \"resolve err:…\" vs \"play NotSupportedError:…\" so we\n  know which phase broke.\nfeat(app): lazy-load mp3s, shrink APK from 205MB to ~90MB [release] [publish]\nThe APK previously bundled every mp3 (~112MB). Now it ships without\nthem and downloads each track on first scan, caching in the app's\nprivate Data/audio/ dir via @capacitor/filesystem so subsequent scans\nplay instantly.\n- scanner/build.py: emit absolute audio_url for each card so the APK\n  has a source to fetch from.\n- scanner/index.html: replace direct playLocalAudio(src, startSeconds)\n  with resolveAudioSrc(card) — tries same-origin path first (web\n  deploy works unchanged), then Capacitor Filesystem cache, then\n  HTTP fetch + base64 writeFile for the next boot.\n- CI workflow: `mv scanner/audio /tmp/_scanner_audio` before cap sync\n  so those files stay on Cloudflare Pages but don't ship in the APK.\n- Small \"Loading song…\" pill while the first-scan fetch is in flight.\nSecurity note: the plan deliberately defers URL obfuscation/gating.\nThe audio files are already enumerable via cards.json today; real\nprotection would need a signed-URL origin or Cloudflare Worker gate,\nwhich is disproportionate for the current scale.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.4",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_4.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.4/pexesongy-0_1_4.aab"
+            },
+            {
+              "name": "pexesongy-0_1_4.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.4/pexesongy-0_1_4.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.3",
           "date": "2026-04-24T09:45:29Z",
           "source_repo": "jirip/pexesongy",
