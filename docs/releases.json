@@ -133,6 +133,24 @@
     "pexesongy": {
       "releases": [
         {
+          "version": "0.1.3",
+          "date": "2026-04-24T09:45:29Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.3",
+          "notes": "feat(app): lazy-load mp3s, shrink APK from 205MB to ~90MB [release] [publish]\nThe APK previously bundled every mp3 (~112MB). Now it ships without\nthem and downloads each track on first scan, caching in the app's\nprivate Data/audio/ dir via @capacitor/filesystem so subsequent scans\nplay instantly.\n- scanner/build.py: emit absolute audio_url for each card so the APK\n  has a source to fetch from.\n- scanner/index.html: replace direct playLocalAudio(src, startSeconds)\n  with resolveAudioSrc(card) — tries same-origin path first (web\n  deploy works unchanged), then Capacitor Filesystem cache, then\n  HTTP fetch + base64 writeFile for the next boot.\n- CI workflow: `mv scanner/audio /tmp/_scanner_audio` before cap sync\n  so those files stay on Cloudflare Pages but don't ship in the APK.\n- Small \"Loading song…\" pill while the first-scan fetch is in flight.\nSecurity note: the plan deliberately defers URL obfuscation/gating.\nThe audio files are already enumerable via cards.json today; real\nprotection would need a signed-URL origin or Cloudflare Worker gate,\nwhich is disproportionate for the current scale.\nfeat(app): in-APK update banner — polls release-publisher for newer APK\nAPKs are static snapshots of a specific commit. When a newer APK is\npublished on release-publisher, the running app polls\ndocs/releases.json, compares its own versionName to the latest, and\nshows a yellow \"Update available: vX.Y.Z\" banner with a Download\nbutton that opens the .apk URL — Android's package installer picks it\nup from there. Dismissal is remembered for 24h in localStorage.\nImplementation:\n- CI stamps scanner/apk-version.json before cap sync so the APK knows\n  its own version without needing any Capacitor plugin.\n- Web deploy has no apk-version.json, so the banner stays dormant for\n  browser visitors.\n- Version label now shows \"v0.1.2 (web 0.0.NN)\" inside the APK to make\n  the two-version story obvious. Plain web shows just \"v0.0.NN\".\n- REQUEST_INSTALL_PACKAGES permission added so ACTION_VIEW on the APK\n  URL triggers the system installer.\nBumps to v0.1.2 to exercise the pipeline. [release] [publish]",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.3",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_3.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.3/pexesongy-0_1_3.aab"
+            },
+            {
+              "name": "pexesongy-0_1_3.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.3/pexesongy-0_1_3.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.2",
           "date": "2026-04-24T09:33:57Z",
           "source_repo": "jirip/pexesongy",
