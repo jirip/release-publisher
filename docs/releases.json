@@ -133,6 +133,24 @@
     "pexesongy": {
       "releases": [
         {
+          "version": "0.1.5",
+          "date": "2026-04-24T12:00:02Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.5",
+          "notes": "feat(app): in-app APK download+install, home icon, hide version label [release] [publish]\nThree UX fixes in one go:\n1. Native ApkUpdaterPlugin — JS calls\n   window.Capacitor.Plugins.ApkUpdater.downloadAndInstall({ url }), which\n   streams the APK into the app's cacheDir and fires ACTION_VIEW via\n   FileProvider, same pattern as prague-mhd-dashboard's ApkInstaller.kt.\n   User still taps \"Install\" on the system dialog (Android requirement\n   for non-Play-Store updates). No more leaving the app to a browser.\n2. Top-left home/X icon on the playback screen so the user can abandon\n   the current song and return to scan mode (matches the scan-new\n   button but more discoverable in the top-left corner).\n3. Version label hidden by default. It was showing on every load for\n   no reason. Now only surfaces when something errors (yt, audio\n   resolve, audio play, glide, update). A successful play clears it.\nfix(app): detect native via isNativePlatform, stat cache, surface real error [release] [publish]\nThe 0.1.3 APK reported \\\"audio play blocked: Not supported\\\". Three\nchanges to diagnose and likely fix:\n- Use \\`window.Capacitor.isNativePlatform()\\` to decide web-vs-APK\n  instead of probing same-origin audio with HEAD. The probe was\n  flaky inside the WebView's asset scheme.\n- Call \\`Filesystem.stat\\` before \\`getUri\\` so a genuine cache miss\n  actually falls through to download instead of silently handing\n  \\`<audio>\\` a stale/empty URI.\n- Swap the single-line catch for a staged error: the version label\n  now shows \"resolve err:…\" vs \"play NotSupportedError:…\" so we\n  know which phase broke.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.5",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_5.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.5/pexesongy-0_1_5.aab"
+            },
+            {
+              "name": "pexesongy-0_1_5.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.5/pexesongy-0_1_5.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.4",
           "date": "2026-04-24T11:42:46Z",
           "source_repo": "jirip/pexesongy",
