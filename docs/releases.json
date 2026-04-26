@@ -133,6 +133,24 @@
     "pexesongy": {
       "releases": [
         {
+          "version": "0.1.8",
+          "date": "2026-04-26T17:08:24Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.8",
+          "notes": "feat(scanner): fade camera feed in from black over 1s [release] [publish]\nThe grey-and-blank first video frame popped jarringly when entering\nscan mode. Add a CSS opacity transition on body > video so it ramps\n0 → 1 over 1 second after MindAR starts. UI elements (home icon,\nhint, reticle) appear immediately at full opacity above the fading\ncamera. Reset on exitScanBtn so re-entering re-fades.\nperf: ship 512² fronts + 256² cover, drop canvas DPR cap [release] [publish]\nTwo changes that compound:\n- scanner/build.py now downsizes data/ → scanner/art/ via Pillow\n  Lanczos. Originals at 1024² stay in data/ for print PDFs (printed\n  card quality unaffected). scanner/art/ shrinks 46MB → 9.6MB.\n  Card fronts: 512², ~530KB each. Cover: 256², ~107KB.\n- scanner/animations/plane.js: DPR cap was already 1, kept that way.\n  Each textured-tile draw now samples a 256² source instead of 1024²,\n  a 16× cheaper texture sample, and the canvas backing buffer is\n  4× smaller than at native DPR.\nNet: plane animation should run smoothly during the 5s glide on\nmid-range phones. APK shrinks correspondingly.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.8",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_8.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.8/pexesongy-0_1_8.aab"
+            },
+            {
+              "name": "pexesongy-0_1_8.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.8/pexesongy-0_1_8.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.7",
           "date": "2026-04-26T17:03:06Z",
           "source_repo": "jirip/pexesongy",
