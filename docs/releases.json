@@ -133,6 +133,24 @@
     "pexesongy": {
       "releases": [
         {
+          "version": "0.1.10",
+          "date": "2026-04-26T17:25:41Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.10",
+          "notes": "fix(scanner): drop YouTube IFrame entirely + close diagonal seam in plane tiles [release] [publish]\nTwo more fixes from screenshot:\n- Removed <script src=youtube/iframe_api>. Every card has a local mp3,\n  so the YT player was unused dead weight that kept leaking a giant\n  play overlay onto the scan view (despite earlier attempts to hide\n  it). Player init guarded by ytReady which now stays false forever.\n  If a YT-only card ever appears in cards.json we'll bring the script\n  back; until then, no overlay.\n- The cover image on each tile was rendered as two affine-mapped\n  triangles. The shared diagonal showed a 1px black seam from\n  sub-pixel rounding. Outset each triangle's clip by 1px along the\n  outward normal so the two triangles overlap a hair across the\n  diagonal — hides the seam.\nfix(scanner): hide stray YouTube play overlay; force camera fullscreen [release] [publish]\nTwo visual bugs reported on v0.1.8 with screenshot:\n1. The YouTube IFrame host was 200×200 at top:-220px, supposed to be\n   off-screen, but Android Chrome was bringing the giant play\n   overlay back into view. Reduce to a 1×1 px host with opacity\n   0.01 + iframe sized to 1px so the overlay can't render at any\n   visible size while still passing autoplay heuristics.\n2. MindAR's <video> rendered in a small box top-left instead of\n   filling the screen, because the WebView's clientWidth/Height\n   reading mid-launch was off. Add !important position/size CSS so\n   the camera always covers the viewport regardless of MindAR's\n   computed offsets.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.10",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_10.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.10/pexesongy-0_1_10.aab"
+            },
+            {
+              "name": "pexesongy-0_1_10.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.10/pexesongy-0_1_10.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.9",
           "date": "2026-04-26T17:19:53Z",
           "source_repo": "jirip/pexesongy",
