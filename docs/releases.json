@@ -133,6 +133,24 @@
     "pexesongy": {
       "releases": [
         {
+          "version": "0.1.7",
+          "date": "2026-04-26T17:03:06Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.7",
+          "notes": "perf: ship 512² fronts + 256² cover, drop canvas DPR cap [release] [publish]\nTwo changes that compound:\n- scanner/build.py now downsizes data/ → scanner/art/ via Pillow\n  Lanczos. Originals at 1024² stay in data/ for print PDFs (printed\n  card quality unaffected). scanner/art/ shrinks 46MB → 9.6MB.\n  Card fronts: 512², ~530KB each. Cover: 256², ~107KB.\n- scanner/animations/plane.js: DPR cap was already 1, kept that way.\n  Each textured-tile draw now samples a 256² source instead of 1024²,\n  a 16× cheaper texture sample, and the canvas backing buffer is\n  4× smaller than at native DPR.\nNet: plane animation should run smoothly during the 5s glide on\nmid-range phones. APK shrinks correspondingly.\nfeat(scanner): home icon on scan screen too — back to Start [release] [publish]\n0.1.5 only had the home icon inside playback mode, so after tapping Start\nthere was no way to cancel and return to the Start screen. Add the same\nicon to the scan screen; clicking it stops MindAR and restores the Start\nscreen. Hidden during playback (exit-playback icon takes over there).",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.7",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_7.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.7/pexesongy-0_1_7.aab"
+            },
+            {
+              "name": "pexesongy-0_1_7.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.7/pexesongy-0_1_7.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.6",
           "date": "2026-04-24T12:07:10Z",
           "source_repo": "jirip/pexesongy",
