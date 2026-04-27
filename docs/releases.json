@@ -25,7 +25,7 @@
           "date": "2026-04-22T00:36:42Z",
           "source_repo": "jirip/prague-mhd-dashboard",
           "source_tag": "v1.9.0",
-          "notes": "feat(stops): refactor stopName to stopKey with mode-aware departures\nRename StopData.stopName to stopKey throughout all layers. Stop keys\nencode transport mode (e.g. \"Ohrada|TRAM\") enabling per-mode favorites,\nhidden stops, and filtered departure boards.\n- Departure board splits into mode cards when grouping is off\n- Search results show mode-split cards based on setting\n- Favorites stored separately per grouping mode (swap on toggle)\n- Fix navigation tab stuck state when pendingSearchRoute persists\n[release][publish]\nfeat(nearby): split stops by transport mode setting (#60)\n\"Group stops by name\" toggle in Settings (default: on). When off,\nstops with multiple transport types get separate cards with suffix\n(e.g., \"Olovnice — Bus\", \"Olovnice — Train\"). Favorites/hidden\ncheck both display name and base name for compatibility.\nfeat(annotation): include user name from report settings\nfeat(update): show \"What's new\" dialog on version update [release][publish]\nMessages tied to specific versions in UpdateMessages.kt. On first\nlaunch after update, shows dialog with all messages from versions\nbetween last seen and current. Gate GitHub Release on [release] tag,\nseparate from [publish] for WhatsApp notifications.\nfeat(tools): add /annotation skill and evaluation framework\n- /annotation skill: fetch new annotations, save locally, close issues, evaluate\n- evaluate.py: replay all saved annotations against current and old model params\n- Save annotation issues #74, #75, #76 as local JSON files",
+          "notes": "feat(stops): refactor stopName to stopKey with mode-aware departures\nRename StopData.stopName to stopKey throughout all layers. Stop keys\nencode transport mode (e.g. \"Ohrada|TRAM\") enabling per-mode favorites,\nhidden stops, and filtered departure boards.\n- Departure board splits into mode cards when grouping is off\n- Search results show mode-split cards based on setting\n- Favorites stored separately per grouping mode (swap on toggle)\n- Fix navigation tab stuck state when pendingSearchRoute persists\n[release][publish]\nfeat(nearby): split stops by transport mode setting (#60)\n\"Group stops by name\" toggle in Settings (default: on). When off,\nstops with multiple transport types get separate cards with suffix\n(e.g., \"Olovnice \u2014 Bus\", \"Olovnice \u2014 Train\"). Favorites/hidden\ncheck both display name and base name for compatibility.\nfeat(annotation): include user name from report settings\nfeat(update): show \"What's new\" dialog on version update [release][publish]\nMessages tied to specific versions in UpdateMessages.kt. On first\nlaunch after update, shows dialog with all messages from versions\nbetween last seen and current. Gate GitHub Release on [release] tag,\nseparate from [publish] for WhatsApp notifications.\nfeat(tools): add /annotation skill and evaluation framework\n- /annotation skill: fetch new annotations, save locally, close issues, evaluate\n- evaluate.py: replay all saved annotations against current and old model params\n- Save annotation issues #74, #75, #76 as local JSON files",
           "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.9.0",
           "assets": [
             {
@@ -43,7 +43,7 @@
           "date": "2026-04-21T13:42:06Z",
           "source_repo": "jirip/prague-mhd-dashboard",
           "source_tag": "v1.8.14",
-          "notes": "feat(update): show \"What's new\" dialog on version update [release][publish]\nMessages tied to specific versions in UpdateMessages.kt. On first\nlaunch after update, shows dialog with all messages from versions\nbetween last seen and current. Gate GitHub Release on [release] tag,\nseparate from [publish] for WhatsApp notifications.\nfeat(tools): add /annotation skill and evaluation framework\n- /annotation skill: fetch new annotations, save locally, close issues, evaluate\n- evaluate.py: replay all saved annotations against current and old model params\n- Save annotation issues #74, #75, #76 as local JSON files\nfeat(trip): tune position model from annotation data [publish]\nParameters tuned against 67 annotations from 2 real tram rides:\n- TRANSITION_MS: 15s → 20s (longer departing/arriving phases)\n- MAX_ALPHA: 1.0 → 0.85 (never fully snap to API)\n- MIN_API_AGE_MS: 0 → 10s (smooth API corrections)\n- Add app version to annotation data\n- Save tuning results and replay script in model-tuning/\nBackward jumps reduced 60-70%, at-stop accuracy +5%, no backward guard\n(tested — hurts accuracy more than it helps).",
+          "notes": "feat(update): show \"What's new\" dialog on version update [release][publish]\nMessages tied to specific versions in UpdateMessages.kt. On first\nlaunch after update, shows dialog with all messages from versions\nbetween last seen and current. Gate GitHub Release on [release] tag,\nseparate from [publish] for WhatsApp notifications.\nfeat(tools): add /annotation skill and evaluation framework\n- /annotation skill: fetch new annotations, save locally, close issues, evaluate\n- evaluate.py: replay all saved annotations against current and old model params\n- Save annotation issues #74, #75, #76 as local JSON files\nfeat(trip): tune position model from annotation data [publish]\nParameters tuned against 67 annotations from 2 real tram rides:\n- TRANSITION_MS: 15s \u2192 20s (longer departing/arriving phases)\n- MAX_ALPHA: 1.0 \u2192 0.85 (never fully snap to API)\n- MIN_API_AGE_MS: 0 \u2192 10s (smooth API corrections)\n- Add app version to annotation data\n- Save tuning results and replay script in model-tuning/\nBackward jumps reduced 60-70%, at-stop accuracy +5%, no backward guard\n(tested \u2014 hurts accuracy more than it helps).",
           "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.8.14",
           "assets": [
             {
@@ -61,7 +61,7 @@
           "date": "2026-04-20T18:56:38Z",
           "source_repo": "jirip/prague-mhd-dashboard",
           "source_tag": "v1.8.13",
-          "notes": "feat(trip): tune position model from annotation data [publish]\nParameters tuned against 67 annotations from 2 real tram rides:\n- TRANSITION_MS: 15s → 20s (longer departing/arriving phases)\n- MAX_ALPHA: 1.0 → 0.85 (never fully snap to API)\n- MIN_API_AGE_MS: 0 → 10s (smooth API corrections)\n- Add app version to annotation data\n- Save tuning results and replay script in model-tuning/\nBackward jumps reduced 60-70%, at-stop accuracy +5%, no backward guard\n(tested — hurts accuracy more than it helps).\nfix(trip): correct phase layout and stale state in position model [publish]\n- Reorder phases: AT_STOP is now last in segment (vehicle dwells\n  before departure), DEPARTING is first (vehicle just left)\n- Fix stale captured values in tick loop with rememberUpdatedState\n- No green blinking when vehicle is not tracked (schedule-only mode)\n- Annotation upload on bar dismiss (trigger: manual) + 30min auto-stale\n- Annotation issue body includes trigger type",
+          "notes": "feat(trip): tune position model from annotation data [publish]\nParameters tuned against 67 annotations from 2 real tram rides:\n- TRANSITION_MS: 15s \u2192 20s (longer departing/arriving phases)\n- MAX_ALPHA: 1.0 \u2192 0.85 (never fully snap to API)\n- MIN_API_AGE_MS: 0 \u2192 10s (smooth API corrections)\n- Add app version to annotation data\n- Save tuning results and replay script in model-tuning/\nBackward jumps reduced 60-70%, at-stop accuracy +5%, no backward guard\n(tested \u2014 hurts accuracy more than it helps).\nfix(trip): correct phase layout and stale state in position model [publish]\n- Reorder phases: AT_STOP is now last in segment (vehicle dwells\n  before departure), DEPARTING is first (vehicle just left)\n- Fix stale captured values in tick loop with rememberUpdatedState\n- No green blinking when vehicle is not tracked (schedule-only mode)\n- Annotation upload on bar dismiss (trigger: manual) + 30min auto-stale\n- Annotation issue body includes trigger type",
           "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.8.13",
           "assets": [
             {
@@ -71,60 +71,6 @@
             {
               "name": "prague-mhd-dashboard-1_8_13.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.13/prague-mhd-dashboard-1_8_13.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.8.12",
-          "date": "2026-04-20T10:29:07Z",
-          "source_repo": "jirip/prague-mhd-dashboard",
-          "source_tag": "v1.8.12",
-          "notes": "fix(trip): correct phase layout and stale state in position model [publish]\n- Reorder phases: AT_STOP is now last in segment (vehicle dwells\n  before departure), DEPARTING is first (vehicle just left)\n- Fix stale captured values in tick loop with rememberUpdatedState\n- No green blinking when vehicle is not tracked (schedule-only mode)\n- Annotation upload on bar dismiss (trigger: manual) + 30min auto-stale\n- Annotation issue body includes trigger type\nfeat(trip): minimized bar after dismissing route view [publish]\nDismissing the trip detail sheet shows a compact bar at the bottom\nwith route number and headsign. Tap to reopen (fetches fresh data),\nswipe to dismiss completely.\nfeat(dev): trip annotation buttons for position model tuning\nArrive/Depart buttons on each stop row (±5 from active) in developer\nmode. Saves timestamp, stop context, API state + age, and model\nprediction per tap. Auto-posts as GitHub issue (label: annotation)\nwhen session is idle for 1 hour.\nfeat(trip): time-fusion position model, developer mode, GPS fix\n- Replace spring-velocity estimator with stateless time-fusion model:\n  5 discrete states per segment (AT_STOP, DEPARTING, TRANSIT, ARRIVING),\n  blends API snapshot with schedule using confidence decay\n- Add developer mode toggle in Settings: gates Report Issue, My Reports,\n  and logcat debug output in trip detail\n- Fix GPS cold start: try cached location (getLastLocation) before\n  requesting fresh fix, reuse if younger than refresh interval (#72)\n- Rename CI notification trigger from [release] to [publish]\nfix(ci): use GITHUB_TOKEN for gh release view, PUBLISH_TOKEN only for dispatch",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.8.12",
-          "assets": [
-            {
-              "name": "prague-mhd-dashboard-1_8_12.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.12/prague-mhd-dashboard-1_8_12.aab"
-            },
-            {
-              "name": "prague-mhd-dashboard-1_8_12.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.12/prague-mhd-dashboard-1_8_12.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.8.11",
-          "date": "2026-04-19T14:20:30Z",
-          "source_repo": "jirip/prague-mhd-dashboard",
-          "source_tag": "v1.8.11",
-          "notes": "feat(trip): minimized bar after dismissing route view [publish]\nDismissing the trip detail sheet shows a compact bar at the bottom\nwith route number and headsign. Tap to reopen (fetches fresh data),\nswipe to dismiss completely.\nfeat(dev): trip annotation buttons for position model tuning\nArrive/Depart buttons on each stop row (±5 from active) in developer\nmode. Saves timestamp, stop context, API state + age, and model\nprediction per tap. Auto-posts as GitHub issue (label: annotation)\nwhen session is idle for 1 hour.\nfeat(trip): time-fusion position model, developer mode, GPS fix\n- Replace spring-velocity estimator with stateless time-fusion model:\n  5 discrete states per segment (AT_STOP, DEPARTING, TRANSIT, ARRIVING),\n  blends API snapshot with schedule using confidence decay\n- Add developer mode toggle in Settings: gates Report Issue, My Reports,\n  and logcat debug output in trip detail\n- Fix GPS cold start: try cached location (getLastLocation) before\n  requesting fresh fix, reuse if younger than refresh interval (#72)\n- Rename CI notification trigger from [release] to [publish]\nfix(ci): use GITHUB_TOKEN for gh release view, PUBLISH_TOKEN only for dispatch\nrefactor(ci): route WhatsApp notify through release-publisher\nReplace direct Windmill call with a repository_dispatch to the public\nrelease-publisher repo. Recipients are encrypted with AES-256-GCM using\nthe shared NOTIFY_KEY before inclusion in the dispatch payload.\nfeat(ui): pull-to-refresh on version history and my reports\nAlso show error message when version list fails to load, and fix\nunnecessary non-null assertions in MyReportsScreen.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.8.11",
-          "assets": [
-            {
-              "name": "prague-mhd-dashboard-1_8_11.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.11/prague-mhd-dashboard-1_8_11.aab"
-            },
-            {
-              "name": "prague-mhd-dashboard-1_8_11.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.11/prague-mhd-dashboard-1_8_11.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.8.8",
-          "date": "2026-04-17T15:03:05Z",
-          "source_repo": "jirip/prague-mhd-dashboard",
-          "source_tag": "v1.8.8",
-          "notes": "fix(ci): use GITHUB_TOKEN for gh release view, PUBLISH_TOKEN only for dispatch\nrefactor(ci): route WhatsApp notify through release-publisher\nReplace direct Windmill call with a repository_dispatch to the public\nrelease-publisher repo. Recipients are encrypted with AES-256-GCM using\nthe shared NOTIFY_KEY before inclusion in the dispatch payload.\nfeat(ui): pull-to-refresh on version history and my reports\nAlso show error message when version list fails to load, and fix\nunnecessary non-null assertions in MyReportsScreen.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.8.8",
-          "assets": [
-            {
-              "name": "prague-mhd-dashboard-1_8_8.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.8/prague-mhd-dashboard-1_8_8.aab"
-            },
-            {
-              "name": "prague-mhd-dashboard-1_8_8.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.8/prague-mhd-dashboard-1_8_8.apk"
             }
           ]
         }
@@ -137,7 +83,7 @@
           "date": "2026-04-26T17:25:41Z",
           "source_repo": "jirip/pexesongy",
           "source_tag": "v0.1.10",
-          "notes": "fix(scanner): drop YouTube IFrame entirely + close diagonal seam in plane tiles [release] [publish]\nTwo more fixes from screenshot:\n- Removed <script src=youtube/iframe_api>. Every card has a local mp3,\n  so the YT player was unused dead weight that kept leaking a giant\n  play overlay onto the scan view (despite earlier attempts to hide\n  it). Player init guarded by ytReady which now stays false forever.\n  If a YT-only card ever appears in cards.json we'll bring the script\n  back; until then, no overlay.\n- The cover image on each tile was rendered as two affine-mapped\n  triangles. The shared diagonal showed a 1px black seam from\n  sub-pixel rounding. Outset each triangle's clip by 1px along the\n  outward normal so the two triangles overlap a hair across the\n  diagonal — hides the seam.\nfix(scanner): hide stray YouTube play overlay; force camera fullscreen [release] [publish]\nTwo visual bugs reported on v0.1.8 with screenshot:\n1. The YouTube IFrame host was 200×200 at top:-220px, supposed to be\n   off-screen, but Android Chrome was bringing the giant play\n   overlay back into view. Reduce to a 1×1 px host with opacity\n   0.01 + iframe sized to 1px so the overlay can't render at any\n   visible size while still passing autoplay heuristics.\n2. MindAR's <video> rendered in a small box top-left instead of\n   filling the screen, because the WebView's clientWidth/Height\n   reading mid-launch was off. Add !important position/size CSS so\n   the camera always covers the viewport regardless of MindAR's\n   computed offsets.",
+          "notes": "fix(scanner): drop YouTube IFrame entirely + close diagonal seam in plane tiles [release] [publish]\nTwo more fixes from screenshot:\n- Removed <script src=youtube/iframe_api>. Every card has a local mp3,\n  so the YT player was unused dead weight that kept leaking a giant\n  play overlay onto the scan view (despite earlier attempts to hide\n  it). Player init guarded by ytReady which now stays false forever.\n  If a YT-only card ever appears in cards.json we'll bring the script\n  back; until then, no overlay.\n- The cover image on each tile was rendered as two affine-mapped\n  triangles. The shared diagonal showed a 1px black seam from\n  sub-pixel rounding. Outset each triangle's clip by 1px along the\n  outward normal so the two triangles overlap a hair across the\n  diagonal \u2014 hides the seam.\nfix(scanner): hide stray YouTube play overlay; force camera fullscreen [release] [publish]\nTwo visual bugs reported on v0.1.8 with screenshot:\n1. The YouTube IFrame host was 200\u00d7200 at top:-220px, supposed to be\n   off-screen, but Android Chrome was bringing the giant play\n   overlay back into view. Reduce to a 1\u00d71 px host with opacity\n   0.01 + iframe sized to 1px so the overlay can't render at any\n   visible size while still passing autoplay heuristics.\n2. MindAR's <video> rendered in a small box top-left instead of\n   filling the screen, because the WebView's clientWidth/Height\n   reading mid-launch was off. Add !important position/size CSS so\n   the camera always covers the viewport regardless of MindAR's\n   computed offsets.",
           "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.10",
           "assets": [
             {
@@ -155,7 +101,7 @@
           "date": "2026-04-26T17:19:53Z",
           "source_repo": "jirip/pexesongy",
           "source_tag": "v0.1.9",
-          "notes": "fix(scanner): hide stray YouTube play overlay; force camera fullscreen [release] [publish]\nTwo visual bugs reported on v0.1.8 with screenshot:\n1. The YouTube IFrame host was 200×200 at top:-220px, supposed to be\n   off-screen, but Android Chrome was bringing the giant play\n   overlay back into view. Reduce to a 1×1 px host with opacity\n   0.01 + iframe sized to 1px so the overlay can't render at any\n   visible size while still passing autoplay heuristics.\n2. MindAR's <video> rendered in a small box top-left instead of\n   filling the screen, because the WebView's clientWidth/Height\n   reading mid-launch was off. Add !important position/size CSS so\n   the camera always covers the viewport regardless of MindAR's\n   computed offsets.\nfeat(scanner): fade camera feed in from black over 1s [release] [publish]\nThe grey-and-blank first video frame popped jarringly when entering\nscan mode. Add a CSS opacity transition on body > video so it ramps\n0 → 1 over 1 second after MindAR starts. UI elements (home icon,\nhint, reticle) appear immediately at full opacity above the fading\ncamera. Reset on exitScanBtn so re-entering re-fades.",
+          "notes": "fix(scanner): hide stray YouTube play overlay; force camera fullscreen [release] [publish]\nTwo visual bugs reported on v0.1.8 with screenshot:\n1. The YouTube IFrame host was 200\u00d7200 at top:-220px, supposed to be\n   off-screen, but Android Chrome was bringing the giant play\n   overlay back into view. Reduce to a 1\u00d71 px host with opacity\n   0.01 + iframe sized to 1px so the overlay can't render at any\n   visible size while still passing autoplay heuristics.\n2. MindAR's <video> rendered in a small box top-left instead of\n   filling the screen, because the WebView's clientWidth/Height\n   reading mid-launch was off. Add !important position/size CSS so\n   the camera always covers the viewport regardless of MindAR's\n   computed offsets.\nfeat(scanner): fade camera feed in from black over 1s [release] [publish]\nThe grey-and-blank first video frame popped jarringly when entering\nscan mode. Add a CSS opacity transition on body > video so it ramps\n0 \u2192 1 over 1 second after MindAR starts. UI elements (home icon,\nhint, reticle) appear immediately at full opacity above the fading\ncamera. Reset on exitScanBtn so re-entering re-fades.",
           "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.9",
           "assets": [
             {
@@ -173,7 +119,7 @@
           "date": "2026-04-26T17:08:24Z",
           "source_repo": "jirip/pexesongy",
           "source_tag": "v0.1.8",
-          "notes": "feat(scanner): fade camera feed in from black over 1s [release] [publish]\nThe grey-and-blank first video frame popped jarringly when entering\nscan mode. Add a CSS opacity transition on body > video so it ramps\n0 → 1 over 1 second after MindAR starts. UI elements (home icon,\nhint, reticle) appear immediately at full opacity above the fading\ncamera. Reset on exitScanBtn so re-entering re-fades.\nperf: ship 512² fronts + 256² cover, drop canvas DPR cap [release] [publish]\nTwo changes that compound:\n- scanner/build.py now downsizes data/ → scanner/art/ via Pillow\n  Lanczos. Originals at 1024² stay in data/ for print PDFs (printed\n  card quality unaffected). scanner/art/ shrinks 46MB → 9.6MB.\n  Card fronts: 512², ~530KB each. Cover: 256², ~107KB.\n- scanner/animations/plane.js: DPR cap was already 1, kept that way.\n  Each textured-tile draw now samples a 256² source instead of 1024²,\n  a 16× cheaper texture sample, and the canvas backing buffer is\n  4× smaller than at native DPR.\nNet: plane animation should run smoothly during the 5s glide on\nmid-range phones. APK shrinks correspondingly.",
+          "notes": "feat(scanner): fade camera feed in from black over 1s [release] [publish]\nThe grey-and-blank first video frame popped jarringly when entering\nscan mode. Add a CSS opacity transition on body > video so it ramps\n0 \u2192 1 over 1 second after MindAR starts. UI elements (home icon,\nhint, reticle) appear immediately at full opacity above the fading\ncamera. Reset on exitScanBtn so re-entering re-fades.\nperf: ship 512\u00b2 fronts + 256\u00b2 cover, drop canvas DPR cap [release] [publish]\nTwo changes that compound:\n- scanner/build.py now downsizes data/ \u2192 scanner/art/ via Pillow\n  Lanczos. Originals at 1024\u00b2 stay in data/ for print PDFs (printed\n  card quality unaffected). scanner/art/ shrinks 46MB \u2192 9.6MB.\n  Card fronts: 512\u00b2, ~530KB each. Cover: 256\u00b2, ~107KB.\n- scanner/animations/plane.js: DPR cap was already 1, kept that way.\n  Each textured-tile draw now samples a 256\u00b2 source instead of 1024\u00b2,\n  a 16\u00d7 cheaper texture sample, and the canvas backing buffer is\n  4\u00d7 smaller than at native DPR.\nNet: plane animation should run smoothly during the 5s glide on\nmid-range phones. APK shrinks correspondingly.",
           "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.8",
           "assets": [
             {
@@ -183,150 +129,6 @@
             {
               "name": "pexesongy-0_1_8.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.8/pexesongy-0_1_8.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.7",
-          "date": "2026-04-26T17:03:06Z",
-          "source_repo": "jirip/pexesongy",
-          "source_tag": "v0.1.7",
-          "notes": "perf: ship 512² fronts + 256² cover, drop canvas DPR cap [release] [publish]\nTwo changes that compound:\n- scanner/build.py now downsizes data/ → scanner/art/ via Pillow\n  Lanczos. Originals at 1024² stay in data/ for print PDFs (printed\n  card quality unaffected). scanner/art/ shrinks 46MB → 9.6MB.\n  Card fronts: 512², ~530KB each. Cover: 256², ~107KB.\n- scanner/animations/plane.js: DPR cap was already 1, kept that way.\n  Each textured-tile draw now samples a 256² source instead of 1024²,\n  a 16× cheaper texture sample, and the canvas backing buffer is\n  4× smaller than at native DPR.\nNet: plane animation should run smoothly during the 5s glide on\nmid-range phones. APK shrinks correspondingly.\nfeat(scanner): home icon on scan screen too — back to Start [release] [publish]\n0.1.5 only had the home icon inside playback mode, so after tapping Start\nthere was no way to cancel and return to the Start screen. Add the same\nicon to the scan screen; clicking it stops MindAR and restores the Start\nscreen. Hidden during playback (exit-playback icon takes over there).",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.7",
-          "assets": [
-            {
-              "name": "pexesongy-0_1_7.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.7/pexesongy-0_1_7.aab"
-            },
-            {
-              "name": "pexesongy-0_1_7.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.7/pexesongy-0_1_7.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.6",
-          "date": "2026-04-24T12:07:10Z",
-          "source_repo": "jirip/pexesongy",
-          "source_tag": "v0.1.6",
-          "notes": "feat(scanner): home icon on scan screen too — back to Start [release] [publish]\n0.1.5 only had the home icon inside playback mode, so after tapping Start\nthere was no way to cancel and return to the Start screen. Add the same\nicon to the scan screen; clicking it stops MindAR and restores the Start\nscreen. Hidden during playback (exit-playback icon takes over there).\nfeat(app): in-app APK download+install, home icon, hide version label [release] [publish]\nThree UX fixes in one go:\n1. Native ApkUpdaterPlugin — JS calls\n   window.Capacitor.Plugins.ApkUpdater.downloadAndInstall({ url }), which\n   streams the APK into the app's cacheDir and fires ACTION_VIEW via\n   FileProvider, same pattern as prague-mhd-dashboard's ApkInstaller.kt.\n   User still taps \"Install\" on the system dialog (Android requirement\n   for non-Play-Store updates). No more leaving the app to a browser.\n2. Top-left home/X icon on the playback screen so the user can abandon\n   the current song and return to scan mode (matches the scan-new\n   button but more discoverable in the top-left corner).\n3. Version label hidden by default. It was showing on every load for\n   no reason. Now only surfaces when something errors (yt, audio\n   resolve, audio play, glide, update). A successful play clears it.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.6",
-          "assets": [
-            {
-              "name": "pexesongy-0_1_6.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.6/pexesongy-0_1_6.aab"
-            },
-            {
-              "name": "pexesongy-0_1_6.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.6/pexesongy-0_1_6.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.5",
-          "date": "2026-04-24T12:00:02Z",
-          "source_repo": "jirip/pexesongy",
-          "source_tag": "v0.1.5",
-          "notes": "feat(app): in-app APK download+install, home icon, hide version label [release] [publish]\nThree UX fixes in one go:\n1. Native ApkUpdaterPlugin — JS calls\n   window.Capacitor.Plugins.ApkUpdater.downloadAndInstall({ url }), which\n   streams the APK into the app's cacheDir and fires ACTION_VIEW via\n   FileProvider, same pattern as prague-mhd-dashboard's ApkInstaller.kt.\n   User still taps \"Install\" on the system dialog (Android requirement\n   for non-Play-Store updates). No more leaving the app to a browser.\n2. Top-left home/X icon on the playback screen so the user can abandon\n   the current song and return to scan mode (matches the scan-new\n   button but more discoverable in the top-left corner).\n3. Version label hidden by default. It was showing on every load for\n   no reason. Now only surfaces when something errors (yt, audio\n   resolve, audio play, glide, update). A successful play clears it.\nfix(app): detect native via isNativePlatform, stat cache, surface real error [release] [publish]\nThe 0.1.3 APK reported \\\"audio play blocked: Not supported\\\". Three\nchanges to diagnose and likely fix:\n- Use \\`window.Capacitor.isNativePlatform()\\` to decide web-vs-APK\n  instead of probing same-origin audio with HEAD. The probe was\n  flaky inside the WebView's asset scheme.\n- Call \\`Filesystem.stat\\` before \\`getUri\\` so a genuine cache miss\n  actually falls through to download instead of silently handing\n  \\`<audio>\\` a stale/empty URI.\n- Swap the single-line catch for a staged error: the version label\n  now shows \"resolve err:…\" vs \"play NotSupportedError:…\" so we\n  know which phase broke.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.5",
-          "assets": [
-            {
-              "name": "pexesongy-0_1_5.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.5/pexesongy-0_1_5.aab"
-            },
-            {
-              "name": "pexesongy-0_1_5.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.5/pexesongy-0_1_5.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.4",
-          "date": "2026-04-24T11:42:46Z",
-          "source_repo": "jirip/pexesongy",
-          "source_tag": "v0.1.4",
-          "notes": "fix(app): detect native via isNativePlatform, stat cache, surface real error [release] [publish]\nThe 0.1.3 APK reported \\\"audio play blocked: Not supported\\\". Three\nchanges to diagnose and likely fix:\n- Use \\`window.Capacitor.isNativePlatform()\\` to decide web-vs-APK\n  instead of probing same-origin audio with HEAD. The probe was\n  flaky inside the WebView's asset scheme.\n- Call \\`Filesystem.stat\\` before \\`getUri\\` so a genuine cache miss\n  actually falls through to download instead of silently handing\n  \\`<audio>\\` a stale/empty URI.\n- Swap the single-line catch for a staged error: the version label\n  now shows \"resolve err:…\" vs \"play NotSupportedError:…\" so we\n  know which phase broke.\nfeat(app): lazy-load mp3s, shrink APK from 205MB to ~90MB [release] [publish]\nThe APK previously bundled every mp3 (~112MB). Now it ships without\nthem and downloads each track on first scan, caching in the app's\nprivate Data/audio/ dir via @capacitor/filesystem so subsequent scans\nplay instantly.\n- scanner/build.py: emit absolute audio_url for each card so the APK\n  has a source to fetch from.\n- scanner/index.html: replace direct playLocalAudio(src, startSeconds)\n  with resolveAudioSrc(card) — tries same-origin path first (web\n  deploy works unchanged), then Capacitor Filesystem cache, then\n  HTTP fetch + base64 writeFile for the next boot.\n- CI workflow: `mv scanner/audio /tmp/_scanner_audio` before cap sync\n  so those files stay on Cloudflare Pages but don't ship in the APK.\n- Small \"Loading song…\" pill while the first-scan fetch is in flight.\nSecurity note: the plan deliberately defers URL obfuscation/gating.\nThe audio files are already enumerable via cards.json today; real\nprotection would need a signed-URL origin or Cloudflare Worker gate,\nwhich is disproportionate for the current scale.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.4",
-          "assets": [
-            {
-              "name": "pexesongy-0_1_4.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.4/pexesongy-0_1_4.aab"
-            },
-            {
-              "name": "pexesongy-0_1_4.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.4/pexesongy-0_1_4.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.3",
-          "date": "2026-04-24T09:45:29Z",
-          "source_repo": "jirip/pexesongy",
-          "source_tag": "v0.1.3",
-          "notes": "feat(app): lazy-load mp3s, shrink APK from 205MB to ~90MB [release] [publish]\nThe APK previously bundled every mp3 (~112MB). Now it ships without\nthem and downloads each track on first scan, caching in the app's\nprivate Data/audio/ dir via @capacitor/filesystem so subsequent scans\nplay instantly.\n- scanner/build.py: emit absolute audio_url for each card so the APK\n  has a source to fetch from.\n- scanner/index.html: replace direct playLocalAudio(src, startSeconds)\n  with resolveAudioSrc(card) — tries same-origin path first (web\n  deploy works unchanged), then Capacitor Filesystem cache, then\n  HTTP fetch + base64 writeFile for the next boot.\n- CI workflow: `mv scanner/audio /tmp/_scanner_audio` before cap sync\n  so those files stay on Cloudflare Pages but don't ship in the APK.\n- Small \"Loading song…\" pill while the first-scan fetch is in flight.\nSecurity note: the plan deliberately defers URL obfuscation/gating.\nThe audio files are already enumerable via cards.json today; real\nprotection would need a signed-URL origin or Cloudflare Worker gate,\nwhich is disproportionate for the current scale.\nfeat(app): in-APK update banner — polls release-publisher for newer APK\nAPKs are static snapshots of a specific commit. When a newer APK is\npublished on release-publisher, the running app polls\ndocs/releases.json, compares its own versionName to the latest, and\nshows a yellow \"Update available: vX.Y.Z\" banner with a Download\nbutton that opens the .apk URL — Android's package installer picks it\nup from there. Dismissal is remembered for 24h in localStorage.\nImplementation:\n- CI stamps scanner/apk-version.json before cap sync so the APK knows\n  its own version without needing any Capacitor plugin.\n- Web deploy has no apk-version.json, so the banner stays dormant for\n  browser visitors.\n- Version label now shows \"v0.1.2 (web 0.0.NN)\" inside the APK to make\n  the two-version story obvious. Plain web shows just \"v0.0.NN\".\n- REQUEST_INSTALL_PACKAGES permission added so ACTION_VIEW on the APK\n  URL triggers the system installer.\nBumps to v0.1.2 to exercise the pipeline. [release] [publish]",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.3",
-          "assets": [
-            {
-              "name": "pexesongy-0_1_3.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.3/pexesongy-0_1_3.aab"
-            },
-            {
-              "name": "pexesongy-0_1_3.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.3/pexesongy-0_1_3.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.2",
-          "date": "2026-04-24T09:33:57Z",
-          "source_repo": "jirip/pexesongy",
-          "source_tag": "v0.1.2",
-          "notes": "feat(app): in-APK update banner — polls release-publisher for newer APK\nAPKs are static snapshots of a specific commit. When a newer APK is\npublished on release-publisher, the running app polls\ndocs/releases.json, compares its own versionName to the latest, and\nshows a yellow \"Update available: vX.Y.Z\" banner with a Download\nbutton that opens the .apk URL — Android's package installer picks it\nup from there. Dismissal is remembered for 24h in localStorage.\nImplementation:\n- CI stamps scanner/apk-version.json before cap sync so the APK knows\n  its own version without needing any Capacitor plugin.\n- Web deploy has no apk-version.json, so the banner stays dormant for\n  browser visitors.\n- Version label now shows \"v0.1.2 (web 0.0.NN)\" inside the APK to make\n  the two-version story obvious. Plain web shows just \"v0.0.NN\".\n- REQUEST_INSTALL_PACKAGES permission added so ACTION_VIEW on the APK\n  URL triggers the system installer.\nBumps to v0.1.2 to exercise the pipeline. [release] [publish]\nci: pass web_url in dispatch payload, bump to v0.1.1 [release] [publish]\nrelease-publisher now accepts a web_url field and renders an\n\"Open Web App\" link. Wiring pexesongy's dispatch to send\nhttps://pexesongy.pages.dev/ so the card links to the live scanner.\nPatch bump only — no scanner code changed.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.2",
-          "assets": [
-            {
-              "name": "pexesongy-0_1_2.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.2/pexesongy-0_1_2.aab"
-            },
-            {
-              "name": "pexesongy-0_1_2.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.2/pexesongy-0_1_2.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.1",
-          "date": "2026-04-23T11:49:20Z",
-          "source_repo": "jirip/pexesongy",
-          "source_tag": "v0.1.1",
-          "notes": "ci: pass web_url in dispatch payload, bump to v0.1.1 [release] [publish]\nrelease-publisher now accepts a web_url field and renders an\n\"Open Web App\" link. Wiring pexesongy's dispatch to send\nhttps://pexesongy.pages.dev/ so the card links to the live scanner.\nPatch bump only — no scanner code changed.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.1",
-          "assets": [
-            {
-              "name": "pexesongy-0_1_1.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.1/pexesongy-0_1_1.aab"
-            },
-            {
-              "name": "pexesongy-0_1_1.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.1/pexesongy-0_1_1.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.0",
-          "date": "2026-04-23T11:39:59Z",
-          "source_repo": "jirip/pexesongy",
-          "source_tag": "v0.1.0",
-          "notes": "Capacitor APK of the pexesongy scanner. All 18 cards with local mp3\nplayback, rays + plane animations, works offline after first launch.\nDistributed via release-publisher.\nci: commit package-lock.json so `npm ci` works on runners\nnpm ci requires the lockfile; I had it gitignored from the first\nCapacitor commit, so the workflow failed on first build. Including\nit also means reproducible npm installs, which is the whole point.\nci: fix missing Android SDK + wipe keystore + build AAB too\nReview pass on the release workflow:\n- Add android-actions/setup-android@v3 step: gradle has no SDK without\n  it on Ubuntu runners; previous version would fail on first run.\n- Decode keystore with explicit \\$GITHUB_WORKSPACE path (matches the\n  KEYSTORE_FILE env var passed to gradle).\n- Remove keystore.jks after build regardless of success, so any later\n  step running on the same job can't read it.\n- Build bundleRelease alongside assembleRelease and include the .aab in\n  both artifact upload and GitHub release, so Play Store publishing\n  path is there later without workflow changes.\nMatches the structure of prague-mhd-dashboard's build.yml.\nci: sign release APK with user-provided keystore\n- app/android/app/build.gradle: release signingConfig reads\n  KEYSTORE_FILE/KEYSTORE_PASSWORD/KEY_ALIAS/KEY_PASSWORD env vars; inert\n  block falls back to debug signing when the env var is not set.\n- release.yml: decode KEYSTORE_BASE64 secret to keystore.jks, pass all\n  four credentials to gradle, build assembleRelease (not assembleDebug),\n  pick the release APK path.\n- .gitignore: *.jks, *.keystore, keystore.b64.\nSecrets configured on jirip/pexesongy:\n  KEYSTORE_BASE64, KEYSTORE_PASSWORD, KEY_ALIAS, KEY_PASSWORD\n  (+ existing PUBLISH_TOKEN, NOTIFY_KEY).\nci: match prague-mhd-dashboard pattern — [release]/[publish] commit markers\nRewritten release workflow: builds APK on every push, only creates a\nGitHub release when commit subject contains [release], only dispatches\nto release-publisher when subject contains [publish]. versionName\npulled from app/android/app/build.gradle.\nSame notify.txt + NOTIFY_KEY encryption flow as pdf2jpg and\nprague-mhd-dashboard.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.0",
-          "assets": [
-            {
-              "name": "pexesongy-0_1_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.0/pexesongy-0_1_0.aab"
-            },
-            {
-              "name": "pexesongy-0_1_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.0/pexesongy-0_1_0.apk"
             }
           ]
         }
