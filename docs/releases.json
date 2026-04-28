@@ -116,6 +116,24 @@
       "releases": [
         {
           "version": "0.1.10",
+          "date": "2026-04-28T23:40:46Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.10",
+          "notes": "",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.10",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_10.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.10/pexesongy-0_1_10.aab"
+            },
+            {
+              "name": "pexesongy-0_1_10.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.10/pexesongy-0_1_10.apk"
+            }
+          ]
+        },
+        {
+          "version": "0.1.10",
           "date": "2026-04-26T17:25:41Z",
           "source_repo": "jirip/pexesongy",
           "source_tag": "v0.1.10",
