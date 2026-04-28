@@ -21,6 +21,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "1.10.0",
+          "date": "2026-04-28T20:18:45Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.10.0",
+          "notes": "Wave 1 — correctness:\n- Hilt: drop manual @Provides, use @param:ApplicationContext on local stores\n- AutoRefreshController: cancel interval-off collector inside refreshJob\n- TripRepository: bound stop_times cache (LRU 32, TTL 6 h, mutex-guarded)\n- AppUpdateManager: 30-min cool-off so cold start doesn't always hit network\n- ServerClock: reject implausible drift (>2 h), log failures\n- MainActivity: replace runBlocking on DataStore with lifecycleScope\n- StopDataRepository: drop empty migration noop on every version bump\nWave 2 — architecture:\n- Centralize Json via SerializationModule\n- Inject API tokens via @GolemioApiKey / @GitHubReleaseToken / @GitHubIssuesToken\n  qualifiers; data layer no longer reads BuildConfig\n- GolemioApiService: drop manual decode, rely on Ktor ContentNegotiation\n- NetworkModule: HttpTimeout, HttpRequestRetry, drop prettyPrint\n- ApkInstaller: timeouts, bodyAsChannel().copyTo, FileProvider scoped to updates/\n- StopSearchRepository: gain findByExactName / findNearby / ensureCache so\n  NearbyViewModel no longer reaches into StopCache directly\n- Move AutoRefreshController and TripDetailController to ui/util\nWave 3 — build infra:\n- Java 17 source/target + jvmTarget (was 1.8)\n- Release builds: minify + shrinkResources on, proguard-rules.pro added\n- Fail loudly on missing keystore env vars in assembleRelease/bundleRelease\n- Manifest: data extraction + backup rules excluding datastore/\n- CI: split PR (debug + lint) from master push (lint + release + bundle)\nWave 4 — UI/Compose:\n- staticCompositionLocalOf with required-error defaults\n- Memoize partition+sort in PlatformDepartureRows; parse ISO once per departure\n- Fix Icons.Filled.Accessible deprecation, drop dead !! derefs\n- Externalize hardcoded English strings; TripDetailUiState.Error and\n  ReportState.Error now carry @StringRes IDs\nWave 5 — polish:\n- Replace Math.pow version comparator with compareVersions-based one\n- Drop stale TODO and unused StopCache.isEmpty\nRemoved the Upload APK artifact step. The same APK and AAB are already\nattached to the GitHub Release as assets, and the release-publisher\ndispatch reads from the release, so the Actions artifact was redundant\nand was hitting GitHub's storage quota — blocking v1.9.5 from cutting\na release.\nAdded a Prune old workflow artifacts step at the start of the build\nthat keeps the newest 3 artifacts and deletes the rest. Defensive\nagainst any future workflow that uploads artifacts.\nBumps to v1.9.6 since v1.9.5 never published; the artifact-quota\nfailure prevented Create Release from running.\nfix(nearby): per-mode distance + per-mode estimator [release][publish]\nTwo related improvements to the Nearby screen and trip detail sheet.\nNearby distance per mode group: when grouping is off, each mode row\n(e.g. \"Olovnice - Bus\" vs \"Olovnice - Train\") now shows the distance\nto the closest platform serving that mode, computed from the API\nplatformLocations response. Falls back to the cache distance when GPS\nor platform locations are unavailable. Also refines distance for\ngrouped stops since a name can span platforms hundreds of meters apart.\nVehicle position estimator parameterized by transport type: dwell and\ntransition durations now scale with mode (longer dwells for trains,\nfaster transitions for metro). Threaded TransportType through\nTripDetail, TripDetailController, and the minimized state so restore\npreserves the value. Replay grid script updated to match.\nfix(ui): align route numbers in departure rows\nFixed min width on route number text so single, double, and triple\ndigit route names align headsign text consistently.\nfix(nearby): sort favorite mode groups first in split stops (#86)\nAPI calls deduplicated by stop name. Mode groups sorted so favorited\nkey appears before non-favorited siblings. All checks use exact key\ncomparison — no base-name fallbacks.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.10.0",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_10_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.0/prague-mhd-dashboard-1_10_0.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_10_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.0/prague-mhd-dashboard-1_10_0.apk"
+            }
+          ]
+        },
+        {
           "version": "1.9.6",
           "date": "2026-04-28T13:26:38Z",
           "source_repo": "jirip/prague-mhd-dashboard",
