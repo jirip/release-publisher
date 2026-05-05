@@ -242,6 +242,28 @@
         }
       ],
       "webUrl": "https://pexesongy.pages.dev/"
+    },
+    "fridgeye": {
+      "releases": [
+        {
+          "version": "0.1.1",
+          "date": "2026-05-05T20:18:30Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.1.1",
+          "notes": "First public mirror via release-publisher. Ships QR pairing app + LED-status\nfirmware. Hardware bring-up not yet validated — debug build, treat as preview.\nfeat(pairing): replace BLE with QR + on-device camera scan\nThe device is already a camera. Using it for one extra purpose at boot\nis cheaper than wiring up a second radio.\nWire format (firmware parser + app generator must stay in lockstep):\n  fridgeye://prov?v=1&s=<ssid>&p=<pw>&d=<id>&t=<token>&u=<url>\nall values percent-encoded; v matches FRIDGEYE_PROVISION_VERSION.\nFirmware\n- New qr_pair.c: VGA grayscale capture loop, esp_qrcode for decode,\n  tiny URL parser. Drops ble_pair.c stub.\n- Camera module exposes both UXGA-JPEG (photo) and VGA-grayscale (QR)\n  init paths.\n- Drop NimBLE/BT entirely from sdkconfig.defaults — saves ~200 KB.\n- New led.c: single status LED on GPIO 21 (active-low), background\n  task driven by xQueue. Patterns: pairing slow-blink, success solid,\n  capture fast-blink, error triple-blink.\nAndroid app\n- New ProvisioningQr helper using zxing-core (pure Java, no camera\n  perms — we only generate).\n- PairingScreen is now a two-step flow: enter Wi-Fi creds → register\n  device on Worker → fullscreen QR. User confirms with \"Done\" once\n  the device LED goes solid.\n- Drop BLE permissions, BLE feature requirement, tools: namespace.\n- Drop unused googleid icons and BLE TODOs in pairing flow.\nDocs updated. Architecture decision row #4 swapped from BLE to QR\nwith rationale; security note covers the new attack surface (QR is\nvisible to anyone with line-of-sight while pairing).\nci: wire FridgEye to release-publisher\nDetect [publish] alongside [release]; on [release][publish] dispatch\npublish-release event to jirip/release-publisher carrying app name,\nversion, signed APK + AAB asset URLs, release notes, and recipients\nencrypted with NOTIFY_KEY for WhatsApp delivery.\nMirrors the prague-mhd-dashboard pattern.\nfeat(icon): replace launcher icon with FridgEye fridge-eye\nSource icon.png at repo root, generated PNGs at all five density\nbuckets for both adaptive-icon foreground and legacy square/round.\nrefactor: code review pass across firmware, worker, app\nWorker\n- Fix route dispatcher: PUT/GET on /devices/:id/latest.jpg shared a\n  scope-broken regex match, every request 404'd.\n- Validate JPEG uploads: magic-byte check, 2 MB cap, Content-Length\n  must match body length.\n- Track lastUploadAt in KV per device.\n- Harden JWT verifier: try/catch JSON.parse, validate alg+kid up-front,\n  use Cloudflare's edge cache for JWKS instead of module-local-only.\n- Drop empty [vars] from wrangler.toml; OAuth client ID is a secret.\nFirmware\n- Version the NVS provisioning blob; size/version mismatch falls back\n  to re-pairing instead of bricking.\n- Stream upload via open/write/fetch_headers, retry 3x with backoff,\n  validate snprintf truncation.\n- Wi-Fi: reset retry_count per call, document one-shot invariant.\n- Log boot reason (sleep wake vs reset) for debuggability.\n- Drop misleading \"OTA-ready\" comment from sdkconfig.defaults.\nAndroid app\n- Surface 401/403 as UnauthorizedException, route to SignedOut and\n  clear DataStore. Otherwise the cached Google ID token expires after\n  ~1h and every request silently returns \"Decode failed\".\n- Move createDevice() after BLE write succeeds so failed pairings\n  don't leak server rows.\n- Don't persist device upload token long-term — handed off to device\n  during pairing, the device is the only party that needs it.\n- Password input hardening: PasswordVisualTransformation +\n  KeyboardType.Password.\n- Auto-refresh viewer on entry; collectAsStateWithLifecycle everywhere.\n- Add data_extraction_rules.xml; allowBackup=false alone doesn't cover\n  D2D transfers on API 31+.\n- Drop AppCompat (use ComponentActivity), Coil, navigation-compose,\n  material-icons-extended — all unused.\n- Sanitise sign-in error messages for users; log details for devs.\n- versionCode bumps from FRIDGEYE_VERSION_CODE (CI uses run_number).\nCI / docs\n- Detect [release] across all commits in a push, not only head.\n- Sort artefact prune by created_at.\n- Move release-signing env-var guard into the signing config.\n- Update README/architecture.md (native Compose, not Capacitor).",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.1.1",
+          "assets": [
+            {
+              "name": "fridgeye-0_1_1.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.1.1/fridgeye-0_1_1.aab"
+            },
+            {
+              "name": "fridgeye-0_1_1.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.1.1/fridgeye-0_1_1.apk"
+            }
+          ]
+        }
+      ]
     }
   }
 }
