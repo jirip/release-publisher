@@ -246,6 +246,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.2.5",
+          "date": "2026-05-05T23:54:55Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.2.5",
+          "notes": "feat: separate firmware and app versions [release][publish]\nFirmware now embeds its own FRIDGEYE_FIRMWARE_VERSION (currently 0.1.0)\nin fridgeye.h and sends it on every upload as X-FridgEye-FW-Version.\nWorker captures the header into the device record. App surfaces it on\neach device row as \"fw 0.1.0\" small-print.\nThe repo's versionName (0.2.5 here) is now app-only — it bumps for app\nchanges and leaves the firmware version untouched. Firmware bumps are\nexplicit edits to FRIDGEYE_FIRMWARE_VERSION.\nBumps to come at separate cadences. Per-device firmwareVersion is also\nthe schema we'd extend for OTA later.\nfix(pairing): missing ACCESS_WIFI_STATE crashed Add Device flow [release][publish]\nWifiManager.getConnectionInfo() throws SecurityException without the\nACCESS_WIFI_STATE permission, taking the whole app down when the user\ntapped \"Add a device\".\nAdd the permission (normal-protection, no runtime prompt). On Android\n10+ the SSID still comes back as \"<unknown ssid>\" without\nACCESS_FINE_LOCATION, which our code already handles by leaving the\nfield blank — no functional regression, just no crash.\nv0.2.4.\nfeat(ui): always-visible app header showing version [release][publish]\nReplaces per-screen titles (\"FridgEye\") with a global one-line header\nabove all routes: \"FridgEye 0.2.3\", labelSmall + onSurfaceVariant.\nVisible on sign-in too, where the version was previously hidden.\nDevices screen top-bar title goes from \"FridgEye\" to \"Devices\" since\nthe brand is now in the header. Sign-in subtitle becomes \"Sign in to\nget started\" instead of bare-word \"FridgEye\".\nv0.2.3.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.5",
+          "assets": [
+            {
+              "name": "fridgeye-0_2_5.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.5/fridgeye-0_2_5.aab"
+            },
+            {
+              "name": "fridgeye-0_2_5.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.5/fridgeye-0_2_5.apk"
+            }
+          ]
+        },
+        {
           "version": "0.2.4",
           "date": "2026-05-05T23:49:35Z",
           "source_repo": "jirip/fridgeye",
