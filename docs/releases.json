@@ -246,6 +246,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.2.2",
+          "date": "2026-05-05T23:08:18Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.2.2",
+          "notes": "fix(updater): manifest fetch silent-failed on text/plain content type [release][publish]\nraw.githubusercontent.com serves /docs/releases.json with\nContent-Type: text/plain; charset=utf-8. Ktor's ContentNegotiation\nplugin only deserializes JSON when the content type matches, so\nclient.get(...).body<Manifest>() threw, the catch-all swallowed it,\nand the banner stayed Hidden forever. Symptom: nobody on any prior\nversion ever saw the update banner.\nFix: fetch as raw text, parse with a local Json instance. Keeps the\nglobal HttpClient strict for the Worker calls.\nv0.2.2.\nEmpty state, FAB label, pairing copy now consistently say \"device\"\nrather than \"fridge\". v0.2.1.\nUser prefers a single notification channel.\nfeat: per-channel notify (whatsapp + telegram)\nUpdate notify.txt to channel-prefixed format and the dispatch step\nto encrypt {recipients, telegram_bot_token?} where each recipient\nis {channel, address}. Per-app TELEGRAM_BOT_TOKEN secret is included\nin the encrypted payload when set so the publisher can use this app's\nown bot for Telegram messages; otherwise the publisher falls back to\nits shared bot.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.2",
+          "assets": [
+            {
+              "name": "fridgeye-0_2_2.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.2/fridgeye-0_2_2.aab"
+            },
+            {
+              "name": "fridgeye-0_2_2.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.2/fridgeye-0_2_2.apk"
+            }
+          ]
+        },
+        {
           "version": "0.2.1",
           "date": "2026-05-05T22:49:20Z",
           "source_repo": "jirip/fridgeye",
