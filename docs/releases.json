@@ -246,6 +246,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.2.1",
+          "date": "2026-05-05T22:49:20Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.2.1",
+          "notes": "Empty state, FAB label, pairing copy now consistently say \"device\"\nrather than \"fridge\". v0.2.1.\nUser prefers a single notification channel.\nfeat: per-channel notify (whatsapp + telegram)\nUpdate notify.txt to channel-prefixed format and the dispatch step\nto encrypt {recipients, telegram_bot_token?} where each recipient\nis {channel, address}. Per-app TELEGRAM_BOT_TOKEN secret is included\nin the encrypted payload when set so the publisher can use this app's\nown bot for Telegram messages; otherwise the publisher falls back to\nits shared bot.\nfeat: multi-device home + redesigned pairing flow [release][publish]\nApp is no longer single-device. Sign-in lands on a device list (empty\nstate on first launch); each row shows label, online/offline status\nfrom lastUploadAt, and last-photo timestamp. Tap a row to open the\nviewer; tap the FAB to pair another fridge.\nPairing flow is now a 5-step state machine:\n  Wi-Fi credentials (SSID prefilled best-effort from current network)\n  → POST /devices to register\n  → fullscreen QR with on-device LED-pattern instructions\n  → poll Worker for the device's first upload (its \"hello\")\n  → name the fridge (default suggestion: FridgEye-XXXX from UUID tail)\nWorker\n- New GET /devices: returns the authenticated user's devices, sorted\n  by created. Paginated via KV list().\n- New PATCH /devices/:id: rename. Validates ownership, trims, caps at\n  64 chars.\nApp data layer\n- WorkerApi: listDevices, renameDevice, helper for bearer auth.\n- AppSettings: drop primaryDeviceId / deviceUploadToken — list comes\n  from Worker, token belongs only to the device.\nFirmware\n- After pairing succeeds, the existing capture cycle runs on the next\n  boot; that frame doubles as the \"hello\" the app polls for. Only a\n  comment change.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.1",
+          "assets": [
+            {
+              "name": "fridgeye-0_2_1.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.1/fridgeye-0_2_1.aab"
+            },
+            {
+              "name": "fridgeye-0_2_1.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.1/fridgeye-0_2_1.apk"
+            }
+          ]
+        },
+        {
           "version": "0.2.0",
           "date": "2026-05-05T22:04:09Z",
           "source_repo": "jirip/fridgeye",
