@@ -246,6 +246,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.1.2",
+          "date": "2026-05-05T20:35:08Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.1.2",
+          "notes": "feat(updater): in-app APK self-update via release-publisher manifest [release][publish]\nPorts the pexesongy ApkUpdater pattern to native Kotlin/Compose:\nfetch jirip/release-publisher's docs/releases.json, semver-compare\nagainst BuildConfig.VERSION_NAME, show a banner on top of the app\nroot when a newer version is available. Tap Install → Ktor streams\nthe APK into app cache → FileProvider URI → ACTION_VIEW launches\nAndroid's package installer. User confirms in the system dialog.\nREQUEST_INSTALL_PACKAGES added to the manifest. FileProvider declared\nwith cache-path scoped to updater/. Dismiss persists 24h via DataStore.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.1.2",
+          "assets": [
+            {
+              "name": "fridgeye-0_1_2.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.1.2/fridgeye-0_1_2.aab"
+            },
+            {
+              "name": "fridgeye-0_1_2.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.1.2/fridgeye-0_1_2.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.1",
           "date": "2026-05-05T20:18:30Z",
           "source_repo": "jirip/fridgeye",
