@@ -11,11 +11,34 @@ Live page: <https://jirip.github.io/release-publisher/>
 3. If recipients are included, the workflow decrypts them (using the shared `NOTIFY_KEY`), masks each number in the log, and POSTs to Windmill to send a WhatsApp notification linking to the **public** release.
 4. GitHub Pages serves `docs/`, which renders cards per app with direct download links to the latest version.
 
-## Recipient privacy
+## Notifications
 
-Recipient phone numbers live in the private repos' `.github/notify.txt`. They are encrypted with AES-256-GCM using a shared `NOTIFY_KEY` before being placed in the `repository_dispatch` payload. The public event payload and this repo's source only ever see ciphertext. Decryption happens inside a workflow step that calls `::add-mask::` on each number before any further logging.
+The private repos' `.github/notify.txt` lists who to notify when a release is published. Two channels are supported, one recipient per line:
 
-If `NOTIFY_KEY` is ever leaked: rotate it on all three repos (regenerate with `openssl rand -base64 32`, `gh secret set NOTIFY_KEY` on each). Historical dispatch payloads remain decryptable with the old key, so treat rotation as defence-in-depth, not retroactive.
+```
+whatsapp: 420728814716   # Jirka
+telegram: 7521184714     # Jirka
+# whole-line comments are ignored
+```
+
+The trailing `# name` is purely a hint for the file's author — it's stripped before parsing.
+
+### Recipient privacy
+
+The whole recipient list (and any per-app Telegram bot token, see below) is JSON-encoded and encrypted with AES-256-GCM using a shared `NOTIFY_KEY` before being placed in the `repository_dispatch` payload. The public event payload and this repo's source only ever see ciphertext. Decryption happens inside the publisher's workflow, which calls `::add-mask::` on every address and the bot token before any further logging.
+
+If `NOTIFY_KEY` is ever leaked: rotate it on all repos that use it (regenerate with `openssl rand -base64 32`, `gh secret set NOTIFY_KEY` on each). Historical dispatch payloads remain decryptable with the old key, so treat rotation as defence-in-depth, not retroactive.
+
+### Channel routing
+
+- **WhatsApp** recipients are forwarded to a Windmill webhook (one batched POST). Requires `WINDMILL_URL` and `WINDMILL_TOKEN` secrets on `release-publisher`.
+- **Telegram** recipients receive one direct `sendMessage` call per chat ID. The bot used is, in order of preference:
+  1. A per-app bot token sent (encrypted) inside the dispatch payload — set `TELEGRAM_BOT_TOKEN` on the private source repo to enable.
+  2. The fallback `RELEASE_PUBLISHER_BOT_TOKEN` secret on `release-publisher` — used when the source repo doesn't supply its own.
+
+Per-app bots give each app a distinct sender name in the user's Telegram chat list. Apps that don't care can omit `TELEGRAM_BOT_TOKEN`; the fallback bot covers them.
+
+Bot tokens are full-impersonation secrets — never put them in `notify.txt` or any committed file. They live only in GitHub Secrets and travel through dispatch payloads inside the encrypted blob.
 
 ## Wiring up a new private repo
 
@@ -29,18 +52,62 @@ If `NOTIFY_KEY` is ever leaked: rotate it on all three repos (regenerate with `o
 
 Naming the PATs `release-publisher-read` / `release-publisher-write` in the GitHub token UI makes their purpose obvious when you come back months later.
 
-**2. Append a dispatch step** to the private repo's release workflow, after the release is created:
+**2. Append a dispatch step** to the private repo's release workflow, after the release is created.
+
+The step encrypts the recipient list (and optionally a per-app Telegram bot token) using `NOTIFY_KEY`, then dispatches to `release-publisher`:
 
 ```yaml
 - name: Dispatch to release-publisher
   env:
     GH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+    NOTIFY_KEY: ${{ secrets.NOTIFY_KEY }}
+    TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}  # optional; falls back to publisher's bot
     APP: <app-name>                                 # e.g. pdf2jpg
     VERSION: ${{ steps.version.outputs.name }}     # e.g. 0.1.8 (no leading v)
     SOURCE_TAG: v${{ steps.version.outputs.name }} # matches the tag on this repo
     NOTES: ${{ steps.notes.outputs.body }}
     WEB_URL: ""                                    # optional, see "Web-wrapped apps" below
   run: |
+    pip install --quiet 'cryptography>=42'
+
+    RECIPIENTS_ENC=$(python3 <<'PY'
+    import base64, json, os, re
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+    recipients = []
+    try:
+        with open(".github/notify.txt") as f:
+            for raw in f:
+                line = raw.split("#", 1)[0].strip()
+                if not line:
+                    continue
+                channel, _, address = line.partition(":")
+                channel, address = channel.strip().lower(), address.strip()
+                assert channel in ("whatsapp", "telegram"), f"unknown channel: {channel}"
+                assert address, f"empty address on line: {raw!r}"
+                if channel == "whatsapp":
+                    assert re.fullmatch(r"\d+", address), f"whatsapp address must be digits: {address}"
+                else:
+                    assert re.fullmatch(r"-?\d+", address), f"telegram chat id must be integer: {address}"
+                recipients.append({"channel": channel, "address": address})
+    except FileNotFoundError:
+        pass  # no notify.txt -> no recipients, no notification step
+
+    payload = {"recipients": recipients}
+    tg_token = os.environ.get("TELEGRAM_BOT_TOKEN") or ""
+    if tg_token:
+        payload["telegram_bot_token"] = tg_token
+
+    if not recipients:
+        print("")  # empty -> publisher skips the notify step
+    else:
+        key = base64.b64decode(os.environ["NOTIFY_KEY"])
+        nonce = os.urandom(12)
+        ct = AESGCM(key).encrypt(nonce, json.dumps(payload).encode(), None)
+        print(base64.b64encode(nonce + ct).decode())
+    PY
+    )
+
     ASSETS=$(gh release view "$SOURCE_TAG" \
       --repo "$GITHUB_REPOSITORY" \
       --json assets \
@@ -53,8 +120,9 @@ Naming the PATs `release-publisher-read` / `release-publisher-write` in the GitH
       --arg source_tag "$SOURCE_TAG" \
       --arg notes "$NOTES" \
       --arg web_url "$WEB_URL" \
+      --arg recipients_enc "$RECIPIENTS_ENC" \
       --argjson assets "$ASSETS" \
-      '{event_type: "publish-release", client_payload: ({app: $app, version: $version, source_repo: $source_repo, source_tag: $source_tag, notes: $notes, assets: $assets} + (if $web_url == "" then {} else {web_url: $web_url} end))}' \
+      '{event_type: "publish-release", client_payload: ({app: $app, version: $version, source_repo: $source_repo, source_tag: $source_tag, notes: $notes, assets: $assets, recipients_enc: $recipients_enc} + (if $web_url == "" then {} else {web_url: $web_url} end))}' \
     | curl -fsS -X POST \
         -H "Accept: application/vnd.github+json" \
         -H "Authorization: Bearer $GH_TOKEN" \

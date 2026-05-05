@@ -123,13 +123,14 @@ jobs:
           APP: ${{ github.event.client_payload.app }}
           VERSION: ${{ github.event.client_payload.version }}
 
-      - name: Notify via Windmill
+      - name: Notify recipients
         if: github.event.client_payload.recipients_enc != ''
         env:
           NOTIFY_KEY: ${{ secrets.NOTIFY_KEY }}
           RECIPIENTS_ENC: ${{ github.event.client_payload.recipients_enc }}
           WINDMILL_URL: ${{ secrets.WINDMILL_URL }}
           WINDMILL_TOKEN: ${{ secrets.WINDMILL_TOKEN }}
+          FALLBACK_TG_TOKEN: ${{ secrets.RELEASE_PUBLISHER_BOT_TOKEN }}
           APP: ${{ github.event.client_payload.app }}
           VERSION: ${{ github.event.client_payload.version }}
           HEADLINE: ${{ github.event.client_payload.notes }}
@@ -138,32 +139,74 @@ jobs:
         run: |
           pip install --quiet 'cryptography>=42'
 
-          RECIPIENTS_JSON=$(python3 <<'PY'
-          import base64, json, os, sys
+          python3 <<'PY'
+          import base64, json, os, sys, urllib.parse, urllib.request
           from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
           key = base64.b64decode(os.environ["NOTIFY_KEY"])
           blob = base64.b64decode(os.environ["RECIPIENTS_ENC"])
           nonce, ct = blob[:12], blob[12:]
-          plaintext = AESGCM(key).decrypt(nonce, ct, None).decode()
-          # Validate shape, then mask each recipient before printing
-          recipients = json.loads(plaintext)
-          assert isinstance(recipients, list) and all(isinstance(r, str) for r in recipients)
+          payload = json.loads(AESGCM(key).decrypt(nonce, ct, None).decode())
+
+          # Decrypted shape: {recipients: [{channel, address}, ...], telegram_bot_token?: "..."}
+          assert isinstance(payload, dict), "decrypted payload must be an object"
+          recipients = payload.get("recipients", [])
+          assert isinstance(recipients, list) and all(
+              isinstance(r, dict) and r.get("channel") in ("whatsapp", "telegram") and isinstance(r.get("address"), str)
+              for r in recipients
+          ), "recipients must be a list of {channel, address}"
+
+          tg_token = payload.get("telegram_bot_token") or os.environ.get("FALLBACK_TG_TOKEN") or ""
+          assert not tg_token or isinstance(tg_token, str), "telegram_bot_token must be a string"
+
+          # Mask both addresses and the bot token in workflow logs
           for r in recipients:
-              print(f"::add-mask::{r}", file=sys.stderr)
-          print(json.dumps(recipients))
+              print(f"::add-mask::{r['address']}", file=sys.stderr)
+          if tg_token:
+              print(f"::add-mask::{tg_token}", file=sys.stderr)
+
+          whatsapp = [r["address"] for r in recipients if r["channel"] == "whatsapp"]
+          telegram = [r["address"] for r in recipients if r["channel"] == "telegram"]
+
+          app = os.environ["APP"]
+          version = os.environ["VERSION"]
+          headline_first = os.environ["HEADLINE"].splitlines()[0] if os.environ.get("HEADLINE") else ""
+          version_tag = f"{app}-v{version}"
+          release_url = os.environ["RELEASE_URL"]
+          repo = os.environ["REPO"]
+
+          # WhatsApp goes through Windmill (unchanged path)
+          if whatsapp:
+              wm_url = os.environ.get("WINDMILL_URL", "")
+              wm_token = os.environ.get("WINDMILL_TOKEN", "")
+              assert wm_url and wm_token, "WhatsApp recipients present but Windmill secrets missing"
+              body = json.dumps({
+                  "repo": repo,
+                  "version_tag": version_tag,
+                  "url": release_url,
+                  "headline": headline_first,
+                  "recipients": whatsapp,
+              }).encode()
+              req = urllib.request.Request(
+                  wm_url,
+                  data=body,
+                  headers={"Content-Type": "application/json", "Authorization": f"Bearer {wm_token}"},
+                  method="POST",
+              )
+              with urllib.request.urlopen(req, timeout=15) as resp:
+                  print(f"Windmill: {resp.status} ({len(whatsapp)} whatsapp recipients)")
+
+          # Telegram: send one message per chat ID via the chosen bot
+          if telegram:
+              assert tg_token, "Telegram recipients present but no bot token (set TELEGRAM_BOT_TOKEN on the source repo or RELEASE_PUBLISHER_BOT_TOKEN on the publisher)"
+              text = f"{app} {version}\n{headline_first}\n{release_url}".strip()
+              tg_url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
+              for chat_id in telegram:
+                  body = urllib.parse.urlencode({"chat_id": chat_id, "text": text}).encode()
+                  req = urllib.request.Request(tg_url, data=body, method="POST")
+                  with urllib.request.urlopen(req, timeout=15) as resp:
+                      data = json.loads(resp.read().decode())
+                      if not data.get("ok"):
+                          raise RuntimeError(f"Telegram sendMessage failed: {data.get('description')}")
+              print(f"Telegram: sent to {len(telegram)} recipient(s)")
           PY
-          )
-
-          HEADLINE_FIRST=$(printf '%s' "$HEADLINE" | head -n1)
-
-          jq -n \
-            --arg repo "$REPO" \
-            --arg version_tag "${APP}-v${VERSION}" \
-            --arg url "$RELEASE_URL" \
-            --arg headline "$HEADLINE_FIRST" \
-            --argjson recipients "$RECIPIENTS_JSON" \
-            '{repo:$repo, version_tag:$version_tag, url:$url, headline:$headline, recipients:$recipients}' \
-          | curl -fsS -X POST "$WINDMILL_URL" \
-              -H "Content-Type: application/json" \
-              -H "Authorization: Bearer $WINDMILL_TOKEN" \
-              --data-binary @-
