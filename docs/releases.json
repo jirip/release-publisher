@@ -246,6 +246,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.2.4",
+          "date": "2026-05-05T23:49:35Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.2.4",
+          "notes": "fix(pairing): missing ACCESS_WIFI_STATE crashed Add Device flow [release][publish]\nWifiManager.getConnectionInfo() throws SecurityException without the\nACCESS_WIFI_STATE permission, taking the whole app down when the user\ntapped \"Add a device\".\nAdd the permission (normal-protection, no runtime prompt). On Android\n10+ the SSID still comes back as \"<unknown ssid>\" without\nACCESS_FINE_LOCATION, which our code already handles by leaving the\nfield blank — no functional regression, just no crash.\nv0.2.4.\nfeat(ui): always-visible app header showing version [release][publish]\nReplaces per-screen titles (\"FridgEye\") with a global one-line header\nabove all routes: \"FridgEye 0.2.3\", labelSmall + onSurfaceVariant.\nVisible on sign-in too, where the version was previously hidden.\nDevices screen top-bar title goes from \"FridgEye\" to \"Devices\" since\nthe brand is now in the header. Sign-in subtitle becomes \"Sign in to\nget started\" instead of bare-word \"FridgEye\".\nv0.2.3.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.4",
+          "assets": [
+            {
+              "name": "fridgeye-0_2_4.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.4/fridgeye-0_2_4.aab"
+            },
+            {
+              "name": "fridgeye-0_2_4.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.4/fridgeye-0_2_4.apk"
+            }
+          ]
+        },
+        {
           "version": "0.2.3",
           "date": "2026-05-05T23:37:31Z",
           "source_repo": "jirip/fridgeye",
