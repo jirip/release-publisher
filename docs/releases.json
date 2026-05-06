@@ -246,6 +246,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.2.7",
+          "date": "2026-05-06T00:35:59Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.2.7",
+          "notes": "fix(pairing): QR was instantly skipped, never visible [release][publish]\npollForHello() set _state to Waiting on its first line, immediately\noverwriting the ShowQr state set right before. The QR rendered for\none frame and was replaced. Symptom: user goes from \"Registering\" to\n\"Waiting for the device to come online\" with no QR ever shown.\nDrop the Waiting state entirely — the ShowQr screen is the wait state.\nThe poll loop now runs in the background while the QR stays visible,\nand only transitions out on success (NameDevice) or timeout (Error).\nv0.2.7.\nfeat(pairing): scan Android Wi-Fi share QR + fix status-bar overlap [release][publish]\nUser no longer types their Wi-Fi password during pairing. New first\nstep is a chooser: \"Scan a Wi-Fi share code\" or \"Type SSID and\npassword\". The scan path opens a CameraX preview, decodes any QR\nmatching the standard `WIFI:T:..;S:..;P:..;;` format that Android's\nown Wi-Fi-share button generates, fills the SSID + password fields,\nand skips straight to the device-pairing QR.\nAdds CAMERA permission (runtime), CameraX, accompanist-permissions,\nand a small WIFI: parser. ZXing was already in for QR generation.\nAlso: AppRoot now wraps content in systemBarsPadding(), fixing the\nheader drawing under the status bar after enableEdgeToEdge().",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.7",
+          "assets": [
+            {
+              "name": "fridgeye-0_2_7.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.7/fridgeye-0_2_7.aab"
+            },
+            {
+              "name": "fridgeye-0_2_7.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.7/fridgeye-0_2_7.apk"
+            }
+          ]
+        },
+        {
           "version": "0.2.6",
           "date": "2026-05-06T00:09:58Z",
           "source_repo": "jirip/fridgeye",
