@@ -1,2 +1,5 @@
 .DS_Store
 dist/
+__pycache__/
+.claude/settings.local.json
+CLAUDE-TODO.md
