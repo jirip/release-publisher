@@ -88,7 +88,6 @@ The publisher's wire format is unchanged, so any source repo still using the old
 Migration checklist (tick off as each repo is moved to the composite action; once the list is empty, the inline-snippet path can be deleted from the publisher's history docs):
 
 - [ ] `jirip/pdf2jpg`
-- [ ] `jirip/pexesongy` (set `set-web-url: true` + `web-url: https://pexesongy.pages.dev/`)
 - [ ] `jirip/fridgeye`
 
 ### Web-wrapped apps (optional `web_url`)
