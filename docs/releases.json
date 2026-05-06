@@ -246,6 +246,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.2.6",
+          "date": "2026-05-06T00:09:58Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.2.6",
+          "notes": "feat(pairing): scan Android Wi-Fi share QR + fix status-bar overlap [release][publish]\nUser no longer types their Wi-Fi password during pairing. New first\nstep is a chooser: \"Scan a Wi-Fi share code\" or \"Type SSID and\npassword\". The scan path opens a CameraX preview, decodes any QR\nmatching the standard `WIFI:T:..;S:..;P:..;;` format that Android's\nown Wi-Fi-share button generates, fills the SSID + password fields,\nand skips straight to the device-pairing QR.\nAdds CAMERA permission (runtime), CameraX, accompanist-permissions,\nand a small WIFI: parser. ZXing was already in for QR generation.\nAlso: AppRoot now wraps content in systemBarsPadding(), fixing the\nheader drawing under the status bar after enableEdgeToEdge().",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.6",
+          "assets": [
+            {
+              "name": "fridgeye-0_2_6.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.6/fridgeye-0_2_6.aab"
+            },
+            {
+              "name": "fridgeye-0_2_6.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.6/fridgeye-0_2_6.apk"
+            }
+          ]
+        },
+        {
           "version": "0.2.5",
           "date": "2026-05-05T23:54:55Z",
           "source_repo": "jirip/fridgeye",
