@@ -4,16 +4,20 @@ on:
   repository_dispatch:
     types: [publish-release]
 
-permissions:
-  contents: write
+permissions: {}
 
 concurrency:
   group: republish
   cancel-in-progress: false
 
+env:
+  MAX_RELEASES_PER_APP: 10
+
 jobs:
   republish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -21,12 +25,45 @@ jobs:
         env:
           PAYLOAD: ${{ toJSON(github.event.client_payload) }}
         run: |
+          # Notes on the schema:
+          # - app:        kebab-ish identifier; used as a tag fragment, manifest key, and
+          #               filename component, so no slashes or whitespace.
+          # - version:    standard dotted-numeric, optionally with a pre-release/build suffix.
+          # - source_repo: owner/name; informational, surfaced in the public release body.
+          # - assets:     non-empty list of {name, url}; url must be https.
+          # - web_url:    if present, either empty (clear) or an https URL (set).
           echo "$PAYLOAD" | jq -e '
-            .app and .version and .source_repo and .source_tag and
-            (.assets | type == "array" and length > 0) and
-            (.assets[] | .name and .url) and
-            (.web_url == null or (.web_url | type == "string"))
+            (.app | type == "string" and test("^[a-z0-9][a-z0-9._-]{0,63}$")) and
+            (.version | type == "string" and test("^[0-9]+(\\.[0-9]+){0,2}([.+-][A-Za-z0-9.]+)?$")) and
+            (.source_repo | type == "string" and test("^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$")) and
+            (.source_tag | type == "string" and (length > 0)) and
+            ((.notes // "") | type == "string") and
+            (.assets | type == "array") and
+            ((.assets | length) > 0) and
+            (all(.assets[];
+              (.name | type == "string" and test("^[A-Za-z0-9._-]+$")) and
+              (.url | type == "string" and startswith("https://"))
+            )) and
+            ((.web_url // null) as $w |
+              ($w == null) or ($w == "") or ($w | type == "string" and startswith("https://"))
+            )
           ' > /dev/null
+
+      - name: Sanitize notes
+        id: notes
+        env:
+          RAW_NOTES: ${{ github.event.client_payload.notes }}
+        run: |
+          # Strip CI directive markers like [release], [publish], [skip ci] from notes
+          # before they reach the public release body or the manifest.
+          cleaned=$(printf '%s' "$RAW_NOTES" \
+            | sed -E 's/\[(release|publish|skip ci|skip release|no ci)\]//gi' \
+            | sed -E 's/[[:space:]]+$//')
+          {
+            echo "value<<EOF"
+            printf '%s\n' "$cleaned"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Download assets from source repo
         env:
@@ -37,7 +74,7 @@ jobs:
           echo "$ASSETS" | jq -c '.[]' | while read -r asset; do
             name=$(echo "$asset" | jq -r '.name')
             url=$(echo "$asset" | jq -r '.url')
-            echo "Downloading $name from $url"
+            echo "Downloading $name"
             curl -fsSL \
               -H "Authorization: Bearer $SOURCE_TOKEN" \
               -H "Accept: application/octet-stream" \
@@ -57,7 +94,7 @@ jobs:
 
             Source: `${{ github.event.client_payload.source_repo }}` @ `${{ github.event.client_payload.source_tag }}`
 
-            ${{ github.event.client_payload.notes }}
+            ${{ steps.notes.outputs.value }}
           files: dist/*
           fail_on_unmatched_files: true
 
@@ -67,19 +104,20 @@ jobs:
           VERSION: ${{ github.event.client_payload.version }}
           SOURCE_REPO: ${{ github.event.client_payload.source_repo }}
           SOURCE_TAG: ${{ github.event.client_payload.source_tag }}
-          NOTES: ${{ github.event.client_payload.notes }}
+          NOTES: ${{ steps.notes.outputs.value }}
           RELEASE_URL: ${{ steps.release.outputs.url }}
           WEB_URL_JSON: ${{ toJSON(github.event.client_payload.web_url) }}
         run: |
           DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
-          # Build assets list with public release URLs
+          # Build the assets list from the files we actually downloaded, pointing at the
+          # public release we just created. URI-encode names so spaces or '+' survive.
           ASSETS_JSON="[]"
           for f in dist/*; do
             name=$(basename "$f")
             encoded=$(jq -rn --arg n "$name" '$n | @uri')
             url="https://github.com/${{ github.repository }}/releases/download/${APP}-v${VERSION}/${encoded}"
-            ASSETS_JSON=$(echo "$ASSETS_JSON" | jq --arg n "$name" --arg u "$url" '. += [{name: $n, url: $u}]')
+            ASSETS_JSON=$(echo "$ASSETS_JSON" | jq --arg n "$name" --arg u "$url" '. + [{name: $n, url: $u}]')
           done
 
           ENTRY=$(jq -n \
@@ -92,23 +130,29 @@ jobs:
             --argjson a "$ASSETS_JSON" \
             '{version: $v, date: $d, source_repo: $sr, source_tag: $st, notes: $n, release_url: $ru, assets: $a}')
 
-          # web_url semantics (already type-validated in the "Validate payload" step):
-          #   null (omitted)  -> preserve existing apps[$app].webUrl
-          #   ""              -> clear apps[$app].webUrl
-          #   "https://..."   -> set apps[$app].webUrl
-          jq --arg app "$APP" --argjson entry "$ENTRY" --argjson web "$WEB_URL_JSON" '
-            .apps[$app] = (.apps[$app] // {releases: []}) |
-            .apps[$app].releases = ([$entry] + (.apps[$app].releases // [])) |
-            if $web == null then .
-            elif $web == "" then del(.apps[$app].webUrl)
-            else .apps[$app].webUrl = $web
-            end
-          ' docs/releases.json > docs/releases.json.tmp
+          # web_url semantics (already type-validated above):
+          #   null (omitted) -> preserve existing apps[$app].webUrl
+          #   ""             -> clear apps[$app].webUrl
+          #   "https://..."  -> set apps[$app].webUrl
+          jq \
+            --arg app "$APP" \
+            --argjson entry "$ENTRY" \
+            --argjson web "$WEB_URL_JSON" \
+            --argjson maxReleases "$MAX_RELEASES_PER_APP" \
+            '
+              .apps[$app] = (.apps[$app] // {releases: []}) |
+              .apps[$app].releases = (([$entry] + (.apps[$app].releases // [])) | .[0:$maxReleases]) |
+              if   $web == null then .
+              elif $web == ""   then del(.apps[$app].webUrl)
+              else                   .apps[$app].webUrl = $web
+              end
+            ' docs/releases.json > docs/releases.json.tmp
           mv docs/releases.json.tmp docs/releases.json
 
-          cat docs/releases.json
-
       - name: Commit manifest update
+        env:
+          APP: ${{ github.event.client_payload.app }}
+          VERSION: ${{ github.event.client_payload.version }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -119,9 +163,6 @@ jobs:
           fi
           git commit -m "chore: publish ${APP} v${VERSION}"
           git push
-        env:
-          APP: ${{ github.event.client_payload.app }}
-          VERSION: ${{ github.event.client_payload.version }}
 
       - name: Notify recipients
         if: github.event.client_payload.recipients_enc != ''
@@ -133,80 +174,9 @@ jobs:
           FALLBACK_TG_TOKEN: ${{ secrets.RELEASE_PUBLISHER_BOT_TOKEN }}
           APP: ${{ github.event.client_payload.app }}
           VERSION: ${{ github.event.client_payload.version }}
-          HEADLINE: ${{ github.event.client_payload.notes }}
+          HEADLINE: ${{ steps.notes.outputs.value }}
           RELEASE_URL: ${{ steps.release.outputs.url }}
           REPO: ${{ github.repository }}
         run: |
-          pip install --quiet 'cryptography>=42'
-
-          python3 <<'PY'
-          import base64, json, os, sys, urllib.parse, urllib.request
-          from cryptography.hazmat.primitives.ciphers.aead import AESGCM
-
-          key = base64.b64decode(os.environ["NOTIFY_KEY"])
-          blob = base64.b64decode(os.environ["RECIPIENTS_ENC"])
-          nonce, ct = blob[:12], blob[12:]
-          payload = json.loads(AESGCM(key).decrypt(nonce, ct, None).decode())
-
-          # Decrypted shape: {recipients: [{channel, address}, ...], telegram_bot_token?: "..."}
-          assert isinstance(payload, dict), "decrypted payload must be an object"
-          recipients = payload.get("recipients", [])
-          assert isinstance(recipients, list) and all(
-              isinstance(r, dict) and r.get("channel") in ("whatsapp", "telegram") and isinstance(r.get("address"), str)
-              for r in recipients
-          ), "recipients must be a list of {channel, address}"
-
-          tg_token = payload.get("telegram_bot_token") or os.environ.get("FALLBACK_TG_TOKEN") or ""
-          assert not tg_token or isinstance(tg_token, str), "telegram_bot_token must be a string"
-
-          # Mask both addresses and the bot token in workflow logs
-          for r in recipients:
-              print(f"::add-mask::{r['address']}", file=sys.stderr)
-          if tg_token:
-              print(f"::add-mask::{tg_token}", file=sys.stderr)
-
-          whatsapp = [r["address"] for r in recipients if r["channel"] == "whatsapp"]
-          telegram = [r["address"] for r in recipients if r["channel"] == "telegram"]
-
-          app = os.environ["APP"]
-          version = os.environ["VERSION"]
-          headline_first = os.environ["HEADLINE"].splitlines()[0] if os.environ.get("HEADLINE") else ""
-          version_tag = f"{app}-v{version}"
-          release_url = os.environ["RELEASE_URL"]
-          repo = os.environ["REPO"]
-
-          # WhatsApp goes through Windmill (unchanged path)
-          if whatsapp:
-              wm_url = os.environ.get("WINDMILL_URL", "")
-              wm_token = os.environ.get("WINDMILL_TOKEN", "")
-              assert wm_url and wm_token, "WhatsApp recipients present but Windmill secrets missing"
-              body = json.dumps({
-                  "repo": repo,
-                  "version_tag": version_tag,
-                  "url": release_url,
-                  "headline": headline_first,
-                  "recipients": whatsapp,
-              }).encode()
-              req = urllib.request.Request(
-                  wm_url,
-                  data=body,
-                  headers={"Content-Type": "application/json", "Authorization": f"Bearer {wm_token}"},
-                  method="POST",
-              )
-              with urllib.request.urlopen(req, timeout=15) as resp:
-                  print(f"Windmill: {resp.status} ({len(whatsapp)} whatsapp recipients)")
-
-          # Telegram: send one message per chat ID via the chosen bot
-          if telegram:
-              assert tg_token, "Telegram recipients present but no bot token (set TELEGRAM_BOT_TOKEN on the source repo or RELEASE_PUBLISHER_BOT_TOKEN on the publisher)"
-              text = f"{app} {version}\n{headline_first}\n{release_url}".strip()
-              tg_url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
-              for chat_id in telegram:
-                  body = urllib.parse.urlencode({"chat_id": chat_id, "text": text}).encode()
-                  req = urllib.request.Request(tg_url, data=body, method="POST")
-                  with urllib.request.urlopen(req, timeout=15) as resp:
-                      data = json.loads(resp.read().decode())
-                      if not data.get("ok"):
-                          raise RuntimeError(f"Telegram sendMessage failed: {data.get('description')}")
-              print(f"Telegram: sent to {len(telegram)} recipient(s)")
-          PY
+          pip install --quiet 'cryptography>=42,<46'
+          python3 .github/scripts/notify.py
