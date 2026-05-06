@@ -246,6 +246,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.2.8",
+          "date": "2026-05-06T00:50:01Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.2.8",
+          "notes": "feat(pairing): two-stage handshake — no phantom devices [release][publish]\nPairing is now device-claims-then-user-confirms, instead of the previous\nuser-pre-creates-then-device-uploads. End to end:\n1. App generates a 32-byte random pairingToken locally — no Worker call.\n2. App shows a v=2 QR carrying ssid, password, workerUrl, pairingToken.\n   No deviceId or uploadToken in the QR yet.\n3. App polls GET /pair?token=… (Google-authed) every 2s.\n4. Device scans QR → camera-deinit → joins Wi-Fi → POST /pair (no auth)\n   with {token, firmwareVersion}. Worker mints (deviceId, uploadToken),\n   stashes them keyed by pairingToken in a 10-min-TTL pairing namespace,\n   returns them to the device. Device persists to NVS, reboots into the\n   normal capture cycle.\n5. App's poll sees claimed=true → calls POST /devices/claim. Worker\n   promotes the pairing row into a real DEVICES row bound to the user\n   and deletes the pairing row.\n6. App lands on the name-device step, then done.\nWorker: new POST /pair, GET /pair?token=, POST /devices/claim. Drops the\nold POST /devices (replaced by claim). Adds DELETE /devices/:id (and the\nphantoms already in KV from earlier sessions are wiped).\nFirmware: bumps FRIDGEYE_PROVISION_VERSION → 2 (NVS layout same, but the\nQR schema and the way the blob is filled both changed). New pair_claim.c\nruns after Wi-Fi connect to exchange the pairing token. FRIDGEYE_FIRMWARE_VERSION\n→ 0.2.0 to mark the protocol break.\nApp: v0.2.8 — WorkerApi gets pollPairing/claim/deleteDevice, drops the\npre-QR createDevice call, generates pairing token in ProvisioningQr.\nfix(pairing): QR was instantly skipped, never visible [release][publish]\npollForHello() set _state to Waiting on its first line, immediately\noverwriting the ShowQr state set right before. The QR rendered for\none frame and was replaced. Symptom: user goes from \"Registering\" to\n\"Waiting for the device to come online\" with no QR ever shown.\nDrop the Waiting state entirely — the ShowQr screen is the wait state.\nThe poll loop now runs in the background while the QR stays visible,\nand only transitions out on success (NameDevice) or timeout (Error).\nv0.2.7.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.8",
+          "assets": [
+            {
+              "name": "fridgeye-0_2_8.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.8/fridgeye-0_2_8.aab"
+            },
+            {
+              "name": "fridgeye-0_2_8.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.8/fridgeye-0_2_8.apk"
+            }
+          ]
+        },
+        {
           "version": "0.2.7",
           "date": "2026-05-06T00:35:59Z",
           "source_repo": "jirip/fridgeye",
