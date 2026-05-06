@@ -128,8 +128,7 @@ a.web-link {
 }
 
 a.web-link:hover {
-  background: var(--accent);
-  color: #fff;
+  background: rgba(79, 140, 255, 0.28);
 }
 
 details.history {
