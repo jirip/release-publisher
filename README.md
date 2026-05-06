@@ -81,6 +81,10 @@ That's it. The action reads `.github/notify.txt`, encrypts the recipient list wi
 
 Pin to a tag (`@v1`) once tags exist; for now the working branch reference (`@master`) is fine.
 
+### Migrating an existing source repo
+
+The publisher's wire format is unchanged, so any source repo still using the older inline-shell-and-Python snippet keeps working — migration is per-repo and can happen at any time. Source repos to migrate (as of this README): `pdf2jpg`, `pexesongy`, `prague-mhd-dashboard`, `fridgeye`. For repos that previously set `WEB_URL` (e.g. `pexesongy`), pass `set-web-url: true` along with `web-url:` so the publisher updates the manifest entry.
+
 ### Web-wrapped apps (optional `web_url`)
 
 Apps that ship both downloadable artifacts and a hosted web version (e.g. a Capacitor-wrapped PWA) can pass a `web_url` so the public page renders an **Open Web** button on the app's card.
