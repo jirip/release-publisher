@@ -1,0 +1,136 @@
+name: Dispatch to release-publisher
+description: |
+  Encrypt the recipient list (and optional per-app Telegram bot token) and trigger the
+  publish-release workflow on jirip/release-publisher. Run this from a private source repo
+  after its own release has been created.
+inputs:
+  app:
+    description: App identifier; lowercase letters, digits, '.', '_', '-'.
+    required: true
+  version:
+    description: Version string (e.g. 1.2.3); no leading 'v'.
+    required: true
+  source-tag:
+    description: Tag of the source release (typically 'v<version>').
+    required: true
+  notes:
+    description: Release notes; rendered into the public release body and notification headline.
+    required: false
+    default: ""
+  set-web-url:
+    description: |
+      When 'true', the dispatch carries `web_url` so the publisher updates apps[$app].webUrl.
+      When 'false' (default), `web_url` is omitted and the publisher leaves the stored value alone.
+    required: false
+    default: "false"
+  web-url:
+    description: |
+      The web URL value. Only used when `set-web-url` is 'true'. Pass an empty string to clear,
+      or an https:// URL to set/overwrite.
+    required: false
+    default: ""
+  notify-file:
+    description: Path to the notify.txt file in the source repo.
+    required: false
+    default: .github/notify.txt
+  publisher-repo:
+    description: Owner/name of the publisher repo to dispatch to.
+    required: false
+    default: jirip/release-publisher
+  github-token:
+    description: |
+      A token with `contents: write` on the publisher repo and `contents: read` on the source
+      repo (so `gh release view` can read its asset list). Pass `secrets.PUBLISH_TOKEN`.
+    required: true
+  notify-key:
+    description: Base64-encoded AES-256 key shared with the publisher (`secrets.NOTIFY_KEY`).
+    required: true
+  telegram-bot-token:
+    description: Optional per-app Telegram bot token (`secrets.TELEGRAM_BOT_TOKEN`). Travels encrypted.
+    required: false
+    default: ""
+runs:
+  using: composite
+  steps:
+    - name: Install cryptography
+      shell: bash
+      run: pip install --quiet 'cryptography>=42,<46'
+
+    - name: Encrypt recipients
+      id: encrypt
+      shell: bash
+      env:
+        NOTIFY_KEY: ${{ inputs.notify-key }}
+        TELEGRAM_BOT_TOKEN: ${{ inputs.telegram-bot-token }}
+        NOTIFY_FILE: ${{ inputs.notify-file }}
+      run: |
+        enc=$(python3 "${{ github.action_path }}/encrypt-recipients.py")
+        {
+          echo "recipients_enc<<EOF"
+          echo "$enc"
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Collect release assets
+      id: assets
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        SOURCE_TAG: ${{ inputs.source-tag }}
+      run: |
+        assets=$(gh release view "$SOURCE_TAG" \
+          --repo "$GITHUB_REPOSITORY" \
+          --json assets \
+          --jq '[.assets[] | {name: .name, url: .apiUrl}]')
+        {
+          echo "json<<EOF"
+          echo "$assets"
+          echo "EOF"
+        } >> "$GITHUB_OUTPUT"
+
+    - name: Dispatch publish-release
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github-token }}
+        APP: ${{ inputs.app }}
+        VERSION: ${{ inputs.version }}
+        SOURCE_REPO: ${{ github.repository }}
+        SOURCE_TAG: ${{ inputs.source-tag }}
+        NOTES: ${{ inputs.notes }}
+        SET_WEB_URL: ${{ inputs.set-web-url }}
+        WEB_URL: ${{ inputs.web-url }}
+        RECIPIENTS_ENC: ${{ steps.encrypt.outputs.recipients_enc }}
+        ASSETS_JSON: ${{ steps.assets.outputs.json }}
+        PUBLISHER_REPO: ${{ inputs.publisher-repo }}
+      run: |
+        case "$SET_WEB_URL" in
+          true)  include_web_url=true ;;
+          false) include_web_url=false ;;
+          *) echo "set-web-url must be 'true' or 'false', got '$SET_WEB_URL'" >&2; exit 1 ;;
+        esac
+
+        payload=$(jq -n \
+          --arg app "$APP" \
+          --arg version "$VERSION" \
+          --arg source_repo "$SOURCE_REPO" \
+          --arg source_tag "$SOURCE_TAG" \
+          --arg notes "$NOTES" \
+          --arg web_url "$WEB_URL" \
+          --arg recipients_enc "$RECIPIENTS_ENC" \
+          --argjson assets "$ASSETS_JSON" \
+          --argjson include_web_url "$include_web_url" \
+          '{
+             event_type: "publish-release",
+             client_payload: (
+               {app: $app, version: $version, source_repo: $source_repo,
+                source_tag: $source_tag, notes: $notes, assets: $assets,
+                recipients_enc: $recipients_enc}
+               + (if $include_web_url then {web_url: $web_url} else {} end)
+             )
+           }')
+
+        echo "$payload" | curl -fsS -X POST \
+          -H "Accept: application/vnd.github+json" \
+          -H "Authorization: Bearer $GH_TOKEN" \
+          "https://api.github.com/repos/$PUBLISHER_REPO/dispatches" \
+          --data-binary @-
