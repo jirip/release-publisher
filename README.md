@@ -89,7 +89,6 @@ Migration checklist (tick off as each repo is moved to the composite action; onc
 
 - [ ] `jirip/pdf2jpg`
 - [ ] `jirip/pexesongy` (set `set-web-url: true` + `web-url: https://pexesongy.pages.dev/`)
-- [ ] `jirip/prague-mhd-dashboard`
 - [ ] `jirip/fridgeye`
 
 ### Web-wrapped apps (optional `web_url`)
