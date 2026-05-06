@@ -83,7 +83,14 @@ Pin to a tag (`@v1`) once tags exist; for now the working branch reference (`@ma
 
 ### Migrating an existing source repo
 
-The publisher's wire format is unchanged, so any source repo still using the older inline-shell-and-Python snippet keeps working — migration is per-repo and can happen at any time. Source repos to migrate (as of this README): `pdf2jpg`, `pexesongy`, `prague-mhd-dashboard`, `fridgeye`. For repos that previously set `WEB_URL` (e.g. `pexesongy`), pass `set-web-url: true` along with `web-url:` so the publisher updates the manifest entry.
+The publisher's wire format is unchanged, so any source repo still using the older inline-shell-and-Python snippet keeps working — migration is per-repo and can happen at any time. For repos that previously set `WEB_URL` (e.g. `pexesongy`), pass `set-web-url: true` along with `web-url:` so the publisher updates the manifest entry.
+
+Migration checklist (tick off as each repo is moved to the composite action; once the list is empty, the inline-snippet path can be deleted from the publisher's history docs):
+
+- [ ] `jirip/pdf2jpg`
+- [ ] `jirip/pexesongy` (set `set-web-url: true` + `web-url: https://pexesongy.pages.dev/`)
+- [ ] `jirip/prague-mhd-dashboard`
+- [ ] `jirip/fridgeye`
 
 ### Web-wrapped apps (optional `web_url`)
 
