@@ -246,6 +246,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.3.0",
+          "date": "2026-05-06T11:35:18Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.3.0",
+          "notes": "feat: device telemetry + remote reset [release][publish]\nDevice sends six telemetry headers on every upload (chip model, free\nheap, free PSRAM, Wi-Fi RSSI, uptime, last-wake cause). Worker\ncaptures them with bounded validation, stores in the device's KV row,\nand surfaces them on GET /devices alongside firmwareVersion. App's\nviewer screen renders them in a \"Device info\" card.\nReset is the symmetric path back: app POSTs /devices/<id>/reset which\nsets pendingReset=true on the KV row. On the next successful upload\nthe Worker emits an X-FridgEye-Cmd-Reset header and clears the flag.\nDevice sees the header, calls provision_clear() to wipe NVS, and\nreboots — next boot lands in QR pairing.\nThe viewer screen has a confirm dialog before issuing reset; on\nconfirm the app routes back to the device list (the device stays in\nthe user's list until explicitly deleted, but won't upload again\nuntil paired).\nBumps:\n- app v0.3.0\n- firmware FRIDGEYE_FIRMWARE_VERSION 0.2.0 → 0.3.0 (upload semantics\n  changed: extra headers + reset response handling).\nfeat(firmware): MJPEG-over-Wi-Fi diagnostic build\nTo diagnose the OV3660 banding without dumping VGA frames over UART,\nadd a compile-time flag FRIDGEYE_DEBUG_MJPEG. When set, the device\nskips pairing entirely, joins a hardcoded Wi-Fi (creds in a gitignored\ndebug_wifi.h that the user copies from the .example), and serves\nmultipart/x-mixed-replace JPEG at http://<device-ip>/.\nBrowser-side: open the URL → live camera stream. Either banding is\nvisible mid-stream (timing/SI issue) or it's clean (camera is fine,\nthe UART base64 dump path was the broken thing).\nDefault build path is unchanged; the flag has to be passed explicitly:\n  cp main/debug_wifi.h.example main/debug_wifi.h\n  # fill in SSID/password\n  idf.py build -DFRIDGEYE_DEBUG_MJPEG=1\n  idf.py -p /dev/cu.usbmodem* flash monitor\nIn-progress diagnostic state for the OV3660 banding issue. Doesn't fix\nthe problem; captured here so the working tree isn't dirty going\nforward. Settings reflect the canonical Seeed XIAO ESP32S3 Sense\nconfig + various tunings tried during debugging:\n- esp32-camera bumped to git master (registry 2.0.13 has known\n  OV3660 + S3 PCLK issues; master has corrected PLL tables).\n- fb_count=2 with GRAB_LATEST (fb_count=1 starves the I2S queue).\n- xclk_freq_hz=16 MHz (workaround in component issue #775).\n- OPI PSRAM cache contention disabled\n  (CONFIG_SPIRAM_FETCH_INSTRUCTIONS=n, CONFIG_SPIRAM_RODATA=n).\n- Bigger task stacks (CAMERA_TASK_STACK_SIZE=8192,\n  ESP_MAIN_TASK_STACK_SIZE=8192).\n- Console UART at 921600 for faster frame dumps.\n- One-shot base64 frame dump in qr_pair_run for offline decode.\nBanding still present after all of the above; tomorrow's plan is\nhardcoded Wi-Fi + a /stream MJPEG HTTP server so we can watch the\ncamera live in a browser instead of dumping over UART.\nfix(icon): scale launcher artwork to fit Android safe zone [release][publish]\nAdaptive icons render the foreground over a 108 dp canvas, but only\nthe central ~66 dp survives the launcher's circle/squircle/teardrop\nmask. The previous foreground PNGs had the fridge filling ~88% of the\ncanvas, so on circular launchers the corners were getting clipped.\nRe-render with the artwork at 66% of canvas size, centred, transparent\npadding around it. Same source `icon.png` at repo root, regenerated\nacross mdpi/hdpi/xhdpi/xxhdpi/xxxhdpi for both the adaptive foreground\nand the legacy square/round fallbacks.\nAlso gitignore cam-debug-*.png and serial-*.log so the firmware-debug\nartefacts don't sneak into commits.\nv0.2.9.\nWrangler 3 + current Cloudflare API rejects /workers/scripts/<name>/versions\nPOST with \"kv bindings require kv write perms\" even when the token does\nhave KV write (verified via direct API). Wrangler 4 uses the new auth\nshape and gets through.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.3.0",
+          "assets": [
+            {
+              "name": "fridgeye-0_3_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.3.0/fridgeye-0_3_0.aab"
+            },
+            {
+              "name": "fridgeye-0_3_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.3.0/fridgeye-0_3_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.2.9",
           "date": "2026-05-06T10:24:45Z",
           "source_repo": "jirip/fridgeye",
