@@ -71,23 +71,11 @@ runs:
           echo "EOF"
         } >> "$GITHUB_OUTPUT"
 
-    - name: Collect release assets
-      id: assets
-      shell: bash
-      env:
-        GH_TOKEN: ${{ inputs.github-token }}
-        SOURCE_TAG: ${{ inputs.source-tag }}
-      run: |
-        assets=$(gh release view "$SOURCE_TAG" \
-          --repo "$GITHUB_REPOSITORY" \
-          --json assets \
-          --jq '[.assets[] | {name: .name, url: .apiUrl}]')
-        {
-          echo "json<<EOF"
-          echo "$assets"
-          echo "EOF"
-        } >> "$GITHUB_OUTPUT"
-
+    # The dispatch carries only the (source_repo, source_tag) pair; the
+    # publisher resolves the asset list itself using its own
+    # SOURCE_REPO_TOKEN. Keeping the read on the publisher side means the
+    # source repo's PUBLISH_TOKEN never needs read scope on its own repo
+    # — `contents: write` on the publisher is the entire scope it needs.
     - name: Dispatch publish-release
       shell: bash
       env:
@@ -100,7 +88,6 @@ runs:
         SET_WEB_URL: ${{ inputs.set-web-url }}
         WEB_URL: ${{ inputs.web-url }}
         RECIPIENTS_ENC: ${{ steps.encrypt.outputs.recipients_enc }}
-        ASSETS_JSON: ${{ steps.assets.outputs.json }}
         PUBLISHER_REPO: ${{ inputs.publisher-repo }}
       run: |
         case "$SET_WEB_URL" in
@@ -117,13 +104,12 @@ runs:
           --arg notes "$NOTES" \
           --arg web_url "$WEB_URL" \
           --arg recipients_enc "$RECIPIENTS_ENC" \
-          --argjson assets "$ASSETS_JSON" \
           --argjson include_web_url "$include_web_url" \
           '{
              event_type: "publish-release",
              client_payload: (
                {app: $app, version: $version, source_repo: $source_repo,
-                source_tag: $source_tag, notes: $notes, assets: $assets,
+                source_tag: $source_tag, notes: $notes,
                 recipients_enc: $recipients_enc}
                + (if $include_web_url then {web_url: $web_url} else {} end)
              )

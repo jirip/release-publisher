@@ -29,21 +29,18 @@ jobs:
           # - app:        kebab-ish identifier; used as a tag fragment, manifest key, and
           #               filename component, so no slashes or whitespace.
           # - version:    standard dotted-numeric, optionally with a pre-release/build suffix.
-          # - source_repo: owner/name; informational, surfaced in the public release body.
-          # - assets:     non-empty list of {name, url}; url must be https.
+          # - source_repo: owner/name; identifies which repo's release to download from.
+          # - source_tag: tag of the release on source_repo whose assets we mirror.
           # - web_url:    if present, either empty (clear) or an https URL (set).
+          # The asset list isn't part of the payload — the publisher resolves it from
+          # source_repo/source_tag using SOURCE_REPO_TOKEN, which keeps the source
+          # repo's dispatch token free of any read-scope requirement.
           echo "$PAYLOAD" | jq -e '
             (.app | type == "string" and test("^[a-z0-9][a-z0-9._-]{0,63}$")) and
             (.version | type == "string" and test("^[0-9]+(\\.[0-9]+){0,2}([.+-][A-Za-z0-9.]+)?$")) and
             (.source_repo | type == "string" and test("^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$")) and
             (.source_tag | type == "string" and (length > 0)) and
             ((.notes // "") | type == "string") and
-            (.assets | type == "array") and
-            ((.assets | length) > 0) and
-            (all(.assets[];
-              (.name | type == "string" and test("^[A-Za-z0-9._-]+$")) and
-              (.url | type == "string" and startswith("https://"))
-            )) and
             ((.web_url // null) as $w |
               ($w == null) or ($w == "") or ($w | type == "string" and startswith("https://"))
             )
@@ -67,16 +64,34 @@ jobs:
 
       - name: Download assets from source repo
         env:
-          SOURCE_TOKEN: ${{ secrets.SOURCE_REPO_TOKEN }}
-          ASSETS: ${{ toJSON(github.event.client_payload.assets) }}
+          GH_TOKEN: ${{ secrets.SOURCE_REPO_TOKEN }}
+          SOURCE_REPO: ${{ github.event.client_payload.source_repo }}
+          SOURCE_TAG: ${{ github.event.client_payload.source_tag }}
         run: |
           mkdir -p dist
-          echo "$ASSETS" | jq -c '.[]' | while read -r asset; do
+
+          # Resolve the asset list ourselves rather than trust whatever the
+          # source-side dispatcher claimed. Reject filenames with shell or
+          # path-traversal metacharacters before letting them name a file.
+          assets=$(gh release view "$SOURCE_TAG" \
+            --repo "$SOURCE_REPO" \
+            --json assets \
+            --jq '[.assets[] | {name: .name, url: .apiUrl}]')
+          if [ "$(echo "$assets" | jq 'length')" -eq 0 ]; then
+            echo "::error::Source release $SOURCE_REPO@$SOURCE_TAG has no assets"
+            exit 1
+          fi
+          if ! echo "$assets" | jq -e 'all(.[]; .name | test("^[A-Za-z0-9._-]+$"))' >/dev/null; then
+            echo "::error::At least one asset name has unsafe characters"
+            exit 1
+          fi
+
+          echo "$assets" | jq -c '.[]' | while read -r asset; do
             name=$(echo "$asset" | jq -r '.name')
             url=$(echo "$asset" | jq -r '.url')
             echo "Downloading $name"
             curl -fsSL \
-              -H "Authorization: Bearer $SOURCE_TOKEN" \
+              -H "Authorization: Bearer $GH_TOKEN" \
               -H "Accept: application/octet-stream" \
               -o "dist/$name" \
               "$url"

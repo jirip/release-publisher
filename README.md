@@ -6,8 +6,8 @@ Live page: <https://jirip.github.io/release-publisher/>
 
 ## How it works
 
-1. A private repo finishes a release build and triggers `repository_dispatch` here with event type `publish-release`. The payload carries the app name, version, source tag, asset metadata, and (optionally) an encrypted recipient list for notifications.
-2. The `republish` workflow validates the payload, downloads the assets from the private repo (using `SOURCE_REPO_TOKEN`), creates a public release tagged `<app>-v<version>`, prepends an entry to `docs/releases.json` (capped at the most recent `MAX_RELEASES_PER_APP` per app, currently 10), and commits.
+1. A private repo finishes a release build and triggers `repository_dispatch` here with event type `publish-release`. The payload carries the app name, version, source repo, source tag, and (optionally) an encrypted recipient list for notifications. The asset list is *not* in the payload — the publisher resolves it from `source_repo`/`source_tag` itself, so the source repo's dispatch token never needs read scope on its own repo.
+2. The `republish` workflow validates the payload, looks up the source release's assets via `SOURCE_REPO_TOKEN` (one PAT scoped read-only to every source repo), downloads them, creates a public release tagged `<app>-v<version>`, prepends an entry to `docs/releases.json` (capped at the most recent `MAX_RELEASES_PER_APP` per app, currently 10), and commits.
 3. If recipients are present, the workflow decrypts them (using the shared `NOTIFY_KEY`), masks each address and any bot token in the workflow log, and dispatches notifications.
 4. GitHub Pages serves `docs/`, which renders one card per app with download links to the latest version and a collapsible history.
 
@@ -58,7 +58,7 @@ If `NOTIFY_KEY` is ever leaked: rotate it on all repos that use it (regenerate w
   Stored as `SOURCE_REPO_TOKEN` in `jirip/release-publisher` → used by the republish workflow to download assets from the private release.
 
 - **`release-publisher-write`** — `contents: write` + `metadata: read` on `jirip/release-publisher`.
-  Stored as `PUBLISH_TOKEN` in *each* private source repo → used by the source repo's release workflow to dispatch here and to read its own release (`gh release view`).
+  Stored as `PUBLISH_TOKEN` in *each* private source repo → used by the source repo's release workflow to dispatch the `publish-release` event here. The token does **not** need read access to the source repo itself; the publisher resolves the asset list using its own `SOURCE_REPO_TOKEN`.
 
 Naming the PATs `release-publisher-read` / `release-publisher-write` in the GitHub token UI makes their purpose obvious months later.
 
@@ -77,7 +77,7 @@ Naming the PATs `release-publisher-read` / `release-publisher-write` in the GitH
     telegram-bot-token: ${{ secrets.TELEGRAM_BOT_TOKEN }}  # optional; falls back to publisher's bot
 ```
 
-That's it. The action reads `.github/notify.txt`, encrypts the recipient list with `NOTIFY_KEY`, fetches the source release's asset metadata via `gh release view`, and POSTs the dispatch.
+That's it. The action reads `.github/notify.txt`, encrypts the recipient list with `NOTIFY_KEY`, and POSTs a tiny dispatch payload (app, version, source repo + tag, encrypted recipients). The publisher resolves the source release's assets itself.
 
 Pin to a tag (`@v1`) once tags exist; for now the working branch reference (`@master`) is fine.
 
