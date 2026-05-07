@@ -246,6 +246,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.3.1",
+          "date": "2026-05-07T15:32:39Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.3.1",
+          "notes": "release: v0.3.1\nApp-side version bump so the in-app updater can offer the QR-shrink +\nWi-Fi-prefill changes from the previous commit. Worker deploys\nautomatically on push; the new pairing-token wire format goes live with\nthis release.\nfeat: shrink pairing QR + remember Wi-Fi creds\nTwo related changes targeting pairing reliability.\nQR shrink (provisioning v3)\n- Pairing token: hex(64) -> base64url(43). 21 fewer chars on a payload\n  the OV3660 at VGA was unable to resolve at handheld distance.\n- QR error correction: M (15%) -> L (7%). Smaller code for the same\n  string; the device retries every frame anyway, so the extra\n  redundancy of M was buying nothing.\n- FRIDGEYE_PROVISION_VERSION 2 -> 3 in lockstep across the QR encoder\n  (app/.../ProvisioningQr.kt), the parser (firmware/main/fridgeye.h),\n  and the wire-format guard on the Worker (PAIRING_TOKEN_RE in\n  worker/src/devices.ts). Existing v2 NVS blobs on already-paired\n  devices are unaffected; a new pairing uses v3 end to end.\nWi-Fi credential prefill\n- AppSettings persists last-used SSID and password independently.\n  SSID is saved on every pairing attempt (it can't lock you out);\n  password only after pollPairing reports the device claimed the\n  token, which is the only honest evidence the password was correct.\n- chooseTypeWifi() loads the remembered values into\n  EnterCredentials, so the second pairing on the same Wi-Fi is one\n  click. The OS-detected SSID fallback in PairingScreen.currentSsid\n  still kicks in if we have nothing remembered yet.\nVerified\n- worker tests (10/10) + tsc green.\n- Android testDebugUnitTest green.\n- Firmware compiles via idf.py with the new pairing_token[48] buffer.\nci: migrate release dispatch to publisher composite action\nReplace the inline ~70-line Python+jq+curl block with the\njirip/release-publisher/dispatch composite action. Same wire format,\nsame secrets, same trigger conditions; the encryption + payload\nconstruction now lives in the publisher repo where it can be tested\nonce instead of duplicated in every source repo.\nrefactor: review pass on heartbeat + OTA branch\nCleanup pass following a thorough review of feat/heartbeat-ota.\nWorker\n- Hoist LATEST_FIRMWARE_VERSION + FIRMWARE_VERSION_RE + firmwareReleaseUrl\n  into a single firmware.ts so device_state.ts and devices.ts can no\n  longer drift apart.\n- Add safeParseJson + readJsonBody helpers; replace three duplicated\n  try/catch blocks.\n- applyHeadersToState now takes Headers (not Request), merges new\n  telemetry into prior state instead of clobbering, and rejects garbage\n  values without dropping previously-good ones.\n- Add telemetryHeaders(req) whitelist so the device's upload-token\n  Authorization header no longer crosses into the Durable Object.\n- Tests cover applyHeadersToState merge/reject behaviour and\n  telemetryHeaders filtering (10/10 passing).\nFirmware\n- Tighten heartbeat retry budget (3x6s + small backoff) so the worst-\n  case wall time fits inside the app's 30s online window. Comment now\n  matches reality.\n- Call mark_running_image_valid_once after a successful boot upload, so\n  a fresh OTA can confirm even if the door closes before the first\n  heartbeat tick.\n- Document the static-buffer / single-task assumption in\n  fridgeye_set_telemetry_headers.\n- Stop overloading ESP_ERR_TIMEOUT for HTTP 5xx; both upload.c and\n  heartbeat.c just return ESP_FAIL.\n- TODO comment on the wifi-credential rotation reboot loop with the\n  intended NVS-counter fallback.\nAndroid\n- Rename compareSemver to compareDottedVersion (it is not full semver).\n- Move isOnline + ONLINE_WINDOW_MS into util/DeviceStatus.kt; the\n  device list no longer reaches into ViewerViewModel's companion.\n- Replace FirmwareManifest? state with a proper sealed ManifestState\n  {Loading, Loaded, Failed}; FirmwarePanel now shows a spinner, an\n  error message with retry, or the loaded panel — instead of silently\n  disappearing on a transient fetch failure.\n- Unit tests for both util helpers.\nCI\n- version-sync runs under set -euo pipefail, validates each extracted\n  value against MAJOR.MINOR.PATCH, and points at the new firmware.ts\n  location. Lockstep policy documented in the job comment.\nfeat: heartbeat + app-triggered firmware OTA\nPower model is intermittent — the device is only on while the fridge\ndoor is open. The firmware drops deep-sleep entirely: every cold boot\ncaptures one photo, then sends a tiny heartbeat every 5s for as long\nas power lasts. Heartbeats let the app render an \"online\" indicator\nand give the Worker a place to deliver OTA / reset cues.\nUpdate path is end-to-end: app reads /firmware/manifest.json, shows\n\"update available\" against the device's reported firmwareVersion,\nand POSTs /devices/<id>/firmware to stage a cue. Next heartbeat\nresponse carries X-FridgEye-Cmd-OTA-URL; device runs esp_https_ota\ninto the inactive partition and reboots. The cue is sticky on the\nWorker so a power-cut mid-OTA just resumes on the next door-open.\nBootloader app-rollback covers a panic-looping image.\nDrive-bys:\n- Fix latent UB in the reset-cue header parser (was reading the LSB\n  of a heap pointer instead of the header value).\n- Factor the X-FridgEye-* telemetry header set/parse into shared\n  helpers on both sides; upload + heartbeat now share one source of\n  truth for what gets reported.\n- Drop the unused FRIDGEYE_DOOR_WAKE_PIN / RTC-GPIO wiring; boot is\n  the door-open trigger.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.3.1",
+          "assets": [
+            {
+              "name": "fridgeye-0_3_1.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.3.1/fridgeye-0_3_1.aab"
+            },
+            {
+              "name": "fridgeye-0_3_1.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.3.1/fridgeye-0_3_1.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.0",
           "date": "2026-05-06T11:38:06Z",
           "source_repo": "jirip/fridgeye",
@@ -404,114 +422,6 @@
             {
               "name": "fridgeye-0_2_3.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.3/fridgeye-0_2_3.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.2.2",
-          "date": "2026-05-05T23:08:18Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.2.2",
-          "notes": "fix(updater): manifest fetch silent-failed on text/plain content type [release][publish]\nraw.githubusercontent.com serves /docs/releases.json with\nContent-Type: text/plain; charset=utf-8. Ktor's ContentNegotiation\nplugin only deserializes JSON when the content type matches, so\nclient.get(...).body<Manifest>() threw, the catch-all swallowed it,\nand the banner stayed Hidden forever. Symptom: nobody on any prior\nversion ever saw the update banner.\nFix: fetch as raw text, parse with a local Json instance. Keeps the\nglobal HttpClient strict for the Worker calls.\nv0.2.2.\nEmpty state, FAB label, pairing copy now consistently say \"device\"\nrather than \"fridge\". v0.2.1.\nUser prefers a single notification channel.\nfeat: per-channel notify (whatsapp + telegram)\nUpdate notify.txt to channel-prefixed format and the dispatch step\nto encrypt {recipients, telegram_bot_token?} where each recipient\nis {channel, address}. Per-app TELEGRAM_BOT_TOKEN secret is included\nin the encrypted payload when set so the publisher can use this app's\nown bot for Telegram messages; otherwise the publisher falls back to\nits shared bot.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.2",
-          "assets": [
-            {
-              "name": "fridgeye-0_2_2.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.2/fridgeye-0_2_2.aab"
-            },
-            {
-              "name": "fridgeye-0_2_2.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.2/fridgeye-0_2_2.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.2.1",
-          "date": "2026-05-05T22:49:20Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.2.1",
-          "notes": "Empty state, FAB label, pairing copy now consistently say \"device\"\nrather than \"fridge\". v0.2.1.\nUser prefers a single notification channel.\nfeat: per-channel notify (whatsapp + telegram)\nUpdate notify.txt to channel-prefixed format and the dispatch step\nto encrypt {recipients, telegram_bot_token?} where each recipient\nis {channel, address}. Per-app TELEGRAM_BOT_TOKEN secret is included\nin the encrypted payload when set so the publisher can use this app's\nown bot for Telegram messages; otherwise the publisher falls back to\nits shared bot.\nfeat: multi-device home + redesigned pairing flow [release][publish]\nApp is no longer single-device. Sign-in lands on a device list (empty\nstate on first launch); each row shows label, online/offline status\nfrom lastUploadAt, and last-photo timestamp. Tap a row to open the\nviewer; tap the FAB to pair another fridge.\nPairing flow is now a 5-step state machine:\n  Wi-Fi credentials (SSID prefilled best-effort from current network)\n  → POST /devices to register\n  → fullscreen QR with on-device LED-pattern instructions\n  → poll Worker for the device's first upload (its \"hello\")\n  → name the fridge (default suggestion: FridgEye-XXXX from UUID tail)\nWorker\n- New GET /devices: returns the authenticated user's devices, sorted\n  by created. Paginated via KV list().\n- New PATCH /devices/:id: rename. Validates ownership, trims, caps at\n  64 chars.\nApp data layer\n- WorkerApi: listDevices, renameDevice, helper for bearer auth.\n- AppSettings: drop primaryDeviceId / deviceUploadToken — list comes\n  from Worker, token belongs only to the device.\nFirmware\n- After pairing succeeds, the existing capture cycle runs on the next\n  boot; that frame doubles as the \"hello\" the app polls for. Only a\n  comment change.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.1",
-          "assets": [
-            {
-              "name": "fridgeye-0_2_1.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.1/fridgeye-0_2_1.aab"
-            },
-            {
-              "name": "fridgeye-0_2_1.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.1/fridgeye-0_2_1.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.2.0",
-          "date": "2026-05-05T22:04:09Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.2.0",
-          "notes": "feat: multi-device home + redesigned pairing flow [release][publish]\nApp is no longer single-device. Sign-in lands on a device list (empty\nstate on first launch); each row shows label, online/offline status\nfrom lastUploadAt, and last-photo timestamp. Tap a row to open the\nviewer; tap the FAB to pair another fridge.\nPairing flow is now a 5-step state machine:\n  Wi-Fi credentials (SSID prefilled best-effort from current network)\n  → POST /devices to register\n  → fullscreen QR with on-device LED-pattern instructions\n  → poll Worker for the device's first upload (its \"hello\")\n  → name the fridge (default suggestion: FridgEye-XXXX from UUID tail)\nWorker\n- New GET /devices: returns the authenticated user's devices, sorted\n  by created. Paginated via KV list().\n- New PATCH /devices/:id: rename. Validates ownership, trims, caps at\n  64 chars.\nApp data layer\n- WorkerApi: listDevices, renameDevice, helper for bearer auth.\n- AppSettings: drop primaryDeviceId / deviceUploadToken — list comes\n  from Worker, token belongs only to the device.\nFirmware\n- After pairing succeeds, the existing capture cycle runs on the next\n  boot; that frame doubles as the \"hello\" the app polls for. Only a\n  comment change.\nci: collapse KEY_PASSWORD into KEYSTORE_PASSWORD secret\nPKCS12 keystores require the alias key password to equal the keystore\npassword. Wiring both env vars from a single secret keeps the rotation\nsurface to one value.\nRe-signed with regenerated keystore (the prior one had no certificate\nchain, blocking SHA-1 fingerprint extraction for the Android OAuth\nclient registration). New SHA-1 is now registered in Google Cloud,\nso Google Sign-In should work end-to-end on this build.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.0",
-          "assets": [
-            {
-              "name": "fridgeye-0_2_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.0/fridgeye-0_2_0.aab"
-            },
-            {
-              "name": "fridgeye-0_2_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.0/fridgeye-0_2_0.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.3",
-          "date": "2026-05-05T21:41:34Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.1.3",
-          "notes": "Re-signed with regenerated keystore (the prior one had no certificate\nchain, blocking SHA-1 fingerprint extraction for the Android OAuth\nclient registration). New SHA-1 is now registered in Google Cloud,\nso Google Sign-In should work end-to-end on this build.\nfeat(updater): in-app APK self-update via release-publisher manifest [release][publish]\nPorts the pexesongy ApkUpdater pattern to native Kotlin/Compose:\nfetch jirip/release-publisher's docs/releases.json, semver-compare\nagainst BuildConfig.VERSION_NAME, show a banner on top of the app\nroot when a newer version is available. Tap Install → Ktor streams\nthe APK into app cache → FileProvider URI → ACTION_VIEW launches\nAndroid's package installer. User confirms in the system dialog.\nREQUEST_INSTALL_PACKAGES added to the manifest. FileProvider declared\nwith cache-path scoped to updater/. Dismiss persists 24h via DataStore.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.1.3",
-          "assets": [
-            {
-              "name": "fridgeye-0_1_3.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.1.3/fridgeye-0_1_3.aab"
-            },
-            {
-              "name": "fridgeye-0_1_3.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.1.3/fridgeye-0_1_3.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.2",
-          "date": "2026-05-05T20:35:08Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.1.2",
-          "notes": "feat(updater): in-app APK self-update via release-publisher manifest [release][publish]\nPorts the pexesongy ApkUpdater pattern to native Kotlin/Compose:\nfetch jirip/release-publisher's docs/releases.json, semver-compare\nagainst BuildConfig.VERSION_NAME, show a banner on top of the app\nroot when a newer version is available. Tap Install → Ktor streams\nthe APK into app cache → FileProvider URI → ACTION_VIEW launches\nAndroid's package installer. User confirms in the system dialog.\nREQUEST_INSTALL_PACKAGES added to the manifest. FileProvider declared\nwith cache-path scoped to updater/. Dismiss persists 24h via DataStore.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.1.2",
-          "assets": [
-            {
-              "name": "fridgeye-0_1_2.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.1.2/fridgeye-0_1_2.aab"
-            },
-            {
-              "name": "fridgeye-0_1_2.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.1.2/fridgeye-0_1_2.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.1",
-          "date": "2026-05-05T20:18:30Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.1.1",
-          "notes": "First public mirror via release-publisher. Ships QR pairing app + LED-status\nfirmware. Hardware bring-up not yet validated — debug build, treat as preview.\nfeat(pairing): replace BLE with QR + on-device camera scan\nThe device is already a camera. Using it for one extra purpose at boot\nis cheaper than wiring up a second radio.\nWire format (firmware parser + app generator must stay in lockstep):\n  fridgeye://prov?v=1&s=<ssid>&p=<pw>&d=<id>&t=<token>&u=<url>\nall values percent-encoded; v matches FRIDGEYE_PROVISION_VERSION.\nFirmware\n- New qr_pair.c: VGA grayscale capture loop, esp_qrcode for decode,\n  tiny URL parser. Drops ble_pair.c stub.\n- Camera module exposes both UXGA-JPEG (photo) and VGA-grayscale (QR)\n  init paths.\n- Drop NimBLE/BT entirely from sdkconfig.defaults — saves ~200 KB.\n- New led.c: single status LED on GPIO 21 (active-low), background\n  task driven by xQueue. Patterns: pairing slow-blink, success solid,\n  capture fast-blink, error triple-blink.\nAndroid app\n- New ProvisioningQr helper using zxing-core (pure Java, no camera\n  perms — we only generate).\n- PairingScreen is now a two-step flow: enter Wi-Fi creds → register\n  device on Worker → fullscreen QR. User confirms with \"Done\" once\n  the device LED goes solid.\n- Drop BLE permissions, BLE feature requirement, tools: namespace.\n- Drop unused googleid icons and BLE TODOs in pairing flow.\nDocs updated. Architecture decision row #4 swapped from BLE to QR\nwith rationale; security note covers the new attack surface (QR is\nvisible to anyone with line-of-sight while pairing).\nci: wire FridgEye to release-publisher\nDetect [publish] alongside [release]; on [release][publish] dispatch\npublish-release event to jirip/release-publisher carrying app name,\nversion, signed APK + AAB asset URLs, release notes, and recipients\nencrypted with NOTIFY_KEY for WhatsApp delivery.\nMirrors the prague-mhd-dashboard pattern.\nfeat(icon): replace launcher icon with FridgEye fridge-eye\nSource icon.png at repo root, generated PNGs at all five density\nbuckets for both adaptive-icon foreground and legacy square/round.\nrefactor: code review pass across firmware, worker, app\nWorker\n- Fix route dispatcher: PUT/GET on /devices/:id/latest.jpg shared a\n  scope-broken regex match, every request 404'd.\n- Validate JPEG uploads: magic-byte check, 2 MB cap, Content-Length\n  must match body length.\n- Track lastUploadAt in KV per device.\n- Harden JWT verifier: try/catch JSON.parse, validate alg+kid up-front,\n  use Cloudflare's edge cache for JWKS instead of module-local-only.\n- Drop empty [vars] from wrangler.toml; OAuth client ID is a secret.\nFirmware\n- Version the NVS provisioning blob; size/version mismatch falls back\n  to re-pairing instead of bricking.\n- Stream upload via open/write/fetch_headers, retry 3x with backoff,\n  validate snprintf truncation.\n- Wi-Fi: reset retry_count per call, document one-shot invariant.\n- Log boot reason (sleep wake vs reset) for debuggability.\n- Drop misleading \"OTA-ready\" comment from sdkconfig.defaults.\nAndroid app\n- Surface 401/403 as UnauthorizedException, route to SignedOut and\n  clear DataStore. Otherwise the cached Google ID token expires after\n  ~1h and every request silently returns \"Decode failed\".\n- Move createDevice() after BLE write succeeds so failed pairings\n  don't leak server rows.\n- Don't persist device upload token long-term — handed off to device\n  during pairing, the device is the only party that needs it.\n- Password input hardening: PasswordVisualTransformation +\n  KeyboardType.Password.\n- Auto-refresh viewer on entry; collectAsStateWithLifecycle everywhere.\n- Add data_extraction_rules.xml; allowBackup=false alone doesn't cover\n  D2D transfers on API 31+.\n- Drop AppCompat (use ComponentActivity), Coil, navigation-compose,\n  material-icons-extended — all unused.\n- Sanitise sign-in error messages for users; log details for devs.\n- versionCode bumps from FRIDGEYE_VERSION_CODE (CI uses run_number).\nCI / docs\n- Detect [release] across all commits in a push, not only head.\n- Sort artefact prune by created_at.\n- Move release-signing env-var guard into the signing config.\n- Update README/architecture.md (native Compose, not Capacitor).",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.1.1",
-          "assets": [
-            {
-              "name": "fridgeye-0_1_1.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.1.1/fridgeye-0_1_1.aab"
-            },
-            {
-              "name": "fridgeye-0_1_1.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.1.1/fridgeye-0_1_1.apk"
             }
           ]
         }
