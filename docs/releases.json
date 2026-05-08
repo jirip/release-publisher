@@ -282,6 +282,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.3.4",
+          "date": "2026-05-08T01:56:21Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.3.4",
+          "notes": "feat: live online status, device settings, photo loop, mirror fix [fw-release]\nApp changes (0.3.4):\n- Devices list and Settings screen now poll the Worker (15s / 5s) and\n  tick a 1Hz wall-clock so the green dot flips to ⚪ within ~30s of\n  the device losing power, no manual refresh needed.\n- New Settings screen reachable via gear icon on each device row.\n  Houses Device info (with live status dot beside the label), Reset,\n  and the new Delete device action. Reset and Info removed from Viewer.\n- Sign-in: Ktor Auth bearer plugin with silent token refresh via\n  GoogleTokenRefresher. WorkerApi no longer threads a token through\n  every call; HttpClient handles it. Fixes the hourly re-prompt.\nFirmware changes (0.3.3):\n- Steady-state loop now captures and uploads a fresh photo every 5s\n  instead of sending a heartbeat ping. Each upload doubles as the\n  heartbeat — same cue-header response shape — so OTA / reset cues\n  still flow through. v0.4 will add on-device frame-diff to upload\n  only when the scene changed.\n- Photo path applies set_hmirror(1) so uploaded frames read naturally;\n  was already on the QR pairing path. The OV3660 on the XIAO Sense\n  reads out right-to-left.\n- Pairing: revert from yanke01/zbar (no QR support compiled in) back\n  to espressif/quirc + chunked v3 QRs. Confirmed working on real\n  hardware: collector assembles all 4 chunks within seconds.\nWorker:\n- LATEST_FIRMWARE_VERSION bumped to 0.3.3 in lockstep.\nfeat: chunked QR pairing + zbar + sensor tweaks [fw-release]\nQR pairing on the XIAO ESP32S3 Sense was not working at all in v0.3.1:\nthe v3 schema (single QR carrying ~150 bytes of URL) renders as a\nQR-symbol-version 7 (45x45 modules), which the OV3660's effective\nresolution at handheld distance can locate-but-not-decode. Three\nchanges get us to a reliable pair.\n1. Chunked QR pairing (provisioning v4)\nThe app now slices the URL into N v3-sized QRs (29x29 modules) and\ncycles through them at 1 Hz with a \"i/N#<chunk>\" header on each.\nThe device collects chunks 1..N in a small in-RAM buffer and assembles\nthe full URL once complete. Body after the first '#' is opaque, so a\nchunk can contain any character including more '#'.\nApp: ProvisioningQr.chunkUrl + bitmap rotator in PairingScreen.QrDisplay.\nFirmware: chunk_collector_t in qr_pair.c with full reset on N\nmismatch and a re-decode is treated as a confirm. Bumped\nFRIDGEYE_PROVISION_VERSION 3 -> 4 in lockstep.\nLED feedback: slow blink while looking, fast blink while seeing chunks\n(falls back to slow after ~1.2s with no decode), solid on once the\ncollector has all chunks and the URL parses. New LED_SOLID_ON pattern\nin led.c.\n2. zbar instead of quirc\nSame captured grayscale frames: host quirc decoded 1/8, host zbar\ndecoded 6/8. quirc's threshold/sampler is too brittle for the OV3660\noutput even after fixing the JPEG -> RGB565 -> luma cast bug it had.\nyanke01/zbar (Espressif registry component) supports all targets,\nfits in the OTA partition with 46% headroom, and decodes our QRs\nreliably. Dropped the espressif/quirc dep + the -O3 / WDT bumps that\nwere trying to make quirc fit.\n3. OV3660 sensor + camera path tuning\nCamera switched to native PIXFORMAT_GRAYSCALE at QVGA in CIF mode\n(400x296) with fb_count=1 + GRAB_WHEN_EMPTY + xclk=20MHz, frame buffer\nin DRAM. Sensor configured post-init with set_sharpness(2),\nset_contrast(2), set_hmirror(1) so module edges are crisp enough for\nzbar's threshold pass.\nQR test mode (FRIDGEYE_QR_TEST_MODE compile flag) preserved for\nfuture debugging — dumps every captured frame as base64 JPEG between\n[FRAME-JPG ...]...[/FRAME-JPG] markers.\nBumps:\n- app v0.3.1 -> v0.3.2\n- firmware FRIDGEYE_FIRMWARE_VERSION 0.3.0 -> 0.3.2 (paired with\n  worker LATEST_FIRMWARE_VERSION so [fw-release] cuts the binary\n  the in-app firmware-update flow downloads).",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.3.4",
+          "assets": [
+            {
+              "name": "fridgeye-0_3_4.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.3.4/fridgeye-0_3_4.aab"
+            },
+            {
+              "name": "fridgeye-0_3_4.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.3.4/fridgeye-0_3_4.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.2",
           "date": "2026-05-08T00:27:17Z",
           "source_repo": "jirip/fridgeye",
@@ -440,24 +458,6 @@
             {
               "name": "fridgeye-0_2_5.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.5/fridgeye-0_2_5.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.2.4",
-          "date": "2026-05-05T23:49:35Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.2.4",
-          "notes": "fix(pairing): missing ACCESS_WIFI_STATE crashed Add Device flow [release][publish]\nWifiManager.getConnectionInfo() throws SecurityException without the\nACCESS_WIFI_STATE permission, taking the whole app down when the user\ntapped \"Add a device\".\nAdd the permission (normal-protection, no runtime prompt). On Android\n10+ the SSID still comes back as \"<unknown ssid>\" without\nACCESS_FINE_LOCATION, which our code already handles by leaving the\nfield blank — no functional regression, just no crash.\nv0.2.4.\nfeat(ui): always-visible app header showing version [release][publish]\nReplaces per-screen titles (\"FridgEye\") with a global one-line header\nabove all routes: \"FridgEye 0.2.3\", labelSmall + onSurfaceVariant.\nVisible on sign-in too, where the version was previously hidden.\nDevices screen top-bar title goes from \"FridgEye\" to \"Devices\" since\nthe brand is now in the header. Sign-in subtitle becomes \"Sign in to\nget started\" instead of bare-word \"FridgEye\".\nv0.2.3.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.4",
-          "assets": [
-            {
-              "name": "fridgeye-0_2_4.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.4/fridgeye-0_2_4.aab"
-            },
-            {
-              "name": "fridgeye-0_2_4.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.4/fridgeye-0_2_4.apk"
             }
           ]
         }
