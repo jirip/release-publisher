@@ -282,6 +282,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.3.7",
+          "date": "2026-05-09T11:14:44Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.3.7",
+          "notes": "App (0.3.7):\n- Stale Reset dialog wording (\"delete from list\" → \"unlink\").\n- ProGuard keep narrowed from blanket data.remote.** to @Serializable\n  types + their generated companions/serializers.\n- LocalLifecycleOwner imported from androidx.lifecycle.compose\n  (the compose-ui copy is deprecated).\n- mutableIntStateOf for the QR carousel index (avoids Int autoboxing).\n- while (isActive) instead of while (true) for poll loops and the\n  per-screen 1 Hz wall-clock tick.\n- DeviceStatus comment matched to the upload-driven reality.\nFirmware (0.3.5):\n- heartbeat.c removed. The 0.3.3+ steady-state loop uses upload\n  responses for cue delivery; the heartbeat helper has been dead\n  code since. Header decl + CMake entry dropped to match.\n- wifi_connect is now safe to call more than once per boot (idempotent\n  netif/event-loop init, optional re-create of the STA netif). The\n  pairing→steady-state path has always rebooted between calls so the\n  latent bug never fired; remove the trip-wire anyway.\n- qr_pair: refuse to feed quirc a frame whose pixel count doesn't\n  match its quirc_begin buffer instead of partially copying. CIF-\n  grayscale always matches in practice; this catches a malformed\n  frame cleanly rather than letting quirc read uninitialised tail.\n- README rewritten — was describing the v1 single-QR pairing flow\n  long after we shipped chunked v4.\n- main.c steady-state comment no longer claims \"1 Hz cadence\".\nWorker (0.3.5):\n- /devices/:id/heartbeat endpoint + handler + DO route + helper all\n  removed. No fielded firmware still calls it. cuesToHeaders, KV/DO\n  shapes, and the upload path stay unchanged.\n- LATEST_FIRMWARE_VERSION bumped to 0.3.5 in lockstep.\n- README rewritten to match the actual endpoint surface (pairing\n  handshake, two-phase unlink, OTA cue, photo upload + fetch).\nDocs:\n- docs/architecture.md updated end-to-end: chunked QR v4 pairing,\n  upload-loop steady state, two-phase unlink, KV/DO/R2 layout. Was\n  still describing the pre-implementation v1 design.\nfeat: two-phase unlink + 404 device-gone fallback [fw-release]\nApp (0.3.6): Delete renamed to Unlink throughout. Settings danger\nzone shows \"Unlink device\" instead of \"Delete\". Unlinking devices\nappear in the list with a greyed-out \"Unlinking… [Cancel]\" row that\nblocks navigation into the viewer or settings — the user explicitly\nchose to remove the device, so we stop offering ways to keep using\nit. Cancel returns the device to its normal row.\nWorker (0.3.4): DELETE /devices/:id no longer deletes — it stages\nthe unlink (sets pendingRemovalAt on the KV record). The Worker\nattaches X-FridgEye-Cmd-Unlink to the next upload/heartbeat\nresponse. The actual KV/DO/R2 cleanup runs only when the device\nconfirms via POST /devices/:id/unlink (upload-token authed). DELETE\n/devices/:id/unlink cancels a staged unlink; idempotent. Photos are\nnot stored during pending-removal — the device is about to vanish.\nFirmware (0.3.4): upload + heartbeat read X-FridgEye-Cmd-Unlink and\nsurface unlink_requested. handle_cues confirms the unlink (best-\neffort POST), clears NVS, restarts into pairing. Also: 404 from the\nWorker (device row vanished outside the unlink flow — orphan from a\nKV migration or manual delete) triggers the same recovery via a new\ndevice_gone flag. Stops the device from busy-looping against a\nWorker that says \"who are you?\".\nVersions in lockstep: firmware 0.3.4, LATEST_FIRMWARE_VERSION 0.3.4,\napp 0.3.6.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.3.7",
+          "assets": [
+            {
+              "name": "fridgeye-0_3_7.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.3.7/fridgeye-0_3_7.aab"
+            },
+            {
+              "name": "fridgeye-0_3_7.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.3.7/fridgeye-0_3_7.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.6",
           "date": "2026-05-08T19:10:38Z",
           "source_repo": "jirip/fridgeye",
@@ -440,24 +458,6 @@
             {
               "name": "fridgeye-0_2_8.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.8/fridgeye-0_2_8.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.2.7",
-          "date": "2026-05-06T00:35:59Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.2.7",
-          "notes": "fix(pairing): QR was instantly skipped, never visible [release][publish]\npollForHello() set _state to Waiting on its first line, immediately\noverwriting the ShowQr state set right before. The QR rendered for\none frame and was replaced. Symptom: user goes from \"Registering\" to\n\"Waiting for the device to come online\" with no QR ever shown.\nDrop the Waiting state entirely — the ShowQr screen is the wait state.\nThe poll loop now runs in the background while the QR stays visible,\nand only transitions out on success (NameDevice) or timeout (Error).\nv0.2.7.\nfeat(pairing): scan Android Wi-Fi share QR + fix status-bar overlap [release][publish]\nUser no longer types their Wi-Fi password during pairing. New first\nstep is a chooser: \"Scan a Wi-Fi share code\" or \"Type SSID and\npassword\". The scan path opens a CameraX preview, decodes any QR\nmatching the standard `WIFI:T:..;S:..;P:..;;` format that Android's\nown Wi-Fi-share button generates, fills the SSID + password fields,\nand skips straight to the device-pairing QR.\nAdds CAMERA permission (runtime), CameraX, accompanist-permissions,\nand a small WIFI: parser. ZXing was already in for QR generation.\nAlso: AppRoot now wraps content in systemBarsPadding(), fixing the\nheader drawing under the status bar after enableEdgeToEdge().",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.7",
-          "assets": [
-            {
-              "name": "fridgeye-0_2_7.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.7/fridgeye-0_2_7.aab"
-            },
-            {
-              "name": "fridgeye-0_2_7.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.7/fridgeye-0_2_7.apk"
             }
           ]
         }
