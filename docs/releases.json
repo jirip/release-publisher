@@ -282,6 +282,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.5.0",
+          "date": "2026-05-09T14:49:19Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.5.0",
+          "notes": "feat: home-as-card UX, drop Reset, sort by activity, typed unlink confirm [fw-release]\nApp (0.5.0): the device list card is the only viewer now — pinch-zoom\nand pan happen in place. Tap \"Save default\" to persist the current\nview as the home-screen default; \"Reset\" returns to the saved view.\nButtons appear only when the live view differs from saved. Two-finger\ngesture detection consumes pointer events so the LazyColumn can't\nsteal mid-pinch; the bitmap swap on photo refresh is paused while a\nfinger is down (was killing live gestures); pan is clamped to image\nbounds; the photo box clips so zoom doesn't bleed onto the name row.\nUpdate banner re-checks on every cold start (was suppressed for 24h\nacross versions if the user ever tapped Later).\nSettings rewritten: rename action via pencil in the toolbar, firmware\nupdate card moved here from the deleted Viewer screen, two-phase\nUnlink moved out of \"Danger zone\" into a typed-confirm dialog (\"type\nunlink to confirm\") since the action is irreversible from the user's\nperspective once the device acks.\nReset is gone end-to-end. It put the device back into pairing while\nleaving an orphaned KV row that no future device could re-link to,\nso the user ended up with two rows after every \"reset and re-pair\"\nflow. Unlink achieves the same end state cleanly. Removed in firmware\n(handle_cues drops the cue branch, upload_result_t loses\nreset_requested), Worker (handleResetDevice + deviceTriggerReset +\nDO /reset route + popDeviceCues reset bit + cuesToHeaders\nX-FridgEye-Cmd-Reset all gone), and app (Settings danger zone\nshrinks to just Unlink).\nDevices list sorts by lastUploadAt descending — most recently active\nfridge first, never-uploaded devices fall to the bottom in creation\norder.\nWi-Fi pairing form: KeyboardType.Uri + autoCorrect off so typing \".\"\nin the SSID doesn't insert a smart space; \"Show\" toggle on the\npassword field. Single-line for both. Latest LocalLifecycleOwner\nimport.\nversionCode pinned in source (was injected from github.run_number),\nso a local build is byte-identical to what CI publishes.\nTooling: Makefile install-release auto-sources .fridgeye-signing-env\n(gitignored) so a release-signed APK can be sideloaded over a\nreleased install without uninstalling. grab-frames.py auto-detects\nthe serial port from /dev/cu.usbmodem* — was hardcoded to a port\nthat changes between plug events.\nFirmware (0.5.0): wifi_connect is idempotent across multiple calls\nper boot (pairing then steady-state), with a clear disconnect-reason\nlog on auth/assoc failures so AP-side rejections show the actual\n802.11 reason code. qr_pair refuses frames whose pixel count doesn't\nmatch quirc's working buffer instead of partially copying. heartbeat\nhelper deleted (uploads carry the same cue headers, no separate ping\nneeded).\nWorker: the dead /devices/:id/heartbeat route also dropped.\nWas being injected from github.run_number at CI build time, which\n- left local debug builds at versionCode=1 (can't sideload over a\n  CI-signed install — Android refuses what looks like a downgrade);\n- split the version source-of-truth between code and CI metadata, so\n  reproducing an old commit's APK locally needed knowing the run\n  number that built it.\nUse a literal versionCode bumped together with versionName. Drop the\nFRIDGEYE_VERSION_CODE env override from build.yml.\nfix(app): re-check for updates on every launch\nThe 24h \"Later\" dismiss-until carried across versions, so once the\nbanner had been dismissed for any release, every newer release stayed\nsuppressed for the rest of the day. Drop the persisted dismiss state\nentirely. Banner now re-evaluates on every cold start; \"Later\" hides\nit for the current process only.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.5.0",
+          "assets": [
+            {
+              "name": "fridgeye-0_5_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.5.0/fridgeye-0_5_0.aab"
+            },
+            {
+              "name": "fridgeye-0_5_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.5.0/fridgeye-0_5_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.8",
           "date": "2026-05-09T11:33:02Z",
           "source_repo": "jirip/fridgeye",
@@ -440,24 +458,6 @@
             {
               "name": "fridgeye-0_3_0.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.3.0/fridgeye-0_3_0.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.2.9",
-          "date": "2026-05-06T10:24:45Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.2.9",
-          "notes": "fix(icon): scale launcher artwork to fit Android safe zone [release][publish]\nAdaptive icons render the foreground over a 108 dp canvas, but only\nthe central ~66 dp survives the launcher's circle/squircle/teardrop\nmask. The previous foreground PNGs had the fridge filling ~88% of the\ncanvas, so on circular launchers the corners were getting clipped.\nRe-render with the artwork at 66% of canvas size, centred, transparent\npadding around it. Same source `icon.png` at repo root, regenerated\nacross mdpi/hdpi/xhdpi/xxhdpi/xxxhdpi for both the adaptive foreground\nand the legacy square/round fallbacks.\nAlso gitignore cam-debug-*.png and serial-*.log so the firmware-debug\nartefacts don't sneak into commits.\nv0.2.9.\nWrangler 3 + current Cloudflare API rejects /workers/scripts/<name>/versions\nPOST with \"kv bindings require kv write perms\" even when the token does\nhave KV write (verified via direct API). Wrangler 4 uses the new auth\nshape and gets through.\nfeat(pairing): two-stage handshake — no phantom devices [release][publish]\nPairing is now device-claims-then-user-confirms, instead of the previous\nuser-pre-creates-then-device-uploads. End to end:\n1. App generates a 32-byte random pairingToken locally — no Worker call.\n2. App shows a v=2 QR carrying ssid, password, workerUrl, pairingToken.\n   No deviceId or uploadToken in the QR yet.\n3. App polls GET /pair?token=… (Google-authed) every 2s.\n4. Device scans QR → camera-deinit → joins Wi-Fi → POST /pair (no auth)\n   with {token, firmwareVersion}. Worker mints (deviceId, uploadToken),\n   stashes them keyed by pairingToken in a 10-min-TTL pairing namespace,\n   returns them to the device. Device persists to NVS, reboots into the\n   normal capture cycle.\n5. App's poll sees claimed=true → calls POST /devices/claim. Worker\n   promotes the pairing row into a real DEVICES row bound to the user\n   and deletes the pairing row.\n6. App lands on the name-device step, then done.\nWorker: new POST /pair, GET /pair?token=, POST /devices/claim. Drops the\nold POST /devices (replaced by claim). Adds DELETE /devices/:id (and the\nphantoms already in KV from earlier sessions are wiped).\nFirmware: bumps FRIDGEYE_PROVISION_VERSION → 2 (NVS layout same, but the\nQR schema and the way the blob is filled both changed). New pair_claim.c\nruns after Wi-Fi connect to exchange the pairing token. FRIDGEYE_FIRMWARE_VERSION\n→ 0.2.0 to mark the protocol break.\nApp: v0.2.8 — WorkerApi gets pollPairing/claim/deleteDevice, drops the\npre-QR createDevice call, generates pairing token in ProvisioningQr.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.2.9",
-          "assets": [
-            {
-              "name": "fridgeye-0_2_9.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.9/fridgeye-0_2_9.aab"
-            },
-            {
-              "name": "fridgeye-0_2_9.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.2.9/fridgeye-0_2_9.apk"
             }
           ]
         }
