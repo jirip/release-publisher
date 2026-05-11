@@ -21,6 +21,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "1.10.5",
+          "date": "2026-05-11T08:33:50Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.10.5",
+          "notes": "fix: surface API-fetch failures with CloudOff indicator\nMirror the existing GPS-stale top-bar indicator for the data path. When a\nrefresh cycle's per-stop departure-board fetches all fail (typical when\nthe device drops off the network), the UI used to keep showing stale rows\nwith no signal that anything was wrong. The dispatched dispatch was\nvisible only via the logs surfaced in reports.\nAdds a `dataStale: StateFlow<Boolean>` to both `NearbyViewModel` and\n`DepartureBoardViewModel`, set when every fetched name returns null (or\nthe single-stop call throws); the new `RefreshCountdownIndicator.dataStale`\nparameter renders `Icons.Filled.CloudOff` next to the existing\n`LocationOff` slot. Partial failures don't trigger it.\nDrive-by: `buildPredictedDepartures` was reading `LocalDate.now(zone)` for\nthe anchor — a hidden dependency on system clock that contradicted the\nfunction's nominal pure-input signature. Derive the anchor day from\n`nowMs` instead.\nfix(trip-view): anchor schedule by trip, not by stop\nThe route view computed each stop's epoch ms independently against today's\ncalendar date with a one-shot \"≥12h ahead → subtract a day\" patch. Stops\nwhose clock time crosses midnight (e.g. opening the view at 23:50 with\nlater stops at 00:02) collapsed into early-morning of *today*, breaking\nthe trip's monotonic ordering. The estimator then walked the list and\nlocked the active dot to a phantom stop placed ~24h in the past.\nReplace the per-stop computation with a trip-wide anchor: the first stop\nis placed on whichever calendar day puts it within ±12h of now; from\nthere we walk forward and advance the day every time a stop's\ntime-of-day appears to step backwards relative to its predecessor. The\nlist is monotonic by construction, regardless of midnight crossings or\nGTFS 24+ extended-form strings (`25:30`).\n`computeStopCountdown` now reads the pre-anchored ms instead of\nre-parsing per stop, which also removes the latent risk of double-\napplying delay in the row.\nDrops WhatsApp from .github/notify.txt; future `` runs go to\nTelegram only.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.10.5",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_10_5.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.5/prague-mhd-dashboard-1_10_5.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_10_5.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.5/prague-mhd-dashboard-1_10_5.apk"
+            }
+          ]
+        },
+        {
           "version": "1.10.4",
           "date": "2026-05-08T00:43:26Z",
           "source_repo": "jirip/prague-mhd-dashboard",
