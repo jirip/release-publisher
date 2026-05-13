@@ -21,6 +21,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "1.10.6",
+          "date": "2026-05-13T23:03:21Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.10.6",
+          "notes": "feat(nav): full-slot ripple + emphasised active tab; clean-code pass\n#101 — Bottom nav: replace `NavigationBarItem` with a hand-rolled item that\nfills the slot (`weight(1f).fillMaxHeight().clickable {}`), so the ripple\ncovers the whole tab instead of Material's narrow indicator pill. The active\ntab now uses the primary tint and a slightly larger icon (28dp vs 24dp).\n`BottomNavTab.label` is now a `@StringRes` so the contentDescription is\nlocalised.\nDrive-by clean-code audit:\n- Remove `error!!` in VersionHistoryScreen; assign to local and smart-cast.\n- `DepartureBoardViewModel.sections` now exposes `.asStateFlow()`.\n- Centralise GitHub repo URL in `GitHubConfig.kt` (was duplicated across\n  release + issue services).\n- Rename `di/Credentials.kt` to `CredentialsModule.kt` to match the class.\n- Extract `FavoriteStar` / `TripPositionGreen` to `ui/theme/Color.kt`; drop\n  four duplicated `Color(0xFF...)` literals.\n- Replace literal `Text(\"✕\")` clear-icon with `Icons.Filled.Close` and a\n  localised `cd_clear_search`.\n- Localise the `→ origin → headsign` trip subtitle through `R.string`.\n- `Text(\"OK\")` in MainActivity update dialog now uses `android.R.string.ok`.\n- Annotate intentional silent catches across UI and data layers.\n- `StopCache` snapshots `stops` on entry (`@Volatile` reference) so writers\n  cannot tear in-flight reads.\n- `VersionHistoryCache` serialises writers with a mutex; reads remain\n  non-suspend via a `@Volatile` map reference.\n- `TripAnnotationStore` keeps its pretty-printing `Json` instance but the\n  rename + comment explains why it cannot share the DI-provided one.\n- `formatTime` in `PlatformDeparturesList` drops a dead `try/catch` on\n  operations that can't throw.\n- Remove three unused strings (`download_failed`, `update_check_failed`,\n  `update_failed`) from both locales.\n- `gradle.properties` enables parallel + caching + configure-on-demand.\nfix: surface API-fetch failures with CloudOff indicator\nMirror the existing GPS-stale top-bar indicator for the data path. When a\nrefresh cycle's per-stop departure-board fetches all fail (typical when\nthe device drops off the network), the UI used to keep showing stale rows\nwith no signal that anything was wrong. The dispatched dispatch was\nvisible only via the logs surfaced in reports.\nAdds a `dataStale: StateFlow<Boolean>` to both `NearbyViewModel` and\n`DepartureBoardViewModel`, set when every fetched name returns null (or\nthe single-stop call throws); the new `RefreshCountdownIndicator.dataStale`\nparameter renders `Icons.Filled.CloudOff` next to the existing\n`LocationOff` slot. Partial failures don't trigger it.\nDrive-by: `buildPredictedDepartures` was reading `LocalDate.now(zone)` for\nthe anchor — a hidden dependency on system clock that contradicted the\nfunction's nominal pure-input signature. Derive the anchor day from\n`nowMs` instead.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.10.6",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_10_6.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.6/prague-mhd-dashboard-1_10_6.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_10_6.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.6/prague-mhd-dashboard-1_10_6.apk"
+            }
+          ]
+        },
+        {
           "version": "1.10.5",
           "date": "2026-05-11T08:33:50Z",
           "source_repo": "jirip/prague-mhd-dashboard",
