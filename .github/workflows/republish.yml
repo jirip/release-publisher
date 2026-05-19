@@ -32,6 +32,11 @@ jobs:
           # - source_repo: owner/name; identifies which repo's release to download from.
           # - source_tag: tag of the release on source_repo whose assets we mirror.
           # - web_url:    if present, either empty (clear) or an https URL (set).
+          # - asset_metadata: optional object keyed by source-release asset filename. Each
+          #               value is an object whose recognised keys are `hidden` (bool) and
+          #               `label` (string, <=128 chars). Unknown keys inside a value are
+          #               ignored (forward-compat). Keys must match the asset-name regex
+          #               so they can never name a different file than what we download.
           # The asset list isn't part of the payload — the publisher resolves it from
           # source_repo/source_tag using SOURCE_REPO_TOKEN, which keeps the source
           # repo's dispatch token free of any read-scope requirement.
@@ -43,6 +48,15 @@ jobs:
             ((.notes // "") | type == "string") and
             ((.web_url // null) as $w |
               ($w == null) or ($w == "") or ($w | type == "string" and startswith("https://"))
+            ) and
+            ((.asset_metadata // {}) as $m |
+              ($m | type == "object") and
+              (all($m | keys[]; test("^[A-Za-z0-9._-]+$"))) and
+              (all($m | to_entries[]; .value | type == "object")) and
+              (all($m | to_entries[];
+                ((.value.hidden // false) | type == "boolean") and
+                ((.value.label // "") | type == "string" and (length <= 128))
+              ))
             )
           ' > /dev/null
 
@@ -122,17 +136,35 @@ jobs:
           NOTES: ${{ steps.notes.outputs.value }}
           RELEASE_URL: ${{ steps.release.outputs.url }}
           WEB_URL_JSON: ${{ toJSON(github.event.client_payload.web_url) }}
+          ASSET_METADATA_JSON: ${{ toJSON(github.event.client_payload.asset_metadata) }}
         run: |
           DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
 
           # Build the assets list from the files we actually downloaded, pointing at the
           # public release we just created. URI-encode names so spaces or '+' survive.
+          # Merge in any asset_metadata entries that match a downloaded filename; entries
+          # naming a missing file are silently no-op'd, and only the recognised keys
+          # (hidden, label) are copied through so an unexpected dispatch key can't bloat
+          # the manifest.
           ASSETS_JSON="[]"
+          META_JSON="${ASSET_METADATA_JSON:-null}"
+          if [ "$META_JSON" = "null" ]; then META_JSON="{}"; fi
           for f in dist/*; do
             name=$(basename "$f")
             encoded=$(jq -rn --arg n "$name" '$n | @uri')
             url="https://github.com/${{ github.repository }}/releases/download/${APP}-v${VERSION}/${encoded}"
-            ASSETS_JSON=$(echo "$ASSETS_JSON" | jq --arg n "$name" --arg u "$url" '. + [{name: $n, url: $u}]')
+            ASSETS_JSON=$(echo "$ASSETS_JSON" | jq \
+              --arg n "$name" \
+              --arg u "$url" \
+              --argjson meta "$META_JSON" \
+              '
+                ($meta[$n] // {}) as $m |
+                . + [
+                  {name: $n, url: $u}
+                  + (if ($m.hidden // false) == true then {hidden: true} else {} end)
+                  + (if ($m.label // "") != ""    then {label: $m.label} else {} end)
+                ]
+              ')
           done
 
           ENTRY=$(jq -n \

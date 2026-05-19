@@ -55,10 +55,17 @@ const setAppOpen = (name, open) => {
   }
 };
 
+// Assets with `hidden: true` are still in the manifest (so the Worker / OTA / API consumers
+// can resolve URLs) but aren't drawn on the page.
+const visibleAssets = (assets) => (assets || []).filter((a) => a.hidden !== true);
+
 const renderAssets = (assets) =>
-  (assets || [])
+  visibleAssets(assets)
     .filter((a) => isSafeHref(a.url))
-    .map((a) => `<a href="${escapeHtml(a.url)}">${escapeHtml(assetLabel(a.name))}</a>`)
+    .map((a) => {
+      const text = a.label && a.label.length > 0 ? a.label : assetLabel(a.name);
+      return `<a href="${escapeHtml(a.url)}">${escapeHtml(text)}</a>`;
+    })
     .join("");
 
 const renderHistory = (history) => {
@@ -105,10 +112,22 @@ const renderApp = (name, app) => {
     </details>`;
 };
 
+// An app whose latest release has no visible assets is intentionally invisible —
+// e.g. fridgeye-firmware, where every artifact is published purely so the device
+// can OTA from a known URL, not so a human ever clicks it.
+const hasVisibleLatest = (app) => {
+  const releases = app.releases || [];
+  if (releases.length === 0) return false;
+  const latest = [...releases].sort((a, b) => (a.date < b.date ? 1 : -1))[0];
+  return visibleAssets(latest.assets).length > 0;
+};
+
 const render = (data) => {
   const root = document.getElementById("apps");
   const apps = data.apps || {};
-  const names = Object.keys(apps).sort();
+  const names = Object.keys(apps)
+    .filter((n) => hasVisibleLatest(apps[n]))
+    .sort();
 
   if (names.length === 0) {
     root.innerHTML = '<p class="empty">No releases yet.</p>';

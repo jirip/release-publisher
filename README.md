@@ -104,6 +104,28 @@ Pass `set-web-url: true` along with `web-url:` to update it. The dispatch then s
 
 The URL lives at the app level (not per-release) because a hosted PWA only has one live version at a time.
 
+### Hiding or re-labelling assets (`asset-metadata`)
+
+Apps that ship artifacts a human shouldn't click on — typically firmware blobs that exist only so a device can OTA from a known URL — can pass an `asset-metadata` map. Hidden assets are still stored in `releases.json` with working public download URLs (the Worker / device / API consumers continue to resolve them); they're only suppressed from the rendered page. If every asset on the latest release is hidden, the whole app card disappears from the page — its data stays in the manifest.
+
+```yaml
+- uses: jirip/release-publisher/dispatch@master
+  with:
+    app: fridgeye-firmware
+    version: ${{ steps.version.outputs.name }}
+    source-tag: fw-v${{ steps.version.outputs.name }}
+    github-token: ${{ secrets.PUBLISH_TOKEN }}
+    notify-key: ${{ secrets.NOTIFY_KEY }}
+    asset-metadata: |
+      {
+        "fridgeye.bin":         {"hidden": true, "label": "ESP32 firmware (OTA target)"},
+        "fridgeye-usb.bin":     {"hidden": true},
+        "fridgeye-battery.bin": {"hidden": true}
+      }
+```
+
+Recognised keys per value: `hidden` (bool — omit from the page) and `label` (string up to 128 chars — overrides the default extension-based label). Other keys are reserved for future use and silently ignored. Naming an asset that isn't in the source release is a no-op, not an error.
+
 ## Adding a new app
 
 No code changes needed — the page renders whatever apps appear in `docs/releases.json`. The first dispatch for a new `app` name creates its entry automatically.
@@ -136,7 +158,7 @@ No code changes needed — the page renders whatever apps appear in `docs/releas
 }
 ```
 
-`webUrl` is optional. Releases are kept in reverse-chronological order within each app (newest first), capped at `MAX_RELEASES_PER_APP` (currently 10) by the workflow.
+`webUrl` is optional. Each asset has at minimum `name` and `url`; optional `hidden: true` keeps it out of the rendered page (URL still works), and optional `label` overrides the default extension-based display text. Releases are kept in reverse-chronological order within each app (newest first), capped at `MAX_RELEASES_PER_APP` (currently 10) by the workflow.
 
 ## Trust model
 

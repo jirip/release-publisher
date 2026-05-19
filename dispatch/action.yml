@@ -49,6 +49,14 @@ inputs:
     description: Optional per-app Telegram bot token (`secrets.TELEGRAM_BOT_TOKEN`). Travels encrypted.
     required: false
     default: ""
+  asset-metadata:
+    description: |
+      Optional JSON object keyed by source-release asset filename. Each value is an object;
+      recognised keys are `hidden` (bool — omit from the downloads page) and `label` (string —
+      override the default extension-based label, max 128 chars). Unknown keys are ignored.
+      Default '{}' = every asset rendered with its extension-based label, same as before.
+    required: false
+    default: "{}"
 runs:
   using: composite
   steps:
@@ -89,12 +97,20 @@ runs:
         WEB_URL: ${{ inputs.web-url }}
         RECIPIENTS_ENC: ${{ steps.encrypt.outputs.recipients_enc }}
         PUBLISHER_REPO: ${{ inputs.publisher-repo }}
+        ASSET_METADATA: ${{ inputs.asset-metadata }}
       run: |
         case "$SET_WEB_URL" in
           true)  include_web_url=true ;;
           false) include_web_url=false ;;
           *) echo "set-web-url must be 'true' or 'false', got '$SET_WEB_URL'" >&2; exit 1 ;;
         esac
+
+        # Validate asset-metadata is a JSON object before sending it. Catching this
+        # caller-side gives a clearer error than waiting for the publisher to reject.
+        if ! echo "$ASSET_METADATA" | jq -e 'type == "object"' >/dev/null 2>&1; then
+          echo "asset-metadata must be a JSON object, got: $ASSET_METADATA" >&2
+          exit 1
+        fi
 
         payload=$(jq -n \
           --arg app "$APP" \
@@ -105,12 +121,14 @@ runs:
           --arg web_url "$WEB_URL" \
           --arg recipients_enc "$RECIPIENTS_ENC" \
           --argjson include_web_url "$include_web_url" \
+          --argjson asset_metadata "$ASSET_METADATA" \
           '{
              event_type: "publish-release",
              client_payload: (
                {app: $app, version: $version, source_repo: $source_repo,
                 source_tag: $source_tag, notes: $notes,
-                recipients_enc: $recipients_enc}
+                recipients_enc: $recipients_enc,
+                asset_metadata: $asset_metadata}
                + (if $include_web_url then {web_url: $web_url} else {} end)
              )
            }')
