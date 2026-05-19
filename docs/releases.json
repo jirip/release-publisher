@@ -336,6 +336,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.7.0",
+          "date": "2026-05-19T22:24:00Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.7.0",
+          "notes": "feat: per-device history of last 10 frames\nWorker keeps a ring buffer at users/<sub>/<id>/history/<ms>.jpg, written\nalongside the existing latest.jpg on every multipart upload. Two new\nendpoints serve the app: GET /devices/:id/history (timestamps,\nnewest-first) and GET /devices/:id/history/<ts>.jpg (one frame).\nHistory is wiped together with the rest of the device record on\nunlink confirm.\nApp gets a History card on the device settings screen → a vertical\nlist of frames with timestamps. Motivates the \"is the dark frame just\nthe door closing?\" diagnostic — the trend across the last 10 frames\nmakes that obvious.\nBumps to 0.7.0.\nfix(app): seed photo zoom/rotation from DataStore, not async initial\nSaved rotation never re-appeared on next launch. The LaunchedEffect that\nseeded liveRotation read savedZoom on first composition, but\ncollectAsStateWithLifecycle emits its initialValue (Identity, rotation=0)\nsynchronously and only later replaces it with the DataStore value. The\n`seeded` gate then locked in the 0 and ignored the real emission.\nSeed by collecting the flow's first() directly inside the effect so the\nDataStore value is awaited before assignment.\nBumps to 0.6.6.\n- firmware: remove dead sleep_last_ldr_raw + LED_HEARTBEAT + FRIDGEYE_HEARTBEAT_LED\n- firmware: drop stale FRIDGEYE_OPEN_LOOP_MAX_MS reference; mark build_telemetry_json static\n- worker/app: refresh post-multipart-migration telemetry comments\n- ci: pin release-publisher action to SHA; npm ci over npm install; drop stale OTA-release note\n- .gitignore: widen firmware/build-*/ to cover ad-hoc build dirs",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.7.0",
+          "assets": [
+            {
+              "name": "fridgeye-0_7_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.7.0/fridgeye-0_7_0.aab"
+            },
+            {
+              "name": "fridgeye-0_7_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.7.0/fridgeye-0_7_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.6.6",
           "date": "2026-05-19T22:03:43Z",
           "source_repo": "jirip/fridgeye",
@@ -494,24 +512,6 @@
             {
               "name": "fridgeye-0_6_0.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.6.0/fridgeye-0_6_0.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.5.0",
-          "date": "2026-05-09T14:49:19Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.5.0",
-          "notes": "feat: home-as-card UX, drop Reset, sort by activity, typed unlink confirm [fw-release]\nApp (0.5.0): the device list card is the only viewer now — pinch-zoom\nand pan happen in place. Tap \"Save default\" to persist the current\nview as the home-screen default; \"Reset\" returns to the saved view.\nButtons appear only when the live view differs from saved. Two-finger\ngesture detection consumes pointer events so the LazyColumn can't\nsteal mid-pinch; the bitmap swap on photo refresh is paused while a\nfinger is down (was killing live gestures); pan is clamped to image\nbounds; the photo box clips so zoom doesn't bleed onto the name row.\nUpdate banner re-checks on every cold start (was suppressed for 24h\nacross versions if the user ever tapped Later).\nSettings rewritten: rename action via pencil in the toolbar, firmware\nupdate card moved here from the deleted Viewer screen, two-phase\nUnlink moved out of \"Danger zone\" into a typed-confirm dialog (\"type\nunlink to confirm\") since the action is irreversible from the user's\nperspective once the device acks.\nReset is gone end-to-end. It put the device back into pairing while\nleaving an orphaned KV row that no future device could re-link to,\nso the user ended up with two rows after every \"reset and re-pair\"\nflow. Unlink achieves the same end state cleanly. Removed in firmware\n(handle_cues drops the cue branch, upload_result_t loses\nreset_requested), Worker (handleResetDevice + deviceTriggerReset +\nDO /reset route + popDeviceCues reset bit + cuesToHeaders\nX-FridgEye-Cmd-Reset all gone), and app (Settings danger zone\nshrinks to just Unlink).\nDevices list sorts by lastUploadAt descending — most recently active\nfridge first, never-uploaded devices fall to the bottom in creation\norder.\nWi-Fi pairing form: KeyboardType.Uri + autoCorrect off so typing \".\"\nin the SSID doesn't insert a smart space; \"Show\" toggle on the\npassword field. Single-line for both. Latest LocalLifecycleOwner\nimport.\nversionCode pinned in source (was injected from github.run_number),\nso a local build is byte-identical to what CI publishes.\nTooling: Makefile install-release auto-sources .fridgeye-signing-env\n(gitignored) so a release-signed APK can be sideloaded over a\nreleased install without uninstalling. grab-frames.py auto-detects\nthe serial port from /dev/cu.usbmodem* — was hardcoded to a port\nthat changes between plug events.\nFirmware (0.5.0): wifi_connect is idempotent across multiple calls\nper boot (pairing then steady-state), with a clear disconnect-reason\nlog on auth/assoc failures so AP-side rejections show the actual\n802.11 reason code. qr_pair refuses frames whose pixel count doesn't\nmatch quirc's working buffer instead of partially copying. heartbeat\nhelper deleted (uploads carry the same cue headers, no separate ping\nneeded).\nWorker: the dead /devices/:id/heartbeat route also dropped.\nWas being injected from github.run_number at CI build time, which\n- left local debug builds at versionCode=1 (can't sideload over a\n  CI-signed install — Android refuses what looks like a downgrade);\n- split the version source-of-truth between code and CI metadata, so\n  reproducing an old commit's APK locally needed knowing the run\n  number that built it.\nUse a literal versionCode bumped together with versionName. Drop the\nFRIDGEYE_VERSION_CODE env override from build.yml.\nfix(app): re-check for updates on every launch\nThe 24h \"Later\" dismiss-until carried across versions, so once the\nbanner had been dismissed for any release, every newer release stayed\nsuppressed for the rest of the day. Drop the persisted dismiss state\nentirely. Banner now re-evaluates on every cold start; \"Later\" hides\nit for the current process only.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.5.0",
-          "assets": [
-            {
-              "name": "fridgeye-0_5_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.5.0/fridgeye-0_5_0.aab"
-            },
-            {
-              "name": "fridgeye-0_5_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.5.0/fridgeye-0_5_0.apk"
             }
           ]
         }
