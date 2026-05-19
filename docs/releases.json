@@ -336,6 +336,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.6.6",
+          "date": "2026-05-19T22:03:43Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.6.6",
+          "notes": "fix(app): seed photo zoom/rotation from DataStore, not async initial\nSaved rotation never re-appeared on next launch. The LaunchedEffect that\nseeded liveRotation read savedZoom on first composition, but\ncollectAsStateWithLifecycle emits its initialValue (Identity, rotation=0)\nsynchronously and only later replaces it with the DataStore value. The\n`seeded` gate then locked in the 0 and ignored the real emission.\nSeed by collecting the flow's first() directly inside the effect so the\nDataStore value is awaited before assignment.\nBumps to 0.6.6.\n- firmware: remove dead sleep_last_ldr_raw + LED_HEARTBEAT + FRIDGEYE_HEARTBEAT_LED\n- firmware: drop stale FRIDGEYE_OPEN_LOOP_MAX_MS reference; mark build_telemetry_json static\n- worker/app: refresh post-multipart-migration telemetry comments\n- ci: pin release-publisher action to SHA; npm ci over npm install; drop stale OTA-release note\n- .gitignore: widen firmware/build-*/ to cover ad-hoc build dirs\nrelease(app): v0.6.5 — hide rotate pill in saved state\nReleases the UX fix from 5ddff68 that didn't make v0.6.4. The\nrotate pill is now overlay-only — visible together with Reset /\nSave when the live view differs from the saved zoom/rotation,\nhidden in the steady-state card. Discoverability tradeoff: a user\nwith a sideways-mounted device has to pinch to zoom first (or\notherwise enter the \"differs\" state) before they see the rotate\ncontrol. Accepted; a tap-to-edit-mode flow is the v0.7 polish if\nthe discoverability hole becomes a real complaint.\nApp 0.6.5 / versionCode 42. Worker + firmware stay at 0.6.4.\nfix(app): hide rotate pill in saved state, same as Reset/Save\nThe previous commit (4dca173) shipped the rotate pill as\nalways-visible whenever a bitmap rendered — the intent was\ndiscoverability for users with a sideways-mounted camera. But that\ntrades one problem for another: the photo card looks cluttered in\nits normal (saved) state, with a control nobody needs after the\ninitial mount adjustment.\nGoing with the cleaner default: rotate is visible only when the\nlive view differs from saved, same trigger as the Reset / Save\npills. A user with a sideways photo discovers rotation by pinching\nto zoom (which puts them into the \"differs-from-saved\" state),\nseeing all three pills, and tapping rotate. Indirect, but the card\nstays clean in steady state.\nAccepted limitation: a user who never pinches will never discover\nrotation. If that becomes a real complaint, the v0.7 fix is a tap-\nto-edit-mode flow where any single tap on the photo reveals all\nthree pills for a few seconds. Not building it yet.\nNot bumping app version — this rides with the next user-facing\nrelease. v0.6.4 (currently rolling out) keeps the always-visible\nrotate; users who upgrade past it land on the cleaner default.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.6.6",
+          "assets": [
+            {
+              "name": "fridgeye-0_6_6.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.6.6/fridgeye-0_6_6.aab"
+            },
+            {
+              "name": "fridgeye-0_6_6.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.6.6/fridgeye-0_6_6.apk"
+            }
+          ]
+        },
+        {
           "version": "0.6.5",
           "date": "2026-05-19T14:26:01Z",
           "source_repo": "jirip/fridgeye",
@@ -494,24 +512,6 @@
             {
               "name": "fridgeye-0_5_0.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.5.0/fridgeye-0_5_0.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.3.8",
-          "date": "2026-05-09T11:33:02Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.3.8",
-          "notes": "fix(app): re-check for updates on every launch\nThe 24h \"Later\" dismiss-until carried across versions, so once the\nbanner had been dismissed for any release, every newer release stayed\nsuppressed for the rest of the day. Drop the persisted dismiss state\nentirely. Banner now re-evaluates on every cold start; \"Later\" hides\nit for the current process only.\nApp (0.3.7):\n- Stale Reset dialog wording (\"delete from list\" → \"unlink\").\n- ProGuard keep narrowed from blanket data.remote.** to @Serializable\n  types + their generated companions/serializers.\n- LocalLifecycleOwner imported from androidx.lifecycle.compose\n  (the compose-ui copy is deprecated).\n- mutableIntStateOf for the QR carousel index (avoids Int autoboxing).\n- while (isActive) instead of while (true) for poll loops and the\n  per-screen 1 Hz wall-clock tick.\n- DeviceStatus comment matched to the upload-driven reality.\nFirmware (0.3.5):\n- heartbeat.c removed. The 0.3.3+ steady-state loop uses upload\n  responses for cue delivery; the heartbeat helper has been dead\n  code since. Header decl + CMake entry dropped to match.\n- wifi_connect is now safe to call more than once per boot (idempotent\n  netif/event-loop init, optional re-create of the STA netif). The\n  pairing→steady-state path has always rebooted between calls so the\n  latent bug never fired; remove the trip-wire anyway.\n- qr_pair: refuse to feed quirc a frame whose pixel count doesn't\n  match its quirc_begin buffer instead of partially copying. CIF-\n  grayscale always matches in practice; this catches a malformed\n  frame cleanly rather than letting quirc read uninitialised tail.\n- README rewritten — was describing the v1 single-QR pairing flow\n  long after we shipped chunked v4.\n- main.c steady-state comment no longer claims \"1 Hz cadence\".\nWorker (0.3.5):\n- /devices/:id/heartbeat endpoint + handler + DO route + helper all\n  removed. No fielded firmware still calls it. cuesToHeaders, KV/DO\n  shapes, and the upload path stay unchanged.\n- LATEST_FIRMWARE_VERSION bumped to 0.3.5 in lockstep.\n- README rewritten to match the actual endpoint surface (pairing\n  handshake, two-phase unlink, OTA cue, photo upload + fetch).\nDocs:\n- docs/architecture.md updated end-to-end: chunked QR v4 pairing,\n  upload-loop steady state, two-phase unlink, KV/DO/R2 layout. Was\n  still describing the pre-implementation v1 design.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.3.8",
-          "assets": [
-            {
-              "name": "fridgeye-0_3_8.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.3.8/fridgeye-0_3_8.aab"
-            },
-            {
-              "name": "fridgeye-0_3_8.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.3.8/fridgeye-0_3_8.apk"
             }
           ]
         }
