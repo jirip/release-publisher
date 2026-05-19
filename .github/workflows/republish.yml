@@ -127,7 +127,8 @@ jobs:
           files: dist/*
           fail_on_unmatched_files: true
 
-      - name: Update releases.json
+      - name: Build release entry
+        id: entry
         env:
           APP: ${{ github.event.client_payload.app }}
           VERSION: ${{ github.event.client_payload.version }}
@@ -135,7 +136,6 @@ jobs:
           SOURCE_TAG: ${{ github.event.client_payload.source_tag }}
           NOTES: ${{ steps.notes.outputs.value }}
           RELEASE_URL: ${{ steps.release.outputs.url }}
-          WEB_URL_JSON: ${{ toJSON(github.event.client_payload.web_url) }}
           ASSET_METADATA_JSON: ${{ toJSON(github.event.client_payload.asset_metadata) }}
         run: |
           DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
@@ -176,40 +176,72 @@ jobs:
             --arg ru "$RELEASE_URL" \
             --argjson a "$ASSETS_JSON" \
             '{version: $v, date: $d, source_repo: $sr, source_tag: $st, notes: $n, release_url: $ru, assets: $a}')
-
-          # web_url semantics (already type-validated above):
-          #   null (omitted) -> preserve existing apps[$app].webUrl
-          #   ""             -> clear apps[$app].webUrl
-          #   "https://..."  -> set apps[$app].webUrl
-          jq \
-            --arg app "$APP" \
-            --argjson entry "$ENTRY" \
-            --argjson web "$WEB_URL_JSON" \
-            --argjson maxReleases "$MAX_RELEASES_PER_APP" \
-            '
-              .apps[$app] = (.apps[$app] // {releases: []}) |
-              .apps[$app].releases = (([$entry] + (.apps[$app].releases // [])) | .[0:$maxReleases]) |
-              if   $web == null then .
-              elif $web == ""   then del(.apps[$app].webUrl)
-              else                   .apps[$app].webUrl = $web
-              end
-            ' docs/releases.json > docs/releases.json.tmp
-          mv docs/releases.json.tmp docs/releases.json
+          {
+            echo "json<<EOF"
+            echo "$ENTRY"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Commit manifest update
         env:
           APP: ${{ github.event.client_payload.app }}
           VERSION: ${{ github.event.client_payload.version }}
+          ENTRY_JSON: ${{ steps.entry.outputs.json }}
+          WEB_URL_JSON: ${{ toJSON(github.event.client_payload.web_url) }}
         run: |
+          # The publisher's `concurrency.group: republish` serializes the workflow against
+          # itself, but it doesn't protect against *other* writers to master (a manual
+          # commit, a different workflow, a docs tweak). Those races used to produce
+          # `non-fast-forward` push rejections and a stranded public release with no
+          # manifest entry.
+          #
+          # We retry by rebuilding the manifest from disk on each attempt: after a
+          # rebase, `docs/releases.json` may already contain newer entries from other
+          # apps, so re-deriving the file in-loop produces the right merged state and
+          # avoids the duplicate-commit / lost-update pattern of "commit once, push N
+          # times".
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add docs/releases.json
-          if git diff --cached --quiet; then
-            echo "No changes to commit"
-            exit 0
-          fi
-          git commit -m "chore: publish ${APP} v${VERSION}"
-          git push
+
+          attempts=5
+          for attempt in $(seq 1 "$attempts"); do
+            git fetch origin master --quiet
+            git reset --hard origin/master
+
+            # web_url semantics (already type-validated above):
+            #   null (omitted) -> preserve existing apps[$app].webUrl
+            #   ""             -> clear apps[$app].webUrl
+            #   "https://..."  -> set apps[$app].webUrl
+            jq \
+              --arg app "$APP" \
+              --argjson entry "$ENTRY_JSON" \
+              --argjson web "$WEB_URL_JSON" \
+              --argjson maxReleases "$MAX_RELEASES_PER_APP" \
+              '
+                .apps[$app] = (.apps[$app] // {releases: []}) |
+                .apps[$app].releases = (([$entry] + (.apps[$app].releases // [])) | .[0:$maxReleases]) |
+                if   $web == null then .
+                elif $web == ""   then del(.apps[$app].webUrl)
+                else                   .apps[$app].webUrl = $web
+                end
+              ' docs/releases.json > docs/releases.json.tmp
+            mv docs/releases.json.tmp docs/releases.json
+
+            git add docs/releases.json
+            if git diff --cached --quiet; then
+              echo "No changes to commit (manifest already records ${APP} v${VERSION})"
+              exit 0
+            fi
+            git commit -m "chore: publish ${APP} v${VERSION}"
+
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected on attempt ${attempt}/${attempts}; rebuilding from latest origin/master"
+            sleep $((attempt * 2))
+          done
+          echo "::error::failed to push manifest update after ${attempts} attempts"
+          exit 1
 
       - name: Notify recipients
         if: github.event.client_payload.recipients_enc != ''
