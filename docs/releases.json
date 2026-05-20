@@ -520,6 +520,31 @@
     "fridgeye-firmware": {
       "releases": [
         {
+          "version": "0.7.0",
+          "date": "2026-05-20T09:25:42Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "fw-v0.7.0",
+          "notes": "feat: camera exposure pin + dark-frame skip + fullscreen history viewer [fw-release]\nDevice side:\n- New cam_pin module (NVS-backed) holds AEC value + AGC gain + LDR\n  baseline. Applied on every boot after camera_init, before the first\n  capture, so a calibrated device always uses the same exposure.\n- camera_capture reads back s->status.aec_value / agc_gain + LDR raw\n  per frame; values land in the multipart telemetry JSON.\n- is_low_light(ldr_raw, pin) decides per frame: pre-calibration uses\n  the global FRIDGEYE_LDR_THRESHOLD_RAW (kconfig now common to both\n  builds); post-calibration uses pin.ldr_baseline / 2. Dark frames\n  skip the JPEG upload entirely and ping /status instead, so the\n  device stays \"online\" without overwriting the latest good frame.\n- New cue headers: X-FridgEye-Cmd-Calibrate (one-shot) and\n  X-FridgEye-Cam-Pin \"aec,agc,ldrBaseline\" (always-on while a pin\n  exists). Firmware persists the pin and re-applies on the next\n  capture; no reboot needed.\n- ldr_read_raw moved out of battery.c into a USB-buildable ldr.c TU\n  so both builds can sample without dragging in the rest of battery.h.\n- Firmware bumped to 0.7.0 (lockstep with the Worker constant — the\n  version-sync CI gate enforces this).\nWorker side:\n- CameraPin stored on the KV DeviceRecord; POST /calibrate stages\n  the cue, DELETE /calibrate clears both pending state and any\n  existing pin. Calibration result is captured when a /upload or\n  /status response carries aecValue+agcGain+ldrRaw AND the LDR raw\n  is bright enough (MIN_CALIBRATION_LDR_RAW=1200) — refuses to pin\n  from a dim frame so the user gets a clean retry on the next try.\n- Telemetry validators added for aecValue, agcGain, ldrRaw,\n  lowLight, skippedDarkFrames. All optional, all range-checked.\nApp side:\n- DeviceTelemetry + DeviceSummary gain the new fields. Camera\n  exposure card on settings: Calibrate / Recalibrate / Unlock with\n  the pinned values shown as InfoRows. UI flips immediately on\n  request (refresh-after-dispatch) so the user sees \"pending\" without\n  waiting for the next watch tick.\n- History strip honours the saved zoom/rotation so frames render the\n  same way as the main card.\n- Tapping a history frame opens a new fullscreen viewer: no\n  rotation applied, fit-to-width so the long axis hits both screen\n  edges, pinch-zoom (1x..8x) + drag-pan, translucent topbar with\n  the local capture time. Zoom state is discarded on back — by\n  design, history is read-only.\n- App bumped to 0.8.0.\nfeat(worker): camera-pin + calibrate cue + dark-frame telemetry\nAdds the server side of \"lock the camera exposure once, skip dark\nframes\":\n- New CameraPin (AEC value + AGC gain + LDR baseline + capturedAt)\n  stored on the KV DeviceRecord. Always shipped back on upload/status\n  responses as X-FridgEye-Cam-Pin so the firmware persists+applies\n  it. Encoded as \"aec,agc,ldrBaseline\" for a cheap on-device parse.\n- POST /devices/:id/calibrate (Google-authed) sets a sticky cue. The\n  device picks it up via X-FridgEye-Cmd-Calibrate, runs AEC normally\n  on the next capture, and reports converged values in the same\n  upload's telemetry JSON (aecValue, agcGain, ldrRaw). Worker turns\n  that into a pin, clears the cue. Refuses calibrations from a dim\n  frame (ldrRaw < 1200) so a fridge-bulb-off capture doesn't pin\n  to garbage.\n- DELETE /devices/:id/calibrate clears both pending state and any\n  existing pin — the UI \"Unlock\" action.\n- Telemetry gains aecValue, agcGain, ldrRaw, lowLight,\n  skippedDarkFrames. All optional, all validated; AWB stays auto\n  since the OV2640 status struct doesn't expose per-channel gains.\nFirmware + app land in follow-ups.\nfeat: per-device history of last 10 frames\nWorker keeps a ring buffer at users/<sub>/<id>/history/<ms>.jpg, written\nalongside the existing latest.jpg on every multipart upload. Two new\nendpoints serve the app: GET /devices/:id/history (timestamps,\nnewest-first) and GET /devices/:id/history/<ts>.jpg (one frame).\nHistory is wiped together with the rest of the device record on\nunlink confirm.\nApp gets a History card on the device settings screen → a vertical\nlist of frames with timestamps. Motivates the \"is the dark frame just\nthe door closing?\" diagnostic — the trend across the last 10 frames\nmakes that obvious.\nBumps to 0.7.0.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-firmware-v0.7.0",
+          "assets": [
+            {
+              "name": "fridgeye-battery.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-v0.7.0/fridgeye-battery.bin",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye-usb.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-v0.7.0/fridgeye-usb.bin",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-v0.7.0/fridgeye.bin",
+              "hidden": true
+            }
+          ]
+        },
+        {
           "version": "0.6.4",
           "date": "2026-05-19T12:29:40Z",
           "source_repo": "jirip/fridgeye",
