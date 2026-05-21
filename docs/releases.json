@@ -336,6 +336,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.9.0",
+          "date": "2026-05-21T18:12:38Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.9.0",
+          "notes": "",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.9.0",
+          "assets": [
+            {
+              "name": "fridgeye-0_9_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.0/fridgeye-0_9_0.aab"
+            },
+            {
+              "name": "fridgeye-0_9_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.0/fridgeye-0_9_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.8.2",
           "date": "2026-05-20T10:23:57Z",
           "source_repo": "jirip/fridgeye",
@@ -494,24 +512,6 @@
             {
               "name": "fridgeye-0_6_3.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.6.3/fridgeye-0_6_3.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.6.2",
-          "date": "2026-05-17T23:46:03Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.6.2",
-          "notes": "feat(fw): per-phase LED — TAKING_PICTURE / SENDING / WAITING [fw-release]\nThe previous LED behavior set LED_CAPTURING (4 Hz fast blink) at the\ntop of every wake session and never changed it, so the device fast-\nblinked continuously from wifi-up through the final 2 s wait before\ndeep sleep. That's the opposite of a status indicator — it conveys\nnothing about which phase the device is in.\nThree new patterns covering the wake-and-upload cycle, each with a\ndistinct visual rhythm:\n  LED_TAKING_PICTURE — solid on (rare, ~1 s during sensor read)\n  LED_SENDING        — 400 ms on, 100 ms off (mostly-on, ~2 s during HTTP)\n  LED_WAITING        — 100 ms on, 400 ms off (mostly-off, 2 s between ticks)\nA user watching the LED from outside the fridge now sees, per door-open:\n  solid → mostly-on flicker → mostly-off flicker → solid → mostly-on\n  flicker → mostly-off flicker → ... → fully off (deep sleep)\n…which faithfully tracks \"capturing, sending, waiting, repeat\" until\nthe door closes.\nLED_CAPTURING (the fast blink) is unchanged and still used by the QR\npairing flow where \"got a chunk, hold steady\" is its real meaning.\nVersions: firmware 0.6.2 + worker LATEST_FIRMWARE_VERSION 0.6.2 in\nlockstep. App stays at 0.6.2 from the previous commit.\nfix(app): attach Google bearer only to Worker URL\nThe UpdateChecker fetches the publisher manifest from raw.github\nusercontent.com, but went through the global HttpClient which had\nsendWithoutRequest { true } on its Auth plugin — meaning every\nrequest, regardless of host, got the Google ID token attached as\nAuthorization: Bearer ...\nGitHub's raw endpoint returns **404** (not 401) when given a Bearer\ntoken that doesn't map to a real GitHub credential. The UpdateChecker\ncaught the ClientRequestException and silently returned null — so\nthe \"Update available\" banner never appeared, even when a new\nrelease had been published hours ago. Confirmed by adb logcat from\nthe 0.5.0 phone in this session:\n  W UpdateChecker: manifest fetch/parse failed\n  W UpdateChecker: ClientRequestException: GET .../releases.json\n                  invalid: 404 . Text: \"404: Not Found\"\nFix: narrow sendWithoutRequest to the Worker host only. The\nWORKER_HOST constant is extracted from BuildConfig.WORKER_URL at\nmodule init, so the host check follows whatever Worker URL is\nconfigured at build time (dev/staging/prod). Calls to anywhere else\n— GitHub raw, the publisher mirror, any future third-party — go out\nwithout the Authorization header.\nVersions: app 0.6.2 / versionCode 39. Firmware + Worker stay at\n0.6.1; this is an app-only network-layer fix.\nCaveat: this fix only helps the version installed AFTER it. Phones\ncurrently on 0.5.0 or 0.6.0 still have the broken updater and need a\nmanual sideload from jirip.github.io/release-publisher/ to get\nunstuck.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.6.2",
-          "assets": [
-            {
-              "name": "fridgeye-0_6_2.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.6.2/fridgeye-0_6_2.aab"
-            },
-            {
-              "name": "fridgeye-0_6_2.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.6.2/fridgeye-0_6_2.apk"
             }
           ]
         }
