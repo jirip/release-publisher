@@ -520,6 +520,31 @@
     "fridgeye-firmware": {
       "releases": [
         {
+          "version": "0.7.2",
+          "date": "2026-05-21T23:28:56Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "fw-v0.7.2",
+          "notes": "refactor: rename pin → calibration, fix calibrate-from-frame propagation [fw-release]\nRename: the word \"pin\" was unclear (overlap with PIN codes etc).\nEnd-to-end rename to \"calibration\" — the same word users already see\nin the UI:\n- Worker: CameraPin → Calibration. cameraPin field → calibration.\n  encodeCameraPin → encodeCalibration. calibrationToPin →\n  telemetryToCalibration. Cue header X-FridgEye-Cam-Pin →\n  X-FridgEye-Cam-Calibration.\n- Firmware: cam_pin.c → calibration.c. cam_pin_t → calibration_t.\n  cam_pin_load/save/clear/parse → calibration_load/save/clear/parse.\n  s_active_pin → s_active_calibration. s_have_pin →\n  s_have_calibration. camera_apply_pin → camera_apply_calibration.\n  upload_result_t.cam_pin_encoded → calibration_encoded.\n- App: data class CameraPin → Calibration. cameraPin → calibration.\nNVS key value stays \"cam_pin_v1\" for backward compatibility — already-\ncalibrated devices keep their stored values across the upgrade.\nPropagation fix: decorateCues was sending both the calibrate cue AND\nthe cameraPin header during calibrate-from-frame. The firmware\nprocessed the calibrate cue first (switching the sensor to AUTO,\nclearing local state), then the pin header (re-pinning). Effect:\nbenign but wasteful — and conceptually wrong: a server already\nholding the values shouldn't ask the device to \"calibrate\". Now the\ntwo paths are split:\n- Server has values → ship X-FridgEye-Cam-Calibration only.\n- Server staged a calibrate cue with no values → ship\n  X-FridgEye-Cmd-Calibrate only.\nBumps firmware 0.7.2, app 0.9.3.\nfeat: calibration ack flow + snackbar feedback + single-button card\nWorker now tracks \"pin set but not yet confirmed by device\" properly:\n- calibrate-from-frame writes the pin AND sets calibratePending=true.\n  The flag clears only when the device's next telemetry reports\n  aecValue + agcGain matching the pin (path 2 of\n  applyCalibrationFromTelemetry, alongside the existing regular\n  calibrate flow).\n- Cue decoration suppresses the X-FridgEye-Cam-Pin header once the\n  device's reported values already match the stored pin — no point\n  re-shipping bytes a calibrated device has already applied. Same\n  for X-FridgEye-Cmd-Calibrate.\nApp settings card collapses to one button per state:\n- \"Auto calibration\" + Calibrate button.\n- \"Calibration awaiting device confirmation\" + Remove button.\n- \"Calibration set\" + AEC/AGC/LDR rows + Remove button.\nRecalibrate / Unlock duplicated Calibrate / Remove for no reason;\ndropped.\nHistory swipe-right now snackbars the result:\n- Success: \"Calibration sent — awaiting device confirmation\".\n- 409 (frame too dark, missing metadata): surfaced from the\n  Worker's body verbatim.\n- Other failures: error message.\nViewModel exposes a Channel-backed events flow; snackbar host lives\non the Scaffold.\nBumps to 0.9.1.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-firmware-v0.7.2",
+          "assets": [
+            {
+              "name": "fridgeye-battery.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-v0.7.2/fridgeye-battery.bin",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye-usb.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-v0.7.2/fridgeye-usb.bin",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-v0.7.2/fridgeye.bin",
+              "hidden": true
+            }
+          ]
+        },
+        {
           "version": "0.7.1",
           "date": "2026-05-21T18:12:11Z",
           "source_repo": "jirip/fridgeye",
