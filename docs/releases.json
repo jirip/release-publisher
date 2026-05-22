@@ -336,6 +336,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.9.4",
+          "date": "2026-05-22T07:44:20Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.9.4",
+          "notes": "",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.9.4",
+          "assets": [
+            {
+              "name": "fridgeye-0_9_4.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.4/fridgeye-0_9_4.aab"
+            },
+            {
+              "name": "fridgeye-0_9_4.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.4/fridgeye-0_9_4.apk"
+            }
+          ]
+        },
+        {
           "version": "0.9.3",
           "date": "2026-05-21T23:28:35Z",
           "source_repo": "jirip/fridgeye",
@@ -494,24 +512,6 @@
             {
               "name": "fridgeye-0_6_5.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.6.5/fridgeye-0_6_5.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.6.4",
-          "date": "2026-05-19T13:32:04Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.6.4",
-          "notes": "",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.6.4",
-          "assets": [
-            {
-              "name": "fridgeye-0_6_4.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.6.4/fridgeye-0_6_4.aab"
-            },
-            {
-              "name": "fridgeye-0_6_4.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.6.4/fridgeye-0_6_4.apk"
             }
           ]
         }
