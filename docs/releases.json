@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.1.0",
+          "date": "2026-05-23T13:07:34Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.1.0",
+          "notes": "feat: inline player list on home screen\nReplaces the count-stepper with a directly editable roster. Add/remove\nbuttons mutate the list in place; persisted count is restored on launch\nbut names are freshly randomised every time.\nBumps to 1.1.0 so the in-app updater can deliver it.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.1.0",
+          "assets": [
+            {
+              "name": "darts-score-1_1_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.1.0/darts-score-1_1_0.aab"
+            },
+            {
+              "name": "darts-score-1_1_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.1.0/darts-score-1_1_0.apk"
+            }
+          ]
+        },
+        {
           "version": "1.0.0",
           "date": "2026-05-22T00:13:59Z",
           "source_repo": "jirip/darts-score",
