@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.2",
+          "date": "2026-05-23T13:40:35Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.2",
+          "notes": "feat: updater now polls public release-publisher manifest\nNo GitHub token baked into the APK. The Pages manifest at\nhttps://jirip.github.io/release-publisher/releases.json is public and\ncontains a version + APK download URL for every published release, so the\nupdater can fetch and install without any auth.\nDrops --dart-define=GITHUB_TOKEN from the workflow, the local.properties\nmaterialisation step, and the BuildConfig wiring in build.gradle.kts.\nREADER_GITHUB_TOKEN secret is now unused (kept for future direct-from-\nprivate-release fallback if ever needed).\nfix: hide L-N until someone wins a leg\nfeat: keypad on bottom, plain number labels, adaptive scoreboard\nGame-screen rework:\n- Keypad moves to the bottom. Modifier row (DOUBLE/TRIPLE) sits below the\n  number buttons so it's reachable by thumbs.\n- Number buttons always show the plain number (20, not S20/D20/T20). When\n  DOUBLE/TRIPLE is active, a hint line above the keypad announces it; the\n  next tap consumes the modifier.\n- 0 (miss) is now a wide button spanning 3 columns; 25 (bull) takes 2.\n  With DOUBLE active, tapping 25 records double-bull (50) silently.\n- Triple-on-bull is disabled (no T25 on a real dartboard).\n- Scoreboard adapts to player count: 1-3 players → one full row of detail\n  tiles; 4+ players → compact horizontal overview row of everyone, plus\n  PREVIOUS and NOW detail tiles below it.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.2",
+          "assets": [
+            {
+              "name": "darts-score-1_2_2.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.2/darts-score-1_2_2.aab"
+            },
+            {
+              "name": "darts-score-1_2_2.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.2/darts-score-1_2_2.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.1",
           "date": "2026-05-23T13:18:32Z",
           "source_repo": "jirip/darts-score",
