@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.3",
+          "date": "2026-05-23T20:28:28Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.3",
+          "notes": "feat: pub-culture name pool, version label on home\nfeat: updater now polls public release-publisher manifest\nNo GitHub token baked into the APK. The Pages manifest at\nhttps://jirip.github.io/release-publisher/releases.json is public and\ncontains a version + APK download URL for every published release, so the\nupdater can fetch and install without any auth.\nDrops --dart-define=GITHUB_TOKEN from the workflow, the local.properties\nmaterialisation step, and the BuildConfig wiring in build.gradle.kts.\nREADER_GITHUB_TOKEN secret is now unused (kept for future direct-from-\nprivate-release fallback if ever needed).",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.3",
+          "assets": [
+            {
+              "name": "darts-score-1_2_3.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.3/darts-score-1_2_3.aab"
+            },
+            {
+              "name": "darts-score-1_2_3.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.3/darts-score-1_2_3.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.2",
           "date": "2026-05-23T13:40:35Z",
           "source_repo": "jirip/darts-score",
