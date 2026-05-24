@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.10",
+          "date": "2026-05-24T18:21:54Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.10",
+          "notes": "feat(voice): keep \"Bust!\" announcement\nfix(game): drop redundant 'DOUBLE armed' hint text\nfeat(voice): only announce the round total, nothing else\nfeat(game): show last turn's per-dart breakdown on player tiles\nfeat(game): auto-advance, bust blink, coloured specials\n- Auto-advance after 3 darts, on bust, or on checkout — no Submit button.\n- Bust: dart slots flash red, voice says \"bust\", then auto-advance.\n- 0 / 25 / DOUBLE / TRIPLE are tinted (slate / red / teal / amber) even\n  when inactive — easier to find by thumb.\n- Backspace now also reverses across turns: when there are no pending\n  darts, it undoes the previous player's submitted turn and restores\n  their darts as the new pending turn for editing.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.10",
+          "assets": [
+            {
+              "name": "darts-score-1_2_10.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.10/darts-score-1_2_10.aab"
+            },
+            {
+              "name": "darts-score-1_2_10.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.10/darts-score-1_2_10.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.9",
           "date": "2026-05-24T18:20:11Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_1.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.1/darts-score-1_2_1.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.1.0",
-          "date": "2026-05-23T13:07:34Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.1.0",
-          "notes": "feat: inline player list on home screen\nReplaces the count-stepper with a directly editable roster. Add/remove\nbuttons mutate the list in place; persisted count is restored on launch\nbut names are freshly randomised every time.\nBumps to 1.1.0 so the in-app updater can deliver it.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.1.0",
-          "assets": [
-            {
-              "name": "darts-score-1_1_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.1.0/darts-score-1_1_0.aab"
-            },
-            {
-              "name": "darts-score-1_1_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.1.0/darts-score-1_1_0.apk"
             }
           ]
         }
