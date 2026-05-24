@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.5",
+          "date": "2026-05-24T16:28:47Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.5",
+          "notes": "fix(icon): add breathing room around dartboard\nfeat(icon): circular dartboard launcher icon\nSource: icon.png. Trimmed to the dartboard+dart bounding box, padded\nsquare on the off-white background, masked to a circle for the legacy\nsquare icon. Adaptive-icon foreground is the same artwork on a\ntransparent canvas; background is solid #F8F8F8 — Android composites\nthem and applies the user's launcher mask (circle / squircle / teardrop).\niOS launcher icons regenerated at every size.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.5",
+          "assets": [
+            {
+              "name": "darts-score-1_2_5.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.5/darts-score-1_2_5.aab"
+            },
+            {
+              "name": "darts-score-1_2_5.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.5/darts-score-1_2_5.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.4",
           "date": "2026-05-24T16:16:01Z",
           "source_repo": "jirip/darts-score",
