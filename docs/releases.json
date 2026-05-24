@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.17",
+          "date": "2026-05-24T21:13:34Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.17",
+          "notes": "feat(game): legs shown as filled-circle pips instead of 'L-N'\nstyle(game): average uses Ø symbol, same-size badge as previous total\nfeat(game): restructure tile (name on top, score+last/avg row, dart chips)\n- Player name pinned to the top of every detail tile.\n- Middle row: big remaining score on the left, AVG / L-N / last-total\n  badge stacked on the right.\n- Bottom row: three full-width dart chips for the previous turn.\n- Pending dart slots above the keypad now show T20/D5 etc. instead\n  of the raw 60/10 values.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.17",
+          "assets": [
+            {
+              "name": "darts-score-1_2_17.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.17/darts-score-1_2_17.aab"
+            },
+            {
+              "name": "darts-score-1_2_17.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.17/darts-score-1_2_17.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.16",
           "date": "2026-05-24T21:10:10Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_8.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.8/darts-score-1_2_8.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.7",
-          "date": "2026-05-24T18:18:23Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.7",
-          "notes": "feat(game): show last turn's per-dart breakdown on player tiles\nfeat(game): auto-advance, bust blink, coloured specials\n- Auto-advance after 3 darts, on bust, or on checkout — no Submit button.\n- Bust: dart slots flash red, voice says \"bust\", then auto-advance.\n- 0 / 25 / DOUBLE / TRIPLE are tinted (slate / red / teal / amber) even\n  when inactive — easier to find by thumb.\n- Backspace now also reverses across turns: when there are no pending\n  darts, it undoes the previous player's submitted turn and restores\n  their darts as the new pending turn for editing.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.7",
-          "assets": [
-            {
-              "name": "darts-score-1_2_7.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.7/darts-score-1_2_7.aab"
-            },
-            {
-              "name": "darts-score-1_2_7.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.7/darts-score-1_2_7.apk"
             }
           ]
         }
