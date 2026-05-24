@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.15",
+          "date": "2026-05-24T20:58:21Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.15",
+          "notes": "feat(game): restructure tile (name on top, score+last/avg row, dart chips)\n- Player name pinned to the top of every detail tile.\n- Middle row: big remaining score on the left, AVG / L-N / last-total\n  badge stacked on the right.\n- Bottom row: three full-width dart chips for the previous turn.\n- Pending dart slots above the keypad now show T20/D5 etc. instead\n  of the raw 60/10 values.\nfix(game): keep remaining-score on one line; shrink right cluster",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.15",
+          "assets": [
+            {
+              "name": "darts-score-1_2_15.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.15/darts-score-1_2_15.aab"
+            },
+            {
+              "name": "darts-score-1_2_15.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.15/darts-score-1_2_15.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.14",
           "date": "2026-05-24T20:44:19Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_6.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.6/darts-score-1_2_6.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.5",
-          "date": "2026-05-24T16:28:47Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.5",
-          "notes": "fix(icon): add breathing room around dartboard\nfeat(icon): circular dartboard launcher icon\nSource: icon.png. Trimmed to the dartboard+dart bounding box, padded\nsquare on the off-white background, masked to a circle for the legacy\nsquare icon. Adaptive-icon foreground is the same artwork on a\ntransparent canvas; background is solid #F8F8F8 — Android composites\nthem and applies the user's launcher mask (circle / squircle / teardrop).\niOS launcher icons regenerated at every size.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.5",
-          "assets": [
-            {
-              "name": "darts-score-1_2_5.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.5/darts-score-1_2_5.aab"
-            },
-            {
-              "name": "darts-score-1_2_5.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.5/darts-score-1_2_5.apk"
             }
           ]
         }
