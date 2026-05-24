@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.14",
+          "date": "2026-05-24T20:44:19Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.14",
+          "notes": "fix(game): keep remaining-score on one line; shrink right cluster\nfeat(game): previous-turn cluster — big total box + 3 dart chips",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.14",
+          "assets": [
+            {
+              "name": "darts-score-1_2_14.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.14/darts-score-1_2_14.aab"
+            },
+            {
+              "name": "darts-score-1_2_14.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.14/darts-score-1_2_14.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.13",
           "date": "2026-05-24T20:35:58Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_5.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.5/darts-score-1_2_5.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.4",
-          "date": "2026-05-24T16:16:01Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.4",
-          "notes": "feat(icon): circular dartboard launcher icon\nSource: icon.png. Trimmed to the dartboard+dart bounding box, padded\nsquare on the off-white background, masked to a circle for the legacy\nsquare icon. Adaptive-icon foreground is the same artwork on a\ntransparent canvas; background is solid #F8F8F8 — Android composites\nthem and applies the user's launcher mask (circle / squircle / teardrop).\niOS launcher icons regenerated at every size.\nfeat: pub-culture name pool, version label on home",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.4",
-          "assets": [
-            {
-              "name": "darts-score-1_2_4.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.4/darts-score-1_2_4.aab"
-            },
-            {
-              "name": "darts-score-1_2_4.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.4/darts-score-1_2_4.apk"
             }
           ]
         }
