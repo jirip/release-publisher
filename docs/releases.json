@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.24",
+          "date": "2026-05-25T21:57:02Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.24",
+          "notes": "feat(game): live pending darts on active card, suggestions everywhere\n- Cheer SFX gets ~1.8s to play before the score is announced over the\n  top (was getting clipped at 600ms).\n- Every player now shows their best 3-dart checkout, not just the active\n  one. Active uses the live pending-aware suggestion; others use their\n  full 3-dart suggestion from their remaining.\n- Drops the pending-dart strip + bust banner above the keypad entirely.\n  The active player's card is now the live turn display:\n    · 3 chip slots start as '—' and fill as you tap.\n    · Big remaining score is the running score after pending darts.\n    · Total box on the right shows the running this-turn sum.\n- Bottom keypad row gets a 5th button: [0] [25] [DOUBLE] [TRIPLE] [←].\n  The arrow removes the last pending dart, or rewinds to the previous\n  player's submitted turn if pending is empty (existing undo logic).",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.24",
+          "assets": [
+            {
+              "name": "darts-score-1_2_24.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.24/darts-score-1_2_24.aab"
+            },
+            {
+              "name": "darts-score-1_2_24.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.24/darts-score-1_2_24.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.23",
           "date": "2026-05-25T14:31:56Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_15.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.15/darts-score-1_2_15.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.14",
-          "date": "2026-05-24T20:44:19Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.14",
-          "notes": "fix(game): keep remaining-score on one line; shrink right cluster\nfeat(game): previous-turn cluster — big total box + 3 dart chips",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.14",
-          "assets": [
-            {
-              "name": "darts-score-1_2_14.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.14/darts-score-1_2_14.aab"
-            },
-            {
-              "name": "darts-score-1_2_14.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.14/darts-score-1_2_14.apk"
             }
           ]
         }
