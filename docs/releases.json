@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.31",
+          "date": "2026-05-25T22:49:59Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.31",
+          "notes": "feat(names): no two players share a first letter\nrandomDartsNames now picks names whose first letters are pairwise\nunique within a single roster. If the constraint can't be met\n(unlikely with 26 letters and 103 names, but possible for huge\nrosters), it falls back to plain uniqueness, then finally to\nduplicates.\nSame rule applies on the home screen when re-rolling a single\nplayer or adding a player: avoids same-letter clashes with the\nother current players. With 8 players (the max), we cover at most\n8 of the ~25 available first letters in the pool, so the strict\nrule almost always succeeds.\nPares the pool down to names the user actually recognises. Drops\nsitcoms (Father Ted, Fawlty Towers, IT Crowd, Always Sunny, etc.),\nmost UK/US comedy and some literary obscures (Withnail, Bertie/Jeeves,\nCaptain Ahab). Borat / Napoleon are stripped to single first names.\nFinal pool: Homer Simpson, Bart Simpson, Lisa Simpson, Marge Simpson,\nMoe Szyslak, Krusty the Clown, Mr. Burns, Milhouse Van Houten,\nPrincipal Skinner, Disco Stu, Comic Book Guy, Vincent Vega,\nForrest Gump, Indiana Jones, James Bond, Borat, Napoleon, Bridget\nJones, Jay Gatsby, Hercule Poirot, Sherlock Holmes, Bilbo Baggins,\nGandalf, Aragorn, Hermione, Severus Snape, Tyrion Lannister, Hagrid,\nArya Stark, Jon Snow, Captain Nemo, Don Quixote.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.31",
+          "assets": [
+            {
+              "name": "darts-score-1_2_31.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.31/darts-score-1_2_31.aab"
+            },
+            {
+              "name": "darts-score-1_2_31.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.31/darts-score-1_2_31.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.30",
           "date": "2026-05-25T22:48:02Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_22.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.22/darts-score-1_2_22.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.21",
-          "date": "2026-05-25T13:52:47Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.21",
-          "notes": "feat(game): variant J row layout, celebration on tons\nPlayer row redesign (variant J from /mocks):\n- Left column: muted name, big remaining score, leg pips bottom-left.\n- Right column row 1: three dart chips on the left, larger total box\n  on the right (84×52, total in Bebas Neue 32).\n- Right column row 2: 'Aim: …' on the left (active row only), Ø badge\n  on the right showing 'Ø 60.0' inline.\nVoice:\n- Anything ≥100 now prefixes a random celebration phrase before the\n  number: \"Brilliant! 121\", \"Magnificent! 140\". Phrase pool: well done,\n  good job, amazing, what a turn, magnificent, lovely, big score, nice\n  darts, superb, brilliant. 180 still gets the dedicated \"One hundred\n  and eighty!\" callout.\nfeat(game): row redesign — name top-left, Ø right, bigger last turn\n- Each row: name top-left, average badge top-right, big remaining score\n  below the name. Last-turn row sits underneath with three larger dart\n  chips (50×28) on the left and a bigger total box (80×48) on the right.\n  Suggestion line and leg pips at the bottom.\n- Drops the PREV/NOW/NEXT labels.\n- Switches rotation threshold from 3 to 4: with ≤4 players every player\n  has their own visible row and the active one is just highlighted red.\n  With 5+ players the compact overview strip returns plus three rotating\n  detail rows (previous / now / next).",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.21",
-          "assets": [
-            {
-              "name": "darts-score-1_2_21.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.21/darts-score-1_2_21.aab"
-            },
-            {
-              "name": "darts-score-1_2_21.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.21/darts-score-1_2_21.apk"
             }
           ]
         }
