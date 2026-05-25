@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.21",
+          "date": "2026-05-25T13:52:47Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.21",
+          "notes": "feat(game): variant J row layout, celebration on tons\nPlayer row redesign (variant J from /mocks):\n- Left column: muted name, big remaining score, leg pips bottom-left.\n- Right column row 1: three dart chips on the left, larger total box\n  on the right (84×52, total in Bebas Neue 32).\n- Right column row 2: 'Aim: …' on the left (active row only), Ø badge\n  on the right showing 'Ø 60.0' inline.\nVoice:\n- Anything ≥100 now prefixes a random celebration phrase before the\n  number: \"Brilliant! 121\", \"Magnificent! 140\". Phrase pool: well done,\n  good job, amazing, what a turn, magnificent, lovely, big score, nice\n  darts, superb, brilliant. 180 still gets the dedicated \"One hundred\n  and eighty!\" callout.\nfeat(game): row redesign — name top-left, Ø right, bigger last turn\n- Each row: name top-left, average badge top-right, big remaining score\n  below the name. Last-turn row sits underneath with three larger dart\n  chips (50×28) on the left and a bigger total box (80×48) on the right.\n  Suggestion line and leg pips at the bottom.\n- Drops the PREV/NOW/NEXT labels.\n- Switches rotation threshold from 3 to 4: with ≤4 players every player\n  has their own visible row and the active one is just highlighted red.\n  With 5+ players the compact overview strip returns plus three rotating\n  detail rows (previous / now / next).",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.21",
+          "assets": [
+            {
+              "name": "darts-score-1_2_21.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.21/darts-score-1_2_21.aab"
+            },
+            {
+              "name": "darts-score-1_2_21.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.21/darts-score-1_2_21.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.20",
           "date": "2026-05-25T13:18:32Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_12.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.12/darts-score-1_2_12.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.11",
-          "date": "2026-05-24T18:26:40Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.11",
-          "notes": "feat(home): per-player dice button to re-roll the name",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.11",
-          "assets": [
-            {
-              "name": "darts-score-1_2_11.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.11/darts-score-1_2_11.aab"
-            },
-            {
-              "name": "darts-score-1_2_11.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.11/darts-score-1_2_11.apk"
             }
           ]
         }
