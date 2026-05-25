@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.30",
+          "date": "2026-05-25T22:48:02Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.30",
+          "notes": "Pares the pool down to names the user actually recognises. Drops\nsitcoms (Father Ted, Fawlty Towers, IT Crowd, Always Sunny, etc.),\nmost UK/US comedy and some literary obscures (Withnail, Bertie/Jeeves,\nCaptain Ahab). Borat / Napoleon are stripped to single first names.\nFinal pool: Homer Simpson, Bart Simpson, Lisa Simpson, Marge Simpson,\nMoe Szyslak, Krusty the Clown, Mr. Burns, Milhouse Van Houten,\nPrincipal Skinner, Disco Stu, Comic Book Guy, Vincent Vega,\nForrest Gump, Indiana Jones, James Bond, Borat, Napoleon, Bridget\nJones, Jay Gatsby, Hercule Poirot, Sherlock Holmes, Bilbo Baggins,\nGandalf, Aragorn, Hermione, Severus Snape, Tyrion Lannister, Hagrid,\nArya Stark, Jon Snow, Captain Nemo, Don Quixote.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.30",
+          "assets": [
+            {
+              "name": "darts-score-1_2_30.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.30/darts-score-1_2_30.aab"
+            },
+            {
+              "name": "darts-score-1_2_30.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.30/darts-score-1_2_30.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.29",
           "date": "2026-05-25T22:34:06Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_21.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.21/darts-score-1_2_21.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.20",
-          "date": "2026-05-25T13:18:32Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.20",
-          "notes": "feat(game): row redesign — name top-left, Ø right, bigger last turn\n- Each row: name top-left, average badge top-right, big remaining score\n  below the name. Last-turn row sits underneath with three larger dart\n  chips (50×28) on the left and a bigger total box (80×48) on the right.\n  Suggestion line and leg pips at the bottom.\n- Drops the PREV/NOW/NEXT labels.\n- Switches rotation threshold from 3 to 4: with ≤4 players every player\n  has their own visible row and the active one is just highlighted red.\n  With 5+ players the compact overview strip returns plus three rotating\n  detail rows (previous / now / next).\nfeat(game): full-width player rows; PREV/NOW/NEXT for 4+ players\n- 1–3 players: one full-width row per player, stacked vertically.\n- 4+ players: compact overview strip on top + PREVIOUS / NOW (2x tall) /\n  NEXT rows below. NEXT wraps to the next player after the current one,\n  including across the leg starter.\n- Suggestion line (\"Aim: T20 · T20 · DBULL\") now lives inside the active\n  player's row instead of a separate strip above the keypad. The strip\n  is gone except for a brief BUST banner during the bust blink.\n- Drops the old grid tile (_playerTileDetail) and _dartChipRow helper.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.20",
-          "assets": [
-            {
-              "name": "darts-score-1_2_20.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.20/darts-score-1_2_20.aab"
-            },
-            {
-              "name": "darts-score-1_2_20.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.20/darts-score-1_2_20.apk"
             }
           ]
         }
