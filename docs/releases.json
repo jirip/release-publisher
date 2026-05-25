@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.26",
+          "date": "2026-05-25T22:18:02Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.26",
+          "notes": "feat(sfx): 6 more clips, shuffled-bag rotation\nAudio:\n- Adds cheer3, achievement, audience-cheer, trumpet-fanfare,\n  yay-children, magic-spell (all royalty-free from mixkit.co).\n- 100+ pool grows from 6 to 12 unique clips.\n- 180 pool grows from 4 to 7 clips with two distinct fanfares.\nRotation:\n- Both SFX and TTS cheers now use a shuffled-bag: every entry plays\n  once per cycle before any repeats; when a new bag is shuffled we\n  ensure the just-played clip isn't first, so you never hear the same\n  thing twice in a row across a bag boundary.\nfix(game): let cheer play, fade out; bigger and bolder last-turn chips\n- Sfx now reports the played clip's duration via getDuration(); the game\n  screen waits min(realDuration, 3s) before saying the score and fades\n  the last 350ms so the voice can cut in without a hard cutoff. Cheers\n  that are shorter than 3s play to completion.\n- Last-turn dart chips bump from 18pt to 28pt Bebas Neue, full-strength\n  text colour (white on active red, text on surface) so they read at a\n  glance instead of fading into the chip background. FittedBox scales\n  down for the rare 'D-BULL' label that wouldn't fit.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.26",
+          "assets": [
+            {
+              "name": "darts-score-1_2_26.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.26/darts-score-1_2_26.aab"
+            },
+            {
+              "name": "darts-score-1_2_26.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.26/darts-score-1_2_26.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.25",
           "date": "2026-05-25T22:11:42Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_17.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.17/darts-score-1_2_17.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.16",
-          "date": "2026-05-24T21:10:10Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.16",
-          "notes": "style(game): average uses Ø symbol, same-size badge as previous total\nfeat(game): restructure tile (name on top, score+last/avg row, dart chips)\n- Player name pinned to the top of every detail tile.\n- Middle row: big remaining score on the left, AVG / L-N / last-total\n  badge stacked on the right.\n- Bottom row: three full-width dart chips for the previous turn.\n- Pending dart slots above the keypad now show T20/D5 etc. instead\n  of the raw 60/10 values.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.16",
-          "assets": [
-            {
-              "name": "darts-score-1_2_16.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.16/darts-score-1_2_16.aab"
-            },
-            {
-              "name": "darts-score-1_2_16.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.16/darts-score-1_2_16.apk"
             }
           ]
         }
