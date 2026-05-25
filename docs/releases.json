@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.25",
+          "date": "2026-05-25T22:11:42Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.25",
+          "notes": "fix(game): let cheer play, fade out; bigger and bolder last-turn chips\n- Sfx now reports the played clip's duration via getDuration(); the game\n  screen waits min(realDuration, 3s) before saying the score and fades\n  the last 350ms so the voice can cut in without a hard cutoff. Cheers\n  that are shorter than 3s play to completion.\n- Last-turn dart chips bump from 18pt to 28pt Bebas Neue, full-strength\n  text colour (white on active red, text on surface) so they read at a\n  glance instead of fading into the chip background. FittedBox scales\n  down for the rare 'D-BULL' label that wouldn't fit.\nfeat(game): live pending darts on active card, suggestions everywhere\n- Cheer SFX gets ~1.8s to play before the score is announced over the\n  top (was getting clipped at 600ms).\n- Every player now shows their best 3-dart checkout, not just the active\n  one. Active uses the live pending-aware suggestion; others use their\n  full 3-dart suggestion from their remaining.\n- Drops the pending-dart strip + bust banner above the keypad entirely.\n  The active player's card is now the live turn display:\n    · 3 chip slots start as '—' and fill as you tap.\n    · Big remaining score is the running score after pending darts.\n    · Total box on the right shows the running this-turn sum.\n- Bottom keypad row gets a 5th button: [0] [25] [DOUBLE] [TRIPLE] [←].\n  The arrow removes the last pending dart, or rewinds to the previous\n  player's submitted turn if pending is empty (existing undo logic).",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.25",
+          "assets": [
+            {
+              "name": "darts-score-1_2_25.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.25/darts-score-1_2_25.aab"
+            },
+            {
+              "name": "darts-score-1_2_25.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.25/darts-score-1_2_25.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.24",
           "date": "2026-05-25T21:57:02Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_16.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.16/darts-score-1_2_16.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.15",
-          "date": "2026-05-24T20:58:21Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.15",
-          "notes": "feat(game): restructure tile (name on top, score+last/avg row, dart chips)\n- Player name pinned to the top of every detail tile.\n- Middle row: big remaining score on the left, AVG / L-N / last-total\n  badge stacked on the right.\n- Bottom row: three full-width dart chips for the previous turn.\n- Pending dart slots above the keypad now show T20/D5 etc. instead\n  of the raw 60/10 values.\nfix(game): keep remaining-score on one line; shrink right cluster",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.15",
-          "assets": [
-            {
-              "name": "darts-score-1_2_15.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.15/darts-score-1_2_15.aab"
-            },
-            {
-              "name": "darts-score-1_2_15.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.15/darts-score-1_2_15.apk"
             }
           ]
         }
