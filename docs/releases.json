@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.18",
+          "date": "2026-05-25T12:27:45Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.18",
+          "notes": "feat(game): keypad capped at 50%, 0/25/DOUBLE/TRIPLE in one row, wakelock\n- Keypad takes exactly half the screen; scoreboard tiles grow into the\n  rest.\n- Bottom keypad row collapses 0 + 25 + DOUBLE + TRIPLE into one strip:\n  [ 0 | 25 | DOUBLE | TRIPLE ] with DOUBLE and TRIPLE 2× wide.\n- WakelockPlus keeps the screen on while a match is in progress;\n  disabled on game-screen dispose.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.18",
+          "assets": [
+            {
+              "name": "darts-score-1_2_18.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.18/darts-score-1_2_18.aab"
+            },
+            {
+              "name": "darts-score-1_2_18.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.18/darts-score-1_2_18.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.17",
           "date": "2026-05-24T21:13:34Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_9.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.9/darts-score-1_2_9.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.8",
-          "date": "2026-05-24T18:19:44Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.8",
-          "notes": "feat(voice): only announce the round total, nothing else\nfeat(game): show last turn's per-dart breakdown on player tiles\nfeat(game): auto-advance, bust blink, coloured specials\n- Auto-advance after 3 darts, on bust, or on checkout — no Submit button.\n- Bust: dart slots flash red, voice says \"bust\", then auto-advance.\n- 0 / 25 / DOUBLE / TRIPLE are tinted (slate / red / teal / amber) even\n  when inactive — easier to find by thumb.\n- Backspace now also reverses across turns: when there are no pending\n  darts, it undoes the previous player's submitted turn and restores\n  their darts as the new pending turn for editing.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.8",
-          "assets": [
-            {
-              "name": "darts-score-1_2_8.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.8/darts-score-1_2_8.aab"
-            },
-            {
-              "name": "darts-score-1_2_8.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.8/darts-score-1_2_8.apk"
             }
           ]
         }
