@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.28",
+          "date": "2026-05-25T22:24:20Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.28",
+          "notes": "feat(sfx): single shared bag of SFX + voice cheers\nNew lib/celebrations.dart defines a typed bag of CelebrationItems\n(SfxItem | VoiceItem). 12 sounds + 20 phrases mix into one shuffled\nbag; next() walks through it in strict order, reshuffles on exhaustion\n(pure reshuffle, no anti-repeat constraint).\n100+ turn (non-180): pull one item, play it, then say the score.\n180: pull one item, play it, then pull the next item of the *opposite*\ntype (consuming any same-type items along the way), play it, then say\n\"One hundred and eighty!\". Voice plays to completion; SFX still\ncapped at 3s with a 350ms fade.\nDrops the local bags inside Sfx and Voice — both now just expose their\nasset / phrase lists; sequencing lives in game_screen.\nfeat(sfx): 180 gets SFX + cheer + score; one shared pool\n180 now plays the full sequence:\n  random SFX clip (capped at 3s with fade) → voice cheer phrase\n  (\"Magnificent\", etc.) → 'One hundred and eighty!'\nVoice cheer plays to completion — no cap; only the SFX clip is timed.\nDrops the dedicated 180 pool; the existing 12-clip celebration pool is\nused for every 100+ score now.\nfeat(sfx): 6 more clips, shuffled-bag rotation\nAudio:\n- Adds cheer3, achievement, audience-cheer, trumpet-fanfare,\n  yay-children, magic-spell (all royalty-free from mixkit.co).\n- 100+ pool grows from 6 to 12 unique clips.\n- 180 pool grows from 4 to 7 clips with two distinct fanfares.\nRotation:\n- Both SFX and TTS cheers now use a shuffled-bag: every entry plays\n  once per cycle before any repeats; when a new bag is shuffled we\n  ensure the just-played clip isn't first, so you never hear the same\n  thing twice in a row across a bag boundary.\nfix(game): let cheer play, fade out; bigger and bolder last-turn chips\n- Sfx now reports the played clip's duration via getDuration(); the game\n  screen waits min(realDuration, 3s) before saying the score and fades\n  the last 350ms so the voice can cut in without a hard cutoff. Cheers\n  that are shorter than 3s play to completion.\n- Last-turn dart chips bump from 18pt to 28pt Bebas Neue, full-strength\n  text colour (white on active red, text on surface) so they read at a\n  glance instead of fading into the chip background. FittedBox scales\n  down for the rare 'D-BULL' label that wouldn't fit.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.28",
+          "assets": [
+            {
+              "name": "darts-score-1_2_28.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.28/darts-score-1_2_28.aab"
+            },
+            {
+              "name": "darts-score-1_2_28.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.28/darts-score-1_2_28.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.27",
           "date": "2026-05-25T22:19:17Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_19.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.19/darts-score-1_2_19.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.18",
-          "date": "2026-05-25T12:27:45Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.18",
-          "notes": "feat(game): keypad capped at 50%, 0/25/DOUBLE/TRIPLE in one row, wakelock\n- Keypad takes exactly half the screen; scoreboard tiles grow into the\n  rest.\n- Bottom keypad row collapses 0 + 25 + DOUBLE + TRIPLE into one strip:\n  [ 0 | 25 | DOUBLE | TRIPLE ] with DOUBLE and TRIPLE 2× wide.\n- WakelockPlus keeps the screen on while a match is in progress;\n  disabled on game-screen dispose.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.18",
-          "assets": [
-            {
-              "name": "darts-score-1_2_18.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.18/darts-score-1_2_18.aab"
-            },
-            {
-              "name": "darts-score-1_2_18.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.18/darts-score-1_2_18.apk"
             }
           ]
         }
