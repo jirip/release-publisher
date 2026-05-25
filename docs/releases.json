@@ -649,6 +649,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.2.32",
+          "date": "2026-05-25T23:01:58Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.2.32",
+          "notes": "fix(voice): await speak completion so cheer isn't cut off\nFlutterTts.speak() resolves the moment playback starts, not when the\nutterance finishes. The previous await was a no-op: we'd start the\ncheer, immediately call stop() and speak() with the score, killing\nthe cheer mid-word.\nawaitSpeakCompletion(true) flips that so speak() resolves only when\nthe platform-side queue marks the utterance complete. Now: cheer\nplays in full → score is announced after it.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.32",
+          "assets": [
+            {
+              "name": "darts-score-1_2_32.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.32/darts-score-1_2_32.aab"
+            },
+            {
+              "name": "darts-score-1_2_32.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.32/darts-score-1_2_32.apk"
+            }
+          ]
+        },
+        {
           "version": "1.2.31",
           "date": "2026-05-25T22:49:59Z",
           "source_repo": "jirip/darts-score",
@@ -807,24 +825,6 @@
             {
               "name": "darts-score-1_2_23.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.23/darts-score-1_2_23.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.22",
-          "date": "2026-05-25T14:29:19Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.22",
-          "notes": "feat(sfx): bundled celebration sounds + 20 cheer phrases\nAdds 9 short MP3s under assets/sounds/ (~1.8MB total, all royalty-free\nfrom mixkit.co):\n- fanfare, cheer, cheer2, clap, oh-yeah, woohoo (100+ score random pool)\n- horn, fanfare, cheer, oh-yeah (180 dedicated pool)\n- ding (leg shot), bell (match shot)\nNew Sfx singleton (lib/sfx.dart) wraps audioplayers; celebrate(total)\npicks a random clip from the appropriate pool for any 100+ turn. Stops\nany in-flight clip before starting a new one, swallows errors so audio\nissues can't break gameplay.\nVoice cheer pool grows from 10 to 20 phrases: adds 'You're the king',\n'Outstanding', 'Sensational', 'Get in', 'Top shelf', 'Pure quality',\n'Legendary', 'Unbelievable', 'World class', 'Crushing it'.\nWire-up: _submitNow plays SFX layered over the TTS announce; leg shot\nplays the ding bell on top of the existing leg-over dialog.\nfeat(game): variant J row layout, celebration on tons\nPlayer row redesign (variant J from /mocks):\n- Left column: muted name, big remaining score, leg pips bottom-left.\n- Right column row 1: three dart chips on the left, larger total box\n  on the right (84×52, total in Bebas Neue 32).\n- Right column row 2: 'Aim: …' on the left (active row only), Ø badge\n  on the right showing 'Ø 60.0' inline.\nVoice:\n- Anything ≥100 now prefixes a random celebration phrase before the\n  number: \"Brilliant! 121\", \"Magnificent! 140\". Phrase pool: well done,\n  good job, amazing, what a turn, magnificent, lovely, big score, nice\n  darts, superb, brilliant. 180 still gets the dedicated \"One hundred\n  and eighty!\" callout.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.22",
-          "assets": [
-            {
-              "name": "darts-score-1_2_22.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.22/darts-score-1_2_22.aab"
-            },
-            {
-              "name": "darts-score-1_2_22.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.22/darts-score-1_2_22.apk"
             }
           ]
         }
