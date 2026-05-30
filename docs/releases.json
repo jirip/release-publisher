@@ -21,6 +21,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "1.10.7",
+          "date": "2026-05-30T22:43:47Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.10.7",
+          "notes": "fix(nearby): cap stops-to-show by physical stop in split mode\nIn split mode each physical stop expands into one row per transport mode,\nbut the cap was still counting result rows. With stops-to-show = 3 and a\nnearby stop serving both tram and bus, only that single stop's two rows\nplus one row of the next stop fit — the third physical stop never\nappeared.\nThe cap now tracks the set of distinct physical stop names actually\nshown (excluding hidden ones); a stop's mode-rows do not consume budget.\nWith stops-to-show = 2 across three nearby stops, both modes of the\nfirst two stops appear and the third stop is dropped.\nfeat(nav): full-slot ripple + emphasised active tab; clean-code pass\n#101 — Bottom nav: replace `NavigationBarItem` with a hand-rolled item that\nfills the slot (`weight(1f).fillMaxHeight().clickable {}`), so the ripple\ncovers the whole tab instead of Material's narrow indicator pill. The active\ntab now uses the primary tint and a slightly larger icon (28dp vs 24dp).\n`BottomNavTab.label` is now a `@StringRes` so the contentDescription is\nlocalised.\nDrive-by clean-code audit:\n- Remove `error!!` in VersionHistoryScreen; assign to local and smart-cast.\n- `DepartureBoardViewModel.sections` now exposes `.asStateFlow()`.\n- Centralise GitHub repo URL in `GitHubConfig.kt` (was duplicated across\n  release + issue services).\n- Rename `di/Credentials.kt` to `CredentialsModule.kt` to match the class.\n- Extract `FavoriteStar` / `TripPositionGreen` to `ui/theme/Color.kt`; drop\n  four duplicated `Color(0xFF...)` literals.\n- Replace literal `Text(\"✕\")` clear-icon with `Icons.Filled.Close` and a\n  localised `cd_clear_search`.\n- Localise the `→ origin → headsign` trip subtitle through `R.string`.\n- `Text(\"OK\")` in MainActivity update dialog now uses `android.R.string.ok`.\n- Annotate intentional silent catches across UI and data layers.\n- `StopCache` snapshots `stops` on entry (`@Volatile` reference) so writers\n  cannot tear in-flight reads.\n- `VersionHistoryCache` serialises writers with a mutex; reads remain\n  non-suspend via a `@Volatile` map reference.\n- `TripAnnotationStore` keeps its pretty-printing `Json` instance but the\n  rename + comment explains why it cannot share the DI-provided one.\n- `formatTime` in `PlatformDeparturesList` drops a dead `try/catch` on\n  operations that can't throw.\n- Remove three unused strings (`download_failed`, `update_check_failed`,\n  `update_failed`) from both locales.\n- `gradle.properties` enables parallel + caching + configure-on-demand.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.10.7",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_10_7.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.7/prague-mhd-dashboard-1_10_7.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_10_7.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.7/prague-mhd-dashboard-1_10_7.apk"
+            }
+          ]
+        },
+        {
           "version": "1.10.6",
           "date": "2026-05-13T23:03:21Z",
           "source_repo": "jirip/prague-mhd-dashboard",
@@ -179,24 +197,6 @@
             {
               "name": "prague-mhd-dashboard-1_8_14.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.14/prague-mhd-dashboard-1_8_14.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.8.13",
-          "date": "2026-04-20T18:56:38Z",
-          "source_repo": "jirip/prague-mhd-dashboard",
-          "source_tag": "v1.8.13",
-          "notes": "feat(trip): tune position model from annotation data [publish]\nParameters tuned against 67 annotations from 2 real tram rides:\n- TRANSITION_MS: 15s → 20s (longer departing/arriving phases)\n- MAX_ALPHA: 1.0 → 0.85 (never fully snap to API)\n- MIN_API_AGE_MS: 0 → 10s (smooth API corrections)\n- Add app version to annotation data\n- Save tuning results and replay script in model-tuning/\nBackward jumps reduced 60-70%, at-stop accuracy +5%, no backward guard\n(tested — hurts accuracy more than it helps).\nfix(trip): correct phase layout and stale state in position model [publish]\n- Reorder phases: AT_STOP is now last in segment (vehicle dwells\n  before departure), DEPARTING is first (vehicle just left)\n- Fix stale captured values in tick loop with rememberUpdatedState\n- No green blinking when vehicle is not tracked (schedule-only mode)\n- Annotation upload on bar dismiss (trigger: manual) + 30min auto-stale\n- Annotation issue body includes trigger type",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.8.13",
-          "assets": [
-            {
-              "name": "prague-mhd-dashboard-1_8_13.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.13/prague-mhd-dashboard-1_8_13.aab"
-            },
-            {
-              "name": "prague-mhd-dashboard-1_8_13.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.13/prague-mhd-dashboard-1_8_13.apk"
             }
           ]
         }
