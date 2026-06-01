@@ -520,6 +520,31 @@
     "fridgeye-firmware": {
       "releases": [
         {
+          "version": "0.7.4",
+          "date": "2026-06-01T18:29:59Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "fw-v0.7.4",
+          "notes": "",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-firmware-v0.7.4",
+          "assets": [
+            {
+              "name": "fridgeye-battery.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-v0.7.4/fridgeye-battery.bin",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye-usb.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-v0.7.4/fridgeye-usb.bin",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-v0.7.4/fridgeye.bin",
+              "hidden": true
+            }
+          ]
+        },
+        {
           "version": "0.7.3",
           "date": "2026-05-22T07:44:40Z",
           "source_repo": "jirip/fridgeye",
