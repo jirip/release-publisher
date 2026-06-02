@@ -336,6 +336,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.9.7",
+          "date": "2026-06-02T10:07:13Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.9.7",
+          "notes": "feat(app): smoother history swipe — haptic, alpha+scale ramp, camera+settings icon\nThree changes to the history swipe-to-action UX:\n1. Haptic tap at the commit threshold. Material AOSP haptics\n   guidance: small single event paired with the visual cue, so the\n   user knows \"the action will fire if I let go now\" without having\n   to look at the screen.\n2. Visual ramp during drag. Background colour alpha tracks\n   dismissState.progress; icon scale ramps 0.6→1.0 with the same\n   progress. Replaces the previous \"invisible threshold\" feel.\n3. Lower positionalThreshold (50% default → 30%). Matches the\n   Material example (25%) and common mail/messaging app behaviour.\nPlus the swipe-right \"calibrate from this frame\" gets a proper\nicon pair: a PhotoCamera vector drawable + Settings gear. Drawable\nsits in res/drawable/ rather than pulling material-icons-extended\n(~25 MB APK overhead avoided).\nBumps app 0.9.7.\nfix(fw): fast-wifi failure falls back to full discovery in same call [fw-release]\nThe 0.7.5 fast-cache code only invalidated the cache on failure and\nreturned ESP_FAIL — meaning the *next* wake would retry with full\ndiscovery, but THIS wake would give up. On a battery device that's\n\"door opened, fast path failed, no frame uploaded, sleep\". One bad\ncache entry = one missed door-open per device. Bad.\nRefactor wifi_connect into a small try_associate(use_cache=bool)\nhelper called twice: fast path first, slow path on failure. Between\nthe two:\n- esp_wifi_stop() so the second esp_wifi_set_config + start cycle\n  doesn't race on stale state.\n- DHCP restarted + static IP cleared so the slow path doesn't carry\n  the bad pin into discovery.\n- Cache invalidated so the next wake won't re-attempt the dead pin.\nEnd result: a stale cache costs maybe an extra second of fast-path\nattempt before the slow path runs, never a missed wake.\nBumps firmware 0.7.6.\nperf(fw): cache BSSID + channel + static IP for faster cold boots [fw-release]\nAfter a successful Wi-Fi associate, persist {ssid, bssid, channel,\nip, netmask, gateway, dns} into NVS. On the next wifi_connect with\nthe same SSID, pin BSSID + channel and assign the IP statically\nbefore esp_wifi_start() — skipping channel scan and DHCP entirely.\nTypical saving per cold boot: 2–4 s. For the battery build that's\nmaterial per wake; for the USB build it's faster fridge-open →\nfresh-frame.\nSafety: any cached-path failure invalidates the cache and restarts\nDHCP for the current call, so the next wifi_connect falls back to\nfull discovery. Covers AP channel changes, DHCP lease expiry, router\nswaps. SSID match guards against cache reuse after re-pair.\nBumps firmware 0.7.5.\nrefactor: four-state calibration model, drop LDR floor + baseline [fw-release]\nWorker:\n- DeviceRecord gains appliedCalibration (what the device confirmed\n  it's using) alongside calibration (what the user wants). The pair\n  drives the four-state UI: auto / set-awaiting / set / reset-\n  awaiting. calibratePending field gone.\n- New cue header X-FridgEye-Cmd-Reset-Calibration: 1, sent when the\n  user removed the calibration server-side but the device hasn't\n  acked yet. Device drops NVS and switches to auto on receipt.\n- applyCalibrationFromTelemetry updates appliedCalibration purely\n  from device-reported AEC/AGC (no more calibratePending bookkeeping).\n- Calibration struct shrinks to {aecValue, agcGain, capturedAt} —\n  ldrBaseline dropped (LDR too noisy to be a useful per-device\n  signal). Wire format becomes \"aec,agc\".\n- handleCalibrateDevice (the manual Calibrate-button endpoint) is\n  gone. Only DELETE /calibrate (remove) and POST /calibrate/from-frame\n  remain. Calibration is set exclusively from history swipe-right.\n- LDR floor removed from handleCalibrateFromFrame: the user is\n  looking at the photo and chose it; they don't need a gatekeeper.\nFirmware:\n- calibration_t loses ldr_baseline. NVS key bumps \"cam_pin_v1\" →\n  \"calib_v2\"; old blobs are orphaned, device falls back to auto until\n  user recalibrates from history.\n- New X-FridgEye-Cmd-Reset-Calibration cue: clears NVS + enables\n  auto AEC.\n- is_low_light no longer takes a calibration_t* — global Kconfig\n  threshold for everyone.\nApp:\n- DeviceSummary gains appliedCalibration, loses calibratePending.\n  CalibrationCard derives the four-state UI from\n  (calibration, appliedCalibration). State 1 has no button (calibrate\n  is set from history only). States 2/3 show values + Remove. State 4\n  is informational (no button — server already cleared; just waiting).\n- WorkerApi.startCalibration removed.\nBumps firmware 0.7.4, app 0.9.5.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.9.7",
+          "assets": [
+            {
+              "name": "fridgeye-0_9_7.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.7/fridgeye-0_9_7.aab"
+            },
+            {
+              "name": "fridgeye-0_9_7.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.7/fridgeye-0_9_7.apk"
+            }
+          ]
+        },
+        {
           "version": "0.9.5",
           "date": "2026-06-02T09:40:34Z",
           "source_repo": "jirip/fridgeye",
@@ -494,24 +512,6 @@
             {
               "name": "fridgeye-0_8_0.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.8.0/fridgeye-0_8_0.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.7.0",
-          "date": "2026-05-19T22:24:00Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.7.0",
-          "notes": "feat: per-device history of last 10 frames\nWorker keeps a ring buffer at users/<sub>/<id>/history/<ms>.jpg, written\nalongside the existing latest.jpg on every multipart upload. Two new\nendpoints serve the app: GET /devices/:id/history (timestamps,\nnewest-first) and GET /devices/:id/history/<ts>.jpg (one frame).\nHistory is wiped together with the rest of the device record on\nunlink confirm.\nApp gets a History card on the device settings screen → a vertical\nlist of frames with timestamps. Motivates the \"is the dark frame just\nthe door closing?\" diagnostic — the trend across the last 10 frames\nmakes that obvious.\nBumps to 0.7.0.\nfix(app): seed photo zoom/rotation from DataStore, not async initial\nSaved rotation never re-appeared on next launch. The LaunchedEffect that\nseeded liveRotation read savedZoom on first composition, but\ncollectAsStateWithLifecycle emits its initialValue (Identity, rotation=0)\nsynchronously and only later replaces it with the DataStore value. The\n`seeded` gate then locked in the 0 and ignored the real emission.\nSeed by collecting the flow's first() directly inside the effect so the\nDataStore value is awaited before assignment.\nBumps to 0.6.6.\n- firmware: remove dead sleep_last_ldr_raw + LED_HEARTBEAT + FRIDGEYE_HEARTBEAT_LED\n- firmware: drop stale FRIDGEYE_OPEN_LOOP_MAX_MS reference; mark build_telemetry_json static\n- worker/app: refresh post-multipart-migration telemetry comments\n- ci: pin release-publisher action to SHA; npm ci over npm install; drop stale OTA-release note\n- .gitignore: widen firmware/build-*/ to cover ad-hoc build dirs",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.7.0",
-          "assets": [
-            {
-              "name": "fridgeye-0_7_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.7.0/fridgeye-0_7_0.aab"
-            },
-            {
-              "name": "fridgeye-0_7_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.7.0/fridgeye-0_7_0.apk"
             }
           ]
         }
