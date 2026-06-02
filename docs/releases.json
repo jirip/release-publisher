@@ -520,6 +520,31 @@
     "fridgeye-firmware": {
       "releases": [
         {
+          "version": "0.7.7",
+          "date": "2026-06-02T20:35:05Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "fw-v0.7.7",
+          "notes": "fix: rip out LDR low-light gate; fix reset-cue infinite loop [fw-release]\nTwo bugs reported by serial-monitor traces from a real device:\n1. EVERY frame was being dropped as \"low light\" because the LDR\n   reads 280–310 with the fridge bulb fully on, while\n   CONFIG_FRIDGEYE_LDR_THRESHOLD_RAW was 1500. The threshold was\n   set for the ULP-wake use case where it works fine; treating it\n   as a \"scene is dark enough to skip JPEG upload\" signal was\n   misguided. No frames reached R2 → history empty → calibrate-\n   from-frame can't find metadata → calibration was effectively\n   broken end-to-end.\n   Camera AEC already handles dim scenes; the LDR added noise, not\n   signal. is_low_light() and the dark-frame gate are gone.\n   MIN_JPEG_BYTES still catches genuinely broken frames (sensor\n   stuck → 2–5 KB output).\n2. The reset-calibration cue was firing on every upload forever.\n   applyCalibrationFromTelemetry's state-4→1 cleanup only cleared\n   appliedCalibration when the device's reported AEC differed from\n   what was previously applied. But auto AEC in stable lighting\n   converges to the same numbers, so calibrationsMatch returned\n   true and the cleanup never ran. The reset cue is single-shot\n   from the device's perspective (calibration_clear + auto AEC);\n   the next telemetry arriving at all proves it was processed.\n   Cleared unconditionally now.\nBumps firmware 0.7.7.\nPlain serial monitor doesn't need the build dir — that only matters\nfor panic-trace symbol decoding, which is rare enough not to\nwarrant two dedicated targets. The per-variant split inherited from\nfirmware-flash-* added confusion (\"which one is my device?\")\nwithout benefit. For symbolicate-on-panic, call\n`idf.py -B build-usb monitor` directly.\nfeat(app): smoother history swipe — haptic, alpha+scale ramp, camera+settings icon\nThree changes to the history swipe-to-action UX:\n1. Haptic tap at the commit threshold. Material AOSP haptics\n   guidance: small single event paired with the visual cue, so the\n   user knows \"the action will fire if I let go now\" without having\n   to look at the screen.\n2. Visual ramp during drag. Background colour alpha tracks\n   dismissState.progress; icon scale ramps 0.6→1.0 with the same\n   progress. Replaces the previous \"invisible threshold\" feel.\n3. Lower positionalThreshold (50% default → 30%). Matches the\n   Material example (25%) and common mail/messaging app behaviour.\nPlus the swipe-right \"calibrate from this frame\" gets a proper\nicon pair: a PhotoCamera vector drawable + Settings gear. Drawable\nsits in res/drawable/ rather than pulling material-icons-extended\n(~25 MB APK overhead avoided).\nBumps app 0.9.7.\nfix(fw): fast-wifi failure falls back to full discovery in same call [fw-release]\nThe 0.7.5 fast-cache code only invalidated the cache on failure and\nreturned ESP_FAIL — meaning the *next* wake would retry with full\ndiscovery, but THIS wake would give up. On a battery device that's\n\"door opened, fast path failed, no frame uploaded, sleep\". One bad\ncache entry = one missed door-open per device. Bad.\nRefactor wifi_connect into a small try_associate(use_cache=bool)\nhelper called twice: fast path first, slow path on failure. Between\nthe two:\n- esp_wifi_stop() so the second esp_wifi_set_config + start cycle\n  doesn't race on stale state.\n- DHCP restarted + static IP cleared so the slow path doesn't carry\n  the bad pin into discovery.\n- Cache invalidated so the next wake won't re-attempt the dead pin.\nEnd result: a stale cache costs maybe an extra second of fast-path\nattempt before the slow path runs, never a missed wake.\nBumps firmware 0.7.6.\nperf(fw): cache BSSID + channel + static IP for faster cold boots [fw-release]\nAfter a successful Wi-Fi associate, persist {ssid, bssid, channel,\nip, netmask, gateway, dns} into NVS. On the next wifi_connect with\nthe same SSID, pin BSSID + channel and assign the IP statically\nbefore esp_wifi_start() — skipping channel scan and DHCP entirely.\nTypical saving per cold boot: 2–4 s. For the battery build that's\nmaterial per wake; for the USB build it's faster fridge-open →\nfresh-frame.\nSafety: any cached-path failure invalidates the cache and restarts\nDHCP for the current call, so the next wifi_connect falls back to\nfull discovery. Covers AP channel changes, DHCP lease expiry, router\nswaps. SSID match guards against cache reuse after re-pair.\nBumps firmware 0.7.5.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-firmware-v0.7.7",
+          "assets": [
+            {
+              "name": "fridgeye-battery.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-v0.7.7/fridgeye-battery.bin",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye-usb.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-v0.7.7/fridgeye-usb.bin",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-v0.7.7/fridgeye.bin",
+              "hidden": true
+            }
+          ]
+        },
+        {
           "version": "0.7.6",
           "date": "2026-06-02T09:40:19Z",
           "source_repo": "jirip/fridgeye",
