@@ -908,6 +908,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.5.0",
+          "date": "2026-06-05T22:48:33Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.5.0",
+          "notes": "release: 0.5.0 — consume jirip_app from flutter_common instead of local copy\nDelete lib/updater.dart and lib/widgets/update_banner.dart; depend on\njirip_app pinned to tag jirip_app-v0.1.0 from\nhttps://github.com/jirip/flutter_common.\nVoicerTheme.bannerStyle replaces the two free colour constants — the\nshared widget takes an UpdateBannerStyle from the host.\nThis is the first consumer of jirip_app. The package's API matches\nvoicer's pre-extraction code one-to-one, so the user-visible behaviour\nis unchanged.\nDrive-by: Settings → Version now shows the human-readable versionName\n(`0.5.0`) without the trailing build number, which is purely an\nAndroid `versionCode` marker.\n\nrelease: 0.5.0 — consume jirip_app from flutter_common instead of local copy\nDelete lib/updater.dart and lib/widgets/update_banner.dart; depend on\njirip_app pinned to tag jirip_app-v0.1.0 from\nhttps://github.com/jirip/flutter_common.\nVoicerTheme.bannerStyle replaces the two free colour constants — the\nshared widget takes an UpdateBannerStyle from the host.\nThis is the first consumer of jirip_app. The package's API matches\nvoicer's pre-extraction code one-to-one, so the user-visible behaviour\nis unchanged.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.5.0",
+          "assets": [
+            {
+              "name": "voicer-0_5_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.5.0/voicer-0_5_0.aab"
+            },
+            {
+              "name": "voicer-0_5_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.5.0/voicer-0_5_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.4.1",
           "date": "2026-06-05T22:42:46Z",
           "source_repo": "jirip/voicer",
