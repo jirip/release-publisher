@@ -908,6 +908,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.3.2",
+          "date": "2026-06-05T21:55:40Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.3.2",
+          "notes": "fix(playlist): tracks were skipped because of stale EOF flag\nWhen playFile was called for track N+1 while the engine was already\nrunning from track N, nativeStartPlayback short-circuited and left\nplaybackEof_ at true (set during track N's drain). The play-all loop\nthen saw EOF immediately and moved on without playing track N+1.\nReset eofRequested_/playbackEof_ on the already-running branch of\nstartPlayback. Also drain any leftover ring samples from the previous\ntrack so they don't bleed into the new one.\nOn the Dart side, wait both for the file decoder thread to finish and\nfor the engine's ring to drain (was checking only EOF), and give the\ndecoder a 250 ms head start before polling so we never observe the\nprevious track's drained state.\nAlso adds multi-add to the recordings picker (you can dial in a count\nper recording or tap to bump by one), since the same recording could\nalready legally appear multiple times in a playlist.\nrelease: 0.3.2\nrelease: 0.3.1 — arbitrary pause duration\nFree-form text field for pause length, with a ms/s unit toggle and\nquick-preset chips (250 ms / 500 ms / 1 s / 2 s / 3 s / 5 s / 10 s / 30 s).\nCapped at 1 hour. Same dialog used for \"add pause\" and \"edit pause\".\n\nrelease: 0.3.0 — categories, favorites, +17 new effects\nUI:\n- VoiceEffect.category groups 36 effects into Basic / Pitch / Sci-Fi /\n  Scary / Spaces / Lo-Fi / Fun.\n- FavoritesStore in SharedPreferences; tap the star on any tile.\n- Live screen renders a \"Favorites\" section pinned above the per-\n  category sections.\n- Playlist track-modifier dialog uses the same grouped picker.\nNew cheap effects (built from existing primitives):\n  Megaphone, Ghost, BigRobot, SmallRobot, Drunk, Devil, Cave, Vampire,\n  Nervous, Giant, Child, Stadium\nNew heavy DSP modules:\n- Vocoder — 16 log-spaced band-pass envelope followers shaping an\n  internal saw carrier.\n- AutoTune — cumulative-mean-normalised difference (YIN-ish) pitch\n  detector, snaps to A-minor-pentatonic via the existing PitchShifter,\n  one detection per ~256 frames.\n- GenderUp / GenderDown — perceived timbre shift via two opposite-\n  shifted pitch copies summed with the dry signal. Not real formant\n  shifting (PSOLA would be its own project) but the cheap approximation.\n- Freeze — granular loop of the last 300 ms with two overlapping\n  triangular-windowed grains.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.3.2",
+          "assets": [
+            {
+              "name": "voicer-0_3_2.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.3.2/voicer-0_3_2.aab"
+            },
+            {
+              "name": "voicer-0_3_2.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.3.2/voicer-0_3_2.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.1",
           "date": "2026-06-05T21:52:54Z",
           "source_repo": "jirip/voicer",
