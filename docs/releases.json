@@ -336,6 +336,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.9.11",
+          "date": "2026-06-05T16:53:33Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.9.11",
+          "notes": "feat(app): main screen photo card honours brightness target\nThe home-screen device card was rendering raw bitmaps while\nHistory + Viewer applied the normalisation filter — inconsistent.\nDevicesViewModel now exposes brightnessTarget(deviceId), DeviceList\nplumbs the flow into each row, the row decodes-and-measures p95\nalongside the existing bitmap fetch, and ZoomableDevicePhoto\naccepts a ColorFilter applied to the Image.\nSame algorithm + clamps as the history viewer (Normalise.kt),\nincluding the no-filter short-circuit when the scale would be\nwithin 1% of identity.\nBumps app 0.9.11.\nperf(app): cache history JPEGs on disk via Ktor HttpCache\nHistory JPEGs at /devices/:id/history/<ts>.jpg are immutable by\ndesign (the key IS the timestamp; the bytes never change). The\nWorker already declares this with `Cache-Control: immutable,\nmax-age=86400`. Install Ktor's HttpCache with a FileStorage in\nthe app's cache dir so the second-and-subsequent loads of a\ngiven timestamp return without any network round-trip at all —\nnot even a revalidation. latest.jpg is `no-store` so it bypasses\nthe cache and stays live.\nInvestigated whether to also cache p95 measurements in memory\nkeyed by (deviceId, tsMs). Decode dominates (~50–100 ms on UXGA)\nvs measurement (~5 ms); not worth the LRU.\nBumps app 0.9.10.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.9.11",
+          "assets": [
+            {
+              "name": "fridgeye-0_9_11.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.11/fridgeye-0_9_11.aab"
+            },
+            {
+              "name": "fridgeye-0_9_11.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.11/fridgeye-0_9_11.apk"
+            }
+          ]
+        },
+        {
           "version": "0.9.10",
           "date": "2026-06-05T16:29:34Z",
           "source_repo": "jirip/fridgeye",
@@ -494,24 +512,6 @@
             {
               "name": "fridgeye-0_9_3.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.3/fridgeye-0_9_3.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.9.1",
-          "date": "2026-05-21T22:03:16Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.9.1",
-          "notes": "",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.9.1",
-          "assets": [
-            {
-              "name": "fridgeye-0_9_1.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.1/fridgeye-0_9_1.aab"
-            },
-            {
-              "name": "fridgeye-0_9_1.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.1/fridgeye-0_9_1.apk"
             }
           ]
         }
