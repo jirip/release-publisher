@@ -908,6 +908,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.2.0",
+          "date": "2026-06-05T21:31:37Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.2.0",
+          "notes": "release: 0.2.0 — pause items, loop, per-track effect chain\nPlaylist entries become a sealed union: TrackItem or PauseItem.\nPer-playlist loop toggle persists in playlists.json.\nEach TrackItem carries its own effectId and speed.\nTo apply the full C++ effect chain to recordings, the engine now has\ntwo modes: Live (mic → effect → speaker) and Playback (PCM ring →\neffect → speaker). FilePlayback.kt decodes the recording via\nMediaExtractor + MediaCodec, downmixes to mono float, resamples to\nthe engine rate while applying speed, and feeds the ring buffer.\nThe audio thread pulls from the ring and runs the chosen effect.\nOlder JSON playlists (bare-path strings, no loop flag) still load.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.2.0",
+          "assets": [
+            {
+              "name": "voicer-0_2_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.2.0/voicer-0_2_0.aab"
+            },
+            {
+              "name": "voicer-0_2_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.2.0/voicer-0_2_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.0",
           "date": "2026-06-05T21:11:25Z",
           "source_repo": "jirip/voicer",
