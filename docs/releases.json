@@ -908,6 +908,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.4.0",
+          "date": "2026-06-05T22:36:03Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.4.0",
+          "notes": "release: 0.4.0 — global update banner, ready-to-install state, clean-code pass\nUpdate notice moves off the Settings row onto a global red banner that\nshows on every tab. Two buttons: Install (downloads or re-launches the\ninstaller) and Dismiss (suppresses for the rest of this process).\nBanner state machine:\n- UpdateAvailable: \"Install\" downloads then hands off to the system\n  installer. After the handoff the state becomes UpdateReadyToInstall\n  so a second tap re-opens the installer instead of redownloading.\n- UpdateDownloading: progress indicator + percentage.\n- UpdateReadyToInstall: persists for the current process, so backing\n  out of the system install screen leaves the APK on disk and the\n  banner says \"tap Install to finish\".\n- UpdateError stays out of the banner; surfaces only in Settings.\ncheckForUpdate now consults the on-disk cache: if voicer-<version>.apk\nis already in the temp dir, it short-circuits straight to\nUpdateReadyToInstall instead of asking the user to redownload.\nDrive-by clean-code pass (from a prior `/clean-code` review):\n- Drop unused cupertino_icons dep.\n- Drop dead permissions (FOREGROUND_SERVICE*, POST_NOTIFICATIONS,\n  WAKE_LOCK) — no foreground service is actually used.\n- Drop dead manifestPlaceholder fileProviderAuthority (the manifest\n  uses ${applicationId} directly).\n- Drop dead PACKAGE variable in Makefile.\n- Remove -ffast-math — it elides std::isfinite(), undermining the\n  NaN safety net the engine relies on.\n- Pin release-publisher dispatch action to a commit SHA.\n- Add `set -euo pipefail` + concurrency group to CI; move secrets into\n  env vars instead of interpolating into a heredoc.\n- C++: drop unused clampf, dead AutoTune `octave`/`rel`/`detectedHz_`,\n  unused PitchShifter `crossfade_`/`windowMs_` field; replace rand()\n  (non-real-time-safe on some libcs) with a xorshift PRNG owned by\n  the audio thread; move YIN's static-local diff buffer to a class\n  member; name kFramesPerDetection and kMaxSnapSemitones constants.\n- Kotlin: extract methods in MainActivity to a method table, drop\n  redundant SDK_INT >= M guard (minSdk is 24), name CHANNEL_NAME and\n  CLEAN_EFFECT_ID constants; drop unused FilePlayback imports; name\n  CODEC_TIMEOUT_US / THREAD_JOIN_MS / RING_FULL_SLEEP_MS / PCM16_SCALE;\n  log cleanup failures instead of swallowing.\n- Dart: name kCleanEffectId and kAudioChannelName; sealed-type switch\n  expressions in SettingsScreen and playlists; enum the popup-menu\n  string values; drop the dead `hasHighLatencyOutput` and local\n  firstOrNull extension; debugPrint catch errors instead of swallowing.\n- README: update from \"18 effects\" to \"36 effects in 7 categories\".",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.4.0",
+          "assets": [
+            {
+              "name": "voicer-0_4_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.4.0/voicer-0_4_0.aab"
+            },
+            {
+              "name": "voicer-0_4_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.4.0/voicer-0_4_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.3",
           "date": "2026-06-05T21:58:26Z",
           "source_repo": "jirip/voicer",
