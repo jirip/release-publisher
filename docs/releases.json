@@ -908,6 +908,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.3.0",
+          "date": "2026-06-05T21:41:51Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.3.0",
+          "notes": "release: 0.3.0 — categories, favorites, +17 new effects\nUI:\n- VoiceEffect.category groups 36 effects into Basic / Pitch / Sci-Fi /\n  Scary / Spaces / Lo-Fi / Fun.\n- FavoritesStore in SharedPreferences; tap the star on any tile.\n- Live screen renders a \"Favorites\" section pinned above the per-\n  category sections.\n- Playlist track-modifier dialog uses the same grouped picker.\nNew cheap effects (built from existing primitives):\n  Megaphone, Ghost, BigRobot, SmallRobot, Drunk, Devil, Cave, Vampire,\n  Nervous, Giant, Child, Stadium\nNew heavy DSP modules:\n- Vocoder — 16 log-spaced band-pass envelope followers shaping an\n  internal saw carrier.\n- AutoTune — cumulative-mean-normalised difference (YIN-ish) pitch\n  detector, snaps to A-minor-pentatonic via the existing PitchShifter,\n  one detection per ~256 frames.\n- GenderUp / GenderDown — perceived timbre shift via two opposite-\n  shifted pitch copies summed with the dry signal. Not real formant\n  shifting (PSOLA would be its own project) but the cheap approximation.\n- Freeze — granular loop of the last 300 ms with two overlapping\n  triangular-windowed grains.\n\nrelease: 0.2.0 — pause items, loop, per-track effect chain\nPlaylist entries become a sealed union: TrackItem or PauseItem.\nPer-playlist loop toggle persists in playlists.json.\nEach TrackItem carries its own effectId and speed.\nTo apply the full C++ effect chain to recordings, the engine now has\ntwo modes: Live (mic → effect → speaker) and Playback (PCM ring →\neffect → speaker). FilePlayback.kt decodes the recording via\nMediaExtractor + MediaCodec, downmixes to mono float, resamples to\nthe engine rate while applying speed, and feeds the ring buffer.\nThe audio thread pulls from the ring and runs the chosen effect.\nOlder JSON playlists (bare-path strings, no loop flag) still load.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.3.0",
+          "assets": [
+            {
+              "name": "voicer-0_3_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.3.0/voicer-0_3_0.aab"
+            },
+            {
+              "name": "voicer-0_3_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.3.0/voicer-0_3_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.2.0",
           "date": "2026-06-05T21:31:37Z",
           "source_repo": "jirip/voicer",
