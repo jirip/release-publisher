@@ -908,6 +908,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.6.0",
+          "date": "2026-06-09T23:01:45Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.6.0",
+          "notes": "release: 0.6.0 — SoundTouch pitch shifter\nReplace the textbook two-tap variable-delay pitch shifter with\nSoundTouch (LGPL 2.1, vendored under cpp/soundtouch/). On voice signals\nthe previous implementation warbled and smeared consonants; SoundTouch's\nWSOLA gives noticeably more recognisable speech across the whole\nrange we use (±12 semitones).\nThe PitchShifter wrapper preserves the existing sample-by-sample API\nvia a small read-ahead buffer; SoundTouch internally works in blocks\nbut the audio callback still sees one-sample-in / one-sample-out.\nTrade-off: ~60-80 ms of inherent algorithmic latency from SoundTouch on\ntop of Oboe's ~10-40 ms. Imperceptible behind A2DP (which buffers\n~200 ms anyway); audible on wired output but acceptable for voice\npresets.\nThe previous PitchShifter had a NaN-safety clamp; SoundTouch is robust\nto bounded inputs, and the engine still drops non-finite samples at\nboth the input and output stages before they reach the new shifter.\nLGPL compliance: the entire SoundTouch source tree is bundled under\ncpp/soundtouch/ with the unmodified LICENSE.txt. The static library is\nlinked into libvoicer_engine.so; anyone who has the APK can relink\nagainst a different SoundTouch build using these sources.\n\nrelease: 0.5.1 — intensity slider, new icon, Drunk SIGSEGV fix, polish\nAudio:\n- Wire effect intensity all the way through. C++ scales pitch-effect\n  semitones by intensity per callback; non-pitch effects post-mix the\n  raw effect output with the dry signal at intensity * wet + (1-intensity)\n  * dry. Default 1.0 preserves today's preset sound; 0.0 = dry voice.\n- Per-track intensity persisted in playlists.json (defaults to 1.0; old\n  entries load with full intensity, JSON readers tolerate the missing\n  field).\n- Fix the Drunk SIGSEGV: `DelayLine::read` now rejects non-finite delays\n  and clamps `i0` into range. Earlier `(size_t)NaN` was undefined behaviour\n  on ARM64 and produced a garbage index that crashed the audio thread.\n  Also reset the shared LFO phase counters (vibPhase_/ringPhase_/\n  tremPhase_/noiseState_) on every effect switch so a non-finite value\n  picked up by one effect cannot outlive it.\nUI:\n- Live screen: a dedicated intensity slider sits below the selected\n  effect's description card. Hidden when Clean is selected.\n- Playlist editor: each track row is two visual rows. Top: number + name\n  + tune/remove icons. Bottom (only when the track has a non-Clean\n  effect): an inline intensity slider that updates and persists\n  immediately. The track label tag already shows the percentage, so\n  the slider itself has no redundant text.\n- Playlist add/remove layout: + Add recording and + Add pause sit in\n  their own row directly under the app bar (not hidden in a popup);\n  Play all spans the full bottom width on its own.\n- \"Add recordings\" dialog stays open after each tap; recordings don't\n  disappear from the picker, so adding the same clip multiple times\n  takes N taps.\nIcon:\n- New launcher icon. Adaptive foreground is a white Material-style mic;\n  adaptive background is a violet radial gradient with a cyan/purple/\n  magenta colour ring around a dark disc. Both layers are pure colour\n  edge-to-edge so the launcher's circle/squircle mask never exposes\n  white.\n- Drop the orphaned `ic_launcher_background` colour resource.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.6.0",
+          "assets": [
+            {
+              "name": "voicer-0_6_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.6.0/voicer-0_6_0.aab"
+            },
+            {
+              "name": "voicer-0_6_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.6.0/voicer-0_6_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.5.1",
           "date": "2026-06-06T07:25:50Z",
           "source_repo": "jirip/voicer",
@@ -1066,24 +1084,6 @@
             {
               "name": "voicer-0_2_0.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.2.0/voicer-0_2_0.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.0",
-          "date": "2026-06-05T21:11:25Z",
-          "source_repo": "jirip/voicer",
-          "source_tag": "v0.1.0",
-          "notes": "",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.1.0",
-          "assets": [
-            {
-              "name": "voicer-0_1_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.1.0/voicer-0_1_0.aab"
-            },
-            {
-              "name": "voicer-0_1_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.1.0/voicer-0_1_0.apk"
             }
           ]
         }
