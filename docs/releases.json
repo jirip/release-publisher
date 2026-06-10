@@ -908,6 +908,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.7.0",
+          "date": "2026-06-10T08:42:36Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.7.0",
+          "notes": "release: 0.7.0 — Voices (WORLD-based pitch + formant transform)\nVoices are a new concept distinct from Effects: a Voice is a\n(pitch_semitones, formant_semitones) pair applied to a recording at\nplayback time. Effects layer character (reverb, ring-mod, etc.) on\ntop of the input. A track may have both (Effect is disabled in the\nedit dialog while a non-identity Voice is selected, because composing\narbitrary engine-side pitch shifts on top of WORLD's would double-\nshift).\nDSP:\n- WORLD (modified BSD) is vendored under cpp/world/. The\n  FormantPitchTransformer wraps Harvest + CheapTrick + D4C + frequency-\n  warped envelope + Synthesis as one offline call: mono PCM in,\n  transformed mono PCM out.\n- Live mode is untouched. Live still uses the engine's SoundTouch\n  pitch shift only; formant analysis is too heavy for an audio\n  callback on a Pixel-class CPU. Voices apply to playback only — the\n  voice builder dialog states this directly.\nPlumbing:\n- jni_bridge::nativeTransformPcm exposes the transform to Kotlin.\n- FilePlayback.playWithFormant decodes to mono float, calls the\n  native transformer, then streams the result through the engine in\n  Clean mode.\n- MainActivity routes playFile with non-zero formant through the\n  WORLD path. Pitch is folded into the WORLD pass, the engine sees\n  the transformed PCM and a Clean effect.\nUI:\n- New Voices tab with 8 curated presets (Woman, Man, Child, Old Man,\n  Giant, Tiny, Monster, Helium) plus a \"Your voices\" section.\n- Voice builder screen: two sliders (pitch -12..+12, formant\n  -12..+12), Preview button that synthesises the most recent\n  recording through the current settings, Save as… with a\n  user-supplied name.\n- Track edit dialog gains a Voice picker. When a non-identity Voice\n  is selected, the Effect picker greys out and explains why.\nData:\n- Voice + VoicesStore persist user-saved voices under voices.json.\n- TrackItem gains a voiceId field (defaults to 'none'); old playlists\n  load with no voice applied.\nTests:\n- New voice catalogue tests (unique IDs, identity sentinel, every\n  non-identity voice shifts something).\n\nrelease: 0.6.0 — SoundTouch pitch shifter\nReplace the textbook two-tap variable-delay pitch shifter with\nSoundTouch (LGPL 2.1, vendored under cpp/soundtouch/). On voice signals\nthe previous implementation warbled and smeared consonants; SoundTouch's\nWSOLA gives noticeably more recognisable speech across the whole\nrange we use (±12 semitones).\nThe PitchShifter wrapper preserves the existing sample-by-sample API\nvia a small read-ahead buffer; SoundTouch internally works in blocks\nbut the audio callback still sees one-sample-in / one-sample-out.\nTrade-off: ~60-80 ms of inherent algorithmic latency from SoundTouch on\ntop of Oboe's ~10-40 ms. Imperceptible behind A2DP (which buffers\n~200 ms anyway); audible on wired output but acceptable for voice\npresets.\nThe previous PitchShifter had a NaN-safety clamp; SoundTouch is robust\nto bounded inputs, and the engine still drops non-finite samples at\nboth the input and output stages before they reach the new shifter.\nLGPL compliance: the entire SoundTouch source tree is bundled under\ncpp/soundtouch/ with the unmodified LICENSE.txt. The static library is\nlinked into libvoicer_engine.so; anyone who has the APK can relink\nagainst a different SoundTouch build using these sources.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.7.0",
+          "assets": [
+            {
+              "name": "voicer-0_7_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.7.0/voicer-0_7_0.aab"
+            },
+            {
+              "name": "voicer-0_7_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.7.0/voicer-0_7_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.6.0",
           "date": "2026-06-09T23:01:45Z",
           "source_repo": "jirip/voicer",
@@ -1066,24 +1084,6 @@
             {
               "name": "voicer-0_3_0.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.3.0/voicer-0_3_0.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.2.0",
-          "date": "2026-06-05T21:31:37Z",
-          "source_repo": "jirip/voicer",
-          "source_tag": "v0.2.0",
-          "notes": "release: 0.2.0 — pause items, loop, per-track effect chain\nPlaylist entries become a sealed union: TrackItem or PauseItem.\nPer-playlist loop toggle persists in playlists.json.\nEach TrackItem carries its own effectId and speed.\nTo apply the full C++ effect chain to recordings, the engine now has\ntwo modes: Live (mic → effect → speaker) and Playback (PCM ring →\neffect → speaker). FilePlayback.kt decodes the recording via\nMediaExtractor + MediaCodec, downmixes to mono float, resamples to\nthe engine rate while applying speed, and feeds the ring buffer.\nThe audio thread pulls from the ring and runs the chosen effect.\nOlder JSON playlists (bare-path strings, no loop flag) still load.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.2.0",
-          "assets": [
-            {
-              "name": "voicer-0_2_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.2.0/voicer-0_2_0.aab"
-            },
-            {
-              "name": "voicer-0_2_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.2.0/voicer-0_2_0.apk"
             }
           ]
         }
