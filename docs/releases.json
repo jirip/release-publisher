@@ -3,6 +3,20 @@
     "pdf2jpg": {
       "releases": [
         {
+          "version": "0.1.13",
+          "date": "2026-06-11T16:56:30Z",
+          "source_repo": "jirip/pdf2jpg",
+          "source_tag": "pdf2jpg-v0.1.13",
+          "notes": "ci: publish pdf2jpg and img2svg as separate apps; build only what changed",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pdf2jpg-v0.1.13",
+          "assets": [
+            {
+              "name": "pdf2jpg.exe",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pdf2jpg-v0.1.13/pdf2jpg.exe"
+            }
+          ]
+        },
+        {
           "version": "0.1.12",
           "date": "2026-06-11T15:44:45Z",
           "source_repo": "jirip/pdf2jpg",
