@@ -756,6 +756,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.3.1",
+          "date": "2026-06-11T21:12:33Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.3.1",
+          "notes": "feat(game): show round number in app-bar title\nAppBar now reads '501 · Double Out · Round N', where N is the shared\nround number within the current leg (min turns played across all\nplayers, plus one). Resets to 1 on next leg, increments once everyone\nhas thrown the same number of darts.\nMatchState exposes the round getter; no other layout touched.\nrefactor(updater): consume jirip_app v0.1.0 from flutter_common\nReplaces the hand-rolled lib/updater.dart with the shared package at\njirip/flutter_common (packages/jirip_app), pinned to tag\njirip_app-v0.1.0.\n- pubspec.yaml: git dep on jirip_app v0.1.0; http/open_filex/path_provider\n  drop to transitive (still pulled via jirip_app). package_info_plus stays\n  as a direct dep because the home screen uses it for the version label.\n- lib/updater.dart deleted.\n- lib/theme.dart: adds DartsTheme.bannerStyle (UpdateBannerStyle with the\n  existing accent #E63946 on white).\n- lib/home_screen.dart: switches to Updater(appKey: 'darts-score'), drops\n  the inline _updateBanner() method, replaces it with\n  UpdateBanner(updater: _updater, style: DartsTheme.bannerStyle). The\n  package widget subscribes to the updater itself so we no longer need a\n  manual addListener->setState bridge.\n- Gains UpdateReadyToInstall handling (banner now says \"tap Install to\n  finish\" after a successful download handoff) and a Dismiss button for\n  session-local suppression — both come from the package, no extra wiring.\nBump to 1.3.0+37 to mark the integration release.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.3.1",
+          "assets": [
+            {
+              "name": "darts-score-1_3_1.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.3.1/darts-score-1_3_1.aab"
+            },
+            {
+              "name": "darts-score-1_3_1.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.3.1/darts-score-1_3_1.apk"
+            }
+          ]
+        },
+        {
           "version": "1.3.0",
           "date": "2026-06-05T22:54:22Z",
           "source_repo": "jirip/darts-score",
@@ -914,24 +932,6 @@
             {
               "name": "darts-score-1_2_26.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.26/darts-score-1_2_26.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.25",
-          "date": "2026-05-25T22:11:42Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.25",
-          "notes": "fix(game): let cheer play, fade out; bigger and bolder last-turn chips\n- Sfx now reports the played clip's duration via getDuration(); the game\n  screen waits min(realDuration, 3s) before saying the score and fades\n  the last 350ms so the voice can cut in without a hard cutoff. Cheers\n  that are shorter than 3s play to completion.\n- Last-turn dart chips bump from 18pt to 28pt Bebas Neue, full-strength\n  text colour (white on active red, text on surface) so they read at a\n  glance instead of fading into the chip background. FittedBox scales\n  down for the rare 'D-BULL' label that wouldn't fit.\nfeat(game): live pending darts on active card, suggestions everywhere\n- Cheer SFX gets ~1.8s to play before the score is announced over the\n  top (was getting clipped at 600ms).\n- Every player now shows their best 3-dart checkout, not just the active\n  one. Active uses the live pending-aware suggestion; others use their\n  full 3-dart suggestion from their remaining.\n- Drops the pending-dart strip + bust banner above the keypad entirely.\n  The active player's card is now the live turn display:\n    · 3 chip slots start as '—' and fill as you tap.\n    · Big remaining score is the running score after pending darts.\n    · Total box on the right shows the running this-turn sum.\n- Bottom keypad row gets a 5th button: [0] [25] [DOUBLE] [TRIPLE] [←].\n  The arrow removes the last pending dart, or rewinds to the previous\n  player's submitted turn if pending is empty (existing undo logic).",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.25",
-          "assets": [
-            {
-              "name": "darts-score-1_2_25.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.25/darts-score-1_2_25.aab"
-            },
-            {
-              "name": "darts-score-1_2_25.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.25/darts-score-1_2_25.apk"
             }
           ]
         }
