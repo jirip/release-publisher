@@ -940,6 +940,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.13.0",
+          "date": "2026-06-12T07:48:29Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.13.0",
+          "notes": "release: 0.13.0 — voice cloning via Plachta/Seed-VC\nAdds neural voice cloning to playlists. Record 15-30 s of a friend, the\nvoice becomes a Voice choice in the picker. Select it on a playlist\ntrack and the first playback POSTs the recording + reference to the\npublic Plachta/Seed-VC HuggingFace Space, caches the converted WAV on\ndisk, and plays it. Subsequent plays of the same (recording, voice)\npair are instant.\nArchitecture:\n- Voice gains an optional cloneReferencePath field pointing at the 30 s\n  reference audio in app documents/voices/. Forward-compatible JSON.\n- VoiceClone (lib/voice_clone.dart): three-step Gradio client —\n  multipart upload, predict POST returning event_id, SSE stream until\n  the complete event carries the WAV URL. No auth (the Space is public).\n- CloneCache (lib/clone_cache.dart): sha1 of (recording.path, voice.id)\n  → File under Documents/clone-cache. Pure on-disk; persists across\n  launches.\n- CloneOrchestrator (lib/clone_orchestrator.dart): single in-process\n  coordinator — coalesces concurrent requests for the same pair, calls\n  cache then network, surfaces user-facing status.\n- VoiceCloneCaptureScreen: dedicated 30 s mic capture, lives under a\n  new \"Clone a voice\" entry next to \"Voice tone match\" (LTAS, kept\n  available but renamed to match what it actually does).\n- PlaylistDetailScreen resolves clone-capable voices via the\n  orchestrator before each playback; bakes the cloned audio into the\n  player path, so pitch/formant/LTAS are zeroed out for that pair (the\n  cloning already produced the final timbre).\nTrade-offs honestly documented:\n- Network dependency: Plachta's Space is public and free. Rate limit\n  + cold-start are the failure modes; first call after sleep may take\n  ~60s. Failures fall back to playing the original track so playlists\n  don't stall.\n- Privacy: voice samples + recordings leave the device for inference.\n  Acceptable for the personal/family use case this was built for.\n- Quality varies with the reference sample's cleanliness. The capture\n  screen tells the user to record 15-30 s of clean voice without\n  background noise.\nLTAS-based \"Match a voice\" is kept but renamed \"Voice tone match\" to\nhonestly describe what it does (spectral tilt copy, not identity clone).\nAdds http (1.2.x) and crypto (3.0.x) dependencies.\n\nrelease: 0.12.0 — offline STT via whisper.cpp + recording fix\nReplaces the live SpeechRecognizer-during-recording with offline\nwhisper.cpp transcription after the file is saved. The simultaneous\nSpeechRecognizer was stealing the mic stream on Android 13+ Pixels\n(ALT.AudioRecordSource silently detaches MediaRecorder), so recordings\nsince 0.9.0 produced empty files even though the UI showed timer\nticking.\nThe new flow: recording saves with a timestamp name immediately, then\na background isolate decodes the AAC, resamples to 16 kHz mono, and\nhands it to whisper.cpp (multilingual base.q5_1, ~57 MB asset). On\nsuccess the row renames in place to the transcribed phrase.\nLanguage picker is back at the top of Recordings with persisted\nchoice. 'Auto' lets whisper detect from the encoder output; explicit\ncodes (cs, en, sk, de, pl, …) skip detection and force the language.\nThree-dot menu on each recording gets an 'Auto-name' entry to re-run\nwhisper on existing clips (e.g. after changing the language).\nOther changes:\n- AndroidManifest now uses screenOrientation=fullUser; rotation\n  follows the system auto-rotate toggle and the OS shows the rotate\n  suggestion icon when the device is turned with auto-rotate off.\n- Voice list rows show 'matched tone' instead of 'pitch 0 · formant 0'\n  for LTAS-only matched voices.\n- Update banner moved from red (read as error) to amber on near-black.\nAPK size 58.8 MB → 120 MB (whisper.cpp + ggml-cpu + base model).",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.13.0",
+          "assets": [
+            {
+              "name": "voicer-0_13_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.0/voicer-0_13_0.aab"
+            },
+            {
+              "name": "voicer-0_13_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.0/voicer-0_13_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.12.0",
           "date": "2026-06-11T23:03:04Z",
           "source_repo": "jirip/voicer",
@@ -1098,24 +1116,6 @@
             {
               "name": "voicer-0_4_0.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.4.0/voicer-0_4_0.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.3.3",
-          "date": "2026-06-05T21:58:26Z",
-          "source_repo": "jirip/voicer",
-          "source_tag": "v0.3.3",
-          "notes": "fix(audio): Vampire crash, Devil intelligibility, Demon Choir level\nVampire was writing wet (reverb tail with feedback ~0.84) back into\nthe echo line and feeding it back into itself, so amplitudes grew\nunbounded until floats hit inf, then NaN, which Oboe could not\ntolerate and the audio thread crashed. The Drunk crash had the same\nroot cause: it read from `echo_` which had been poisoned with NaN by\na prior Vampire activation; the next read propagated NaN into Oboe.\nRemoved the parasitic feedback in Vampire so the math stays bounded.\nAs defence in depth, the engine's output stage now zeros any sample\nthat's not finite before clamping to [-1, 1], so any future effect\nbug can't crash the audio thread.\nDevil was unintelligible because pure 50 Hz ring-mod on an already\n−1-octave-shifted voice (whose harmonics now live in the same 50–\n200 Hz band as the carrier sum/difference products) destroys the\nformants. Lifted the carrier to 85 Hz and kept the shifted dry voice\nat 0.6 in the mix so phonemes survive.\nDemon Choir was too quiet because the only direct path was at 0.5.\nBrought the dry voice back at 0.35 for legibility and pushed the\nshifted layer to 0.85 plus reverb at 0.6 so the choir is unmistakable.\nrelease: 0.3.3\nfix(playlist): tracks were skipped because of stale EOF flag\nWhen playFile was called for track N+1 while the engine was already\nrunning from track N, nativeStartPlayback short-circuited and left\nplaybackEof_ at true (set during track N's drain). The play-all loop\nthen saw EOF immediately and moved on without playing track N+1.\nReset eofRequested_/playbackEof_ on the already-running branch of\nstartPlayback. Also drain any leftover ring samples from the previous\ntrack so they don't bleed into the new one.\nOn the Dart side, wait both for the file decoder thread to finish and\nfor the engine's ring to drain (was checking only EOF), and give the\ndecoder a 250 ms head start before polling so we never observe the\nprevious track's drained state.\nAlso adds multi-add to the recordings picker (you can dial in a count\nper recording or tap to bump by one), since the same recording could\nalready legally appear multiple times in a playlist.\nrelease: 0.3.2\nrelease: 0.3.1 — arbitrary pause duration\nFree-form text field for pause length, with a ms/s unit toggle and\nquick-preset chips (250 ms / 500 ms / 1 s / 2 s / 3 s / 5 s / 10 s / 30 s).\nCapped at 1 hour. Same dialog used for \"add pause\" and \"edit pause\".\n\nrelease: 0.3.0 — categories, favorites, +17 new effects\nUI:\n- VoiceEffect.category groups 36 effects into Basic / Pitch / Sci-Fi /\n  Scary / Spaces / Lo-Fi / Fun.\n- FavoritesStore in SharedPreferences; tap the star on any tile.\n- Live screen renders a \"Favorites\" section pinned above the per-\n  category sections.\n- Playlist track-modifier dialog uses the same grouped picker.\nNew cheap effects (built from existing primitives):\n  Megaphone, Ghost, BigRobot, SmallRobot, Drunk, Devil, Cave, Vampire,\n  Nervous, Giant, Child, Stadium\nNew heavy DSP modules:\n- Vocoder — 16 log-spaced band-pass envelope followers shaping an\n  internal saw carrier.\n- AutoTune — cumulative-mean-normalised difference (YIN-ish) pitch\n  detector, snaps to A-minor-pentatonic via the existing PitchShifter,\n  one detection per ~256 frames.\n- GenderUp / GenderDown — perceived timbre shift via two opposite-\n  shifted pitch copies summed with the dry signal. Not real formant\n  shifting (PSOLA would be its own project) but the cheap approximation.\n- Freeze — granular loop of the last 300 ms with two overlapping\n  triangular-windowed grains.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.3.3",
-          "assets": [
-            {
-              "name": "voicer-0_3_3.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.3.3/voicer-0_3_3.aab"
-            },
-            {
-              "name": "voicer-0_3_3.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.3.3/voicer-0_3_3.apk"
             }
           ]
         }
