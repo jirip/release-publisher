@@ -940,6 +940,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.13.1",
+          "date": "2026-06-14T19:31:28Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.13.1",
+          "notes": "release: 0.13.1 — favorite + delete on voice tiles\nTwo small picker UX fixes:\n- Star on voice tiles too. FavoritesStore moved from a Set<int>\n  effect-id store to a Set<String> Sound-id store ('e:1', 'v:u_...'),\n  with one-shot migration of the legacy effect-ids key. The picker's\n  Favorites section + tile trailing star now applies to every Sound,\n  not just effects.\n- Delete affordance on custom voices. Trailing tile gains a delete\n  icon for user-saved Voices (built-ins and effects keep theirs\n  hidden). Confirms via dialog, calls VoicesStore.delete which already\n  removes the cloneReferencePath audio.\nIf the currently selected voice is deleted, the picker falls back to\nClean so the SelectedCard doesn't show a phantom name.\nAlso fixed a stale int->String comparison in the playlist Effect\npicker (favIds.contains(e.id) -> favIds.contains('e:${e.id}')).\n\nrelease: 0.13.0 — voice cloning via Plachta/Seed-VC\nAdds neural voice cloning to playlists. Record 15-30 s of a friend, the\nvoice becomes a Voice choice in the picker. Select it on a playlist\ntrack and the first playback POSTs the recording + reference to the\npublic Plachta/Seed-VC HuggingFace Space, caches the converted WAV on\ndisk, and plays it. Subsequent plays of the same (recording, voice)\npair are instant.\nArchitecture:\n- Voice gains an optional cloneReferencePath field pointing at the 30 s\n  reference audio in app documents/voices/. Forward-compatible JSON.\n- VoiceClone (lib/voice_clone.dart): three-step Gradio client —\n  multipart upload, predict POST returning event_id, SSE stream until\n  the complete event carries the WAV URL. No auth (the Space is public).\n- CloneCache (lib/clone_cache.dart): sha1 of (recording.path, voice.id)\n  → File under Documents/clone-cache. Pure on-disk; persists across\n  launches.\n- CloneOrchestrator (lib/clone_orchestrator.dart): single in-process\n  coordinator — coalesces concurrent requests for the same pair, calls\n  cache then network, surfaces user-facing status.\n- VoiceCloneCaptureScreen: dedicated 30 s mic capture, lives under a\n  new \"Clone a voice\" entry next to \"Voice tone match\" (LTAS, kept\n  available but renamed to match what it actually does).\n- PlaylistDetailScreen resolves clone-capable voices via the\n  orchestrator before each playback; bakes the cloned audio into the\n  player path, so pitch/formant/LTAS are zeroed out for that pair (the\n  cloning already produced the final timbre).\nTrade-offs honestly documented:\n- Network dependency: Plachta's Space is public and free. Rate limit\n  + cold-start are the failure modes; first call after sleep may take\n  ~60s. Failures fall back to playing the original track so playlists\n  don't stall.\n- Privacy: voice samples + recordings leave the device for inference.\n  Acceptable for the personal/family use case this was built for.\n- Quality varies with the reference sample's cleanliness. The capture\n  screen tells the user to record 15-30 s of clean voice without\n  background noise.\nLTAS-based \"Match a voice\" is kept but renamed \"Voice tone match\" to\nhonestly describe what it does (spectral tilt copy, not identity clone).\nAdds http (1.2.x) and crypto (3.0.x) dependencies.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.13.1",
+          "assets": [
+            {
+              "name": "voicer-0_13_1.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.1/voicer-0_13_1.aab"
+            },
+            {
+              "name": "voicer-0_13_1.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.1/voicer-0_13_1.apk"
+            }
+          ]
+        },
+        {
           "version": "0.13.0",
           "date": "2026-06-12T07:48:29Z",
           "source_repo": "jirip/voicer",
@@ -1098,24 +1116,6 @@
             {
               "name": "voicer-0_4_1.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.4.1/voicer-0_4_1.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.4.0",
-          "date": "2026-06-05T22:36:03Z",
-          "source_repo": "jirip/voicer",
-          "source_tag": "v0.4.0",
-          "notes": "release: 0.4.0 — global update banner, ready-to-install state, clean-code pass\nUpdate notice moves off the Settings row onto a global red banner that\nshows on every tab. Two buttons: Install (downloads or re-launches the\ninstaller) and Dismiss (suppresses for the rest of this process).\nBanner state machine:\n- UpdateAvailable: \"Install\" downloads then hands off to the system\n  installer. After the handoff the state becomes UpdateReadyToInstall\n  so a second tap re-opens the installer instead of redownloading.\n- UpdateDownloading: progress indicator + percentage.\n- UpdateReadyToInstall: persists for the current process, so backing\n  out of the system install screen leaves the APK on disk and the\n  banner says \"tap Install to finish\".\n- UpdateError stays out of the banner; surfaces only in Settings.\ncheckForUpdate now consults the on-disk cache: if voicer-<version>.apk\nis already in the temp dir, it short-circuits straight to\nUpdateReadyToInstall instead of asking the user to redownload.\nDrive-by clean-code pass (from a prior `/clean-code` review):\n- Drop unused cupertino_icons dep.\n- Drop dead permissions (FOREGROUND_SERVICE*, POST_NOTIFICATIONS,\n  WAKE_LOCK) — no foreground service is actually used.\n- Drop dead manifestPlaceholder fileProviderAuthority (the manifest\n  uses ${applicationId} directly).\n- Drop dead PACKAGE variable in Makefile.\n- Remove -ffast-math — it elides std::isfinite(), undermining the\n  NaN safety net the engine relies on.\n- Pin release-publisher dispatch action to a commit SHA.\n- Add `set -euo pipefail` + concurrency group to CI; move secrets into\n  env vars instead of interpolating into a heredoc.\n- C++: drop unused clampf, dead AutoTune `octave`/`rel`/`detectedHz_`,\n  unused PitchShifter `crossfade_`/`windowMs_` field; replace rand()\n  (non-real-time-safe on some libcs) with a xorshift PRNG owned by\n  the audio thread; move YIN's static-local diff buffer to a class\n  member; name kFramesPerDetection and kMaxSnapSemitones constants.\n- Kotlin: extract methods in MainActivity to a method table, drop\n  redundant SDK_INT >= M guard (minSdk is 24), name CHANNEL_NAME and\n  CLEAN_EFFECT_ID constants; drop unused FilePlayback imports; name\n  CODEC_TIMEOUT_US / THREAD_JOIN_MS / RING_FULL_SLEEP_MS / PCM16_SCALE;\n  log cleanup failures instead of swallowing.\n- Dart: name kCleanEffectId and kAudioChannelName; sealed-type switch\n  expressions in SettingsScreen and playlists; enum the popup-menu\n  string values; drop the dead `hasHighLatencyOutput` and local\n  firstOrNull extension; debugPrint catch errors instead of swallowing.\n- README: update from \"18 effects\" to \"36 effects in 7 categories\".",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.4.0",
-          "assets": [
-            {
-              "name": "voicer-0_4_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.4.0/voicer-0_4_0.aab"
-            },
-            {
-              "name": "voicer-0_4_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.4.0/voicer-0_4_0.apk"
             }
           ]
         }
