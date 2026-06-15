@@ -1142,6 +1142,24 @@
     "slot-watch": {
       "releases": [
         {
+          "version": "0.1.1",
+          "date": "2026-06-15T23:50:38Z",
+          "source_repo": "jirip/slot-watch",
+          "source_tag": "v0.1.1",
+          "notes": "feat(ui): bottom-nav with Venues + Notifications tabs\n- MainShell hosts two tabs: read-only Venues explorer and the\n  existing saved-queries list (now \"Notifications\").\n- Venues tab: list of bundled venues; tap → sport + week picker\n  (this / next / +2), streams free slots per day across 7 days.\n- QueryEditScreen reworked: order-aware picker. Sport-first selects\n  all supporting venues; venue-first lists union of sports, user\n  picks exactly one. Optional latest-start replaces fixed window.\n- Model: SlotQuery.windowMinutes → nullable tEndMinutes (backwards\n  compatible via fromJson). Venue.findFreeSlots: windowSize →\n  optional tEnd, falling back to capabilities openUntil.\n- Drop dynamic cast in ViewerScreen; explicit Venue type.\n- Add lib/venues/AGENT.md spec for adding new venues.\n- Bump to v0.1.1.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.1.1",
+          "assets": [
+            {
+              "name": "slot-watch-0_1_1.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.1/slot-watch-0_1_1.aab"
+            },
+            {
+              "name": "slot-watch-0_1_1.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.1/slot-watch-0_1_1.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.0",
           "date": "2026-06-15T23:16:10Z",
           "source_repo": "jirip/slot-watch",
