@@ -1138,6 +1138,28 @@
           ]
         }
       ]
+    },
+    "slot-watch": {
+      "releases": [
+        {
+          "version": "0.1.0",
+          "date": "2026-06-15T23:16:10Z",
+          "source_repo": "jirip/slot-watch",
+          "source_tag": "v0.1.0",
+          "notes": "release: v0.1.0\nfeat(icon): launcher icon — slot-watch cyan/blue stopwatch\nSource PNGs (icon.png/icon_bg.png/icon_fg.png) at repo root, generated\nvia /tmp/gen_slotwatch_icon.py (Pillow). Same composition family as\nvoicer: gradient ring on dark navy background, white stopwatch glyph\non the dark inner disk — but slot-watch cyan→blue ring (#3EC6FE →\n#3A55E0) instead of voicer's cyan→pink, and a slightly bluer base.\nflutter_launcher_icons added as dev_dependency; ran 'dart run\nflutter_launcher_icons' to generate every Android mipmap + the\nadaptive drawables + mipmap-anydpi-v26/ic_launcher.xml.\nflutter analyze clean. Tests unaffected.\nrelease: v0.1.0\nFirst public build of SlotWatch.\nFeatures:\n- Saved queries (date + time window + sport + venues + duration).\n- Each query toggles between watching (notify on newly-free slots) and\n  viewer-only (run on demand against any date).\n- Bundled venue: Infinit Step (memberzone.cz) with tennis, squash,\n  badminton, table tennis.\n- Self-describing venue capabilities — adding a venue requires no\n  changes outside its own folder.\n- In-app self-update via jirip_app.Updater.\nv0.1.0 ships without background scheduling; pull-to-refresh on the\nviewer screen runs the scraper. Background mode + notifications come\nin v0.1.1.\nfeat(venues): self-describing capabilities + multi-sport Infinit Step\nEach Venue now exposes a VenueCapabilities object declaring which sports\nit offers, with per-sport resources/durations/working hours. The query\neditor reads the union of all venues' capabilities to build its sport\nlist and intersects offerings to pick valid durations; no UI code\nhardcodes any venue facts.\nInfinitStepVenue now lists tennis, squash, badminton, and table tennis.\nEach sport has its own DevExpress menu index and resource ID range\n(badminton keeps the verified 22000085-92 first, plus unverified\n22000058-69 that the site's CSS knows about — labels are generic until\nwe can validate them against the live UI).\nThe earlier 'courtCount' getter is gone; UI reads\noffering.resources.length instead. SlotQuery does NOT gain\nresourceIds — per the design decision, callers don't filter by court.\nfix(android): add R8 keep rules for Play Core deferred-component classes\nR8 fails minifyReleaseWithR8 because Flutter's embedding references\ncom.google.android.play.core.* classes for deferred-component support,\nand we don't depend on Play Core. We don't use deferred components, so\nkeep them out of the classpath and silence R8 with -dontwarn + -keep.\nIf deferred components are ever added, replace these rules with the\nreal 'com.google.android.play:core' dependency.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.1.0",
+          "assets": [
+            {
+              "name": "slot-watch-0_1_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.0/slot-watch-0_1_0.aab"
+            },
+            {
+              "name": "slot-watch-0_1_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.0/slot-watch-0_1_0.apk"
+            }
+          ]
+        }
+      ]
     }
   }
 }
