@@ -940,6 +940,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.13.6",
+          "date": "2026-06-16T14:38:50Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.13.6",
+          "notes": "release: 0.13.6 — bump version so updater picks up 0.13.5 content\nThe CI build for 0.13.5 (jirip_app 0.4.0 — custom bottom bar) was\ncancelled because the in-app updater compares versionName only\n(\"0.13.5\" already installed → no banner shown). Bump to 0.13.6 so\nthe updater sees a newer version and prompts to install.\nNo code change beyond the version bump — the jirip_app 0.4.0 ref\nand all 0.13.5 content stay as committed.\n\nrelease: 0.13.5 — bump jirip_app to 0.4.0 (custom bottom bar)\nPicks up the new prague-mhd-style bottom bar in jirip_app 0.4.0: selected icon scales up, primary tint instead of a pill indicator, full-slot ripple, 70 dp tall.\nrelease: 0.13.5 — banner colour matches launcher icon\nUpdate banner was amber on near-black — visually a \"warning\"\ncontrast against the indigo theme rather than a branded cue.\nSwitch to the icon's own palette: cyan #00E5FF on disc-dark\n#1A0B2E. Same two colours that anchor the launcher icon's left\nring stop and dark coin disc — banner reads as part of voicer's\nvisual identity instead of an attention sticker on top of it.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.13.6",
+          "assets": [
+            {
+              "name": "voicer-0_13_6.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.6/voicer-0_13_6.aab"
+            },
+            {
+              "name": "voicer-0_13_6.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.6/voicer-0_13_6.apk"
+            }
+          ]
+        },
+        {
           "version": "0.13.5",
           "date": "2026-06-16T14:17:14Z",
           "source_repo": "jirip/voicer",
@@ -1098,24 +1116,6 @@
             {
               "name": "voicer-0_10_0.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.10.0/voicer-0_10_0.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.7.0",
-          "date": "2026-06-10T08:42:36Z",
-          "source_repo": "jirip/voicer",
-          "source_tag": "v0.7.0",
-          "notes": "release: 0.7.0 — Voices (WORLD-based pitch + formant transform)\nVoices are a new concept distinct from Effects: a Voice is a\n(pitch_semitones, formant_semitones) pair applied to a recording at\nplayback time. Effects layer character (reverb, ring-mod, etc.) on\ntop of the input. A track may have both (Effect is disabled in the\nedit dialog while a non-identity Voice is selected, because composing\narbitrary engine-side pitch shifts on top of WORLD's would double-\nshift).\nDSP:\n- WORLD (modified BSD) is vendored under cpp/world/. The\n  FormantPitchTransformer wraps Harvest + CheapTrick + D4C + frequency-\n  warped envelope + Synthesis as one offline call: mono PCM in,\n  transformed mono PCM out.\n- Live mode is untouched. Live still uses the engine's SoundTouch\n  pitch shift only; formant analysis is too heavy for an audio\n  callback on a Pixel-class CPU. Voices apply to playback only — the\n  voice builder dialog states this directly.\nPlumbing:\n- jni_bridge::nativeTransformPcm exposes the transform to Kotlin.\n- FilePlayback.playWithFormant decodes to mono float, calls the\n  native transformer, then streams the result through the engine in\n  Clean mode.\n- MainActivity routes playFile with non-zero formant through the\n  WORLD path. Pitch is folded into the WORLD pass, the engine sees\n  the transformed PCM and a Clean effect.\nUI:\n- New Voices tab with 8 curated presets (Woman, Man, Child, Old Man,\n  Giant, Tiny, Monster, Helium) plus a \"Your voices\" section.\n- Voice builder screen: two sliders (pitch -12..+12, formant\n  -12..+12), Preview button that synthesises the most recent\n  recording through the current settings, Save as… with a\n  user-supplied name.\n- Track edit dialog gains a Voice picker. When a non-identity Voice\n  is selected, the Effect picker greys out and explains why.\nData:\n- Voice + VoicesStore persist user-saved voices under voices.json.\n- TrackItem gains a voiceId field (defaults to 'none'); old playlists\n  load with no voice applied.\nTests:\n- New voice catalogue tests (unique IDs, identity sentinel, every\n  non-identity voice shifts something).\n\nrelease: 0.6.0 — SoundTouch pitch shifter\nReplace the textbook two-tap variable-delay pitch shifter with\nSoundTouch (LGPL 2.1, vendored under cpp/soundtouch/). On voice signals\nthe previous implementation warbled and smeared consonants; SoundTouch's\nWSOLA gives noticeably more recognisable speech across the whole\nrange we use (±12 semitones).\nThe PitchShifter wrapper preserves the existing sample-by-sample API\nvia a small read-ahead buffer; SoundTouch internally works in blocks\nbut the audio callback still sees one-sample-in / one-sample-out.\nTrade-off: ~60-80 ms of inherent algorithmic latency from SoundTouch on\ntop of Oboe's ~10-40 ms. Imperceptible behind A2DP (which buffers\n~200 ms anyway); audible on wired output but acceptable for voice\npresets.\nThe previous PitchShifter had a NaN-safety clamp; SoundTouch is robust\nto bounded inputs, and the engine still drops non-finite samples at\nboth the input and output stages before they reach the new shifter.\nLGPL compliance: the entire SoundTouch source tree is bundled under\ncpp/soundtouch/ with the unmodified LICENSE.txt. The static library is\nlinked into libvoicer_engine.so; anyone who has the APK can relink\nagainst a different SoundTouch build using these sources.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.7.0",
-          "assets": [
-            {
-              "name": "voicer-0_7_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.7.0/voicer-0_7_0.aab"
-            },
-            {
-              "name": "voicer-0_7_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.7.0/voicer-0_7_0.apk"
             }
           ]
         }
