@@ -1291,6 +1291,20 @@
       "releases": [
         {
           "version": "1.0.0",
+          "date": "2026-06-16T20:28:46Z",
+          "source_repo": "jirip/kombucha-calculator",
+          "source_tag": "v1.0.0",
+          "notes": "ci: advertise Cloudflare Pages URL on release-publisher\nPass set-web-url + web-url to the dispatch action so the public page\nat jirip.github.io/release-publisher renders an Open Web button on the\nkombucha-calculator card alongside the APK download.\nPrevious v1.0.0 publish dispatched successfully but the source repo\nhad no .github/notify.txt, so encrypted recipients were empty and no\nTelegram message went out. notify.txt landed in the previous commit;\nthis empty commit re-runs the build/release/dispatch pipeline so the\nnotification fires with recipients.\nThe Create Release step is idempotent on an existing tag (updates body\n+ re-uploads assets) so this won't break v1.0.0.\n\nci: add notify.txt recipient list for release-publisher\nThe dispatch action reads .github/notify.txt for who to send Telegram\nnotifications to. Voicer has it; kombucha didn't, so v1.0.0's publish\ndispatch ran successfully but with empty recipients (no message sent).\nAdding the same recipient — Jirka's Telegram chat id.\nfix(ci): correct wrangler-action SHA pin\nPrevious SHA was made up and didn't exist in the repo; deploy-web\nfailed in 3s with \"Unable to resolve action\". v3.14.1's real commit\nis da0e0dfe58b7a431659754fdf3f186c529afbe65.\nNext  commit will deploy web alongside the APK release as\nintended.\nEmpty commit to fire the new build-apk + dispatch jobs end-to-end. Will\nproduce a signed APK, create v1.0.0 on GitHub Releases, and dispatch\nto jirip/release-publisher.\n\nAligns kombucha-calculator's CI with jirip/voicer:\n- release.yml restructured (test / deploy-web / build-apk jobs, SHA-\n  pinned actions, gradle/pub caches, version-extracted artifact name,\n  semver release notes).\n- Dispatch to jirip/release-publisher on  commits — kombucha\n  publishes notifications through the same backend voicer uses.\n  telegram-bot-token is omitted on purpose (the publisher's default\n  channel handles kombucha; no per-app bot needed).\n- Real release signing: android/key.properties is read at build time;\n  build-apk job decodes the keystore from secrets before each release.\n  Local builds fall back to debug signing when key.properties is\n  missing (with a warning printed by gradle).\n- keystore.jks + android/key.properties added to .gitignore.\nRepo secrets KEYSTORE_BASE64 / KEYSTORE_PASSWORD / KEY_ALIAS /\nKEY_PASSWORD / PUBLISH_TOKEN / NOTIFY_KEY are already provisioned.\nfeat: brewing tips library + conditional advice\n- 51-tip library grouped by topic (tea, water, sugar, vessel, F2,\n  troubleshooting, health, SCOBY care, cleanliness) with source URLs\n- new Tips screen reachable from the app bar (book icon)\n- optional 4-question brew setup (tea/sugar/water/vessel) persisted\n  to shared_preferences\n- conditional tips engine surfaces warnings on home screen when\n  setup answers cross known-bad thresholds (honey, chlorinated tap,\n  reactive metal, oiled tea, etc.) plus recipe-driven tips for\n  very long/short ferments and dense SCOBY",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/kombucha-calculator-v1.0.0",
+          "assets": [
+            {
+              "name": "kombucha-calculator-1_0_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/kombucha-calculator-v1.0.0/kombucha-calculator-1_0_0.apk"
+            }
+          ]
+        },
+        {
+          "version": "1.0.0",
           "date": "2026-06-16T20:08:51Z",
           "source_repo": "jirip/kombucha-calculator",
           "source_tag": "v1.0.0",
@@ -1317,7 +1331,8 @@
             }
           ]
         }
-      ]
+      ],
+      "webUrl": "https://kombucha-calculator.pages.dev/"
     }
   }
 }
