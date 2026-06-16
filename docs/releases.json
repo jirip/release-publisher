@@ -1268,6 +1268,24 @@
           ]
         }
       ]
+    },
+    "kombucha-calculator": {
+      "releases": [
+        {
+          "version": "1.0.0",
+          "date": "2026-06-16T19:52:31Z",
+          "source_repo": "jirip/kombucha-calculator",
+          "source_tag": "v1.0.0",
+          "notes": "Empty commit to fire the new build-apk + dispatch jobs end-to-end. Will\nproduce a signed APK, create v1.0.0 on GitHub Releases, and dispatch\nto jirip/release-publisher.\n\nAligns kombucha-calculator's CI with jirip/voicer:\n- release.yml restructured (test / deploy-web / build-apk jobs, SHA-\n  pinned actions, gradle/pub caches, version-extracted artifact name,\n  semver release notes).\n- Dispatch to jirip/release-publisher on  commits — kombucha\n  publishes notifications through the same backend voicer uses.\n  telegram-bot-token is omitted on purpose (the publisher's default\n  channel handles kombucha; no per-app bot needed).\n- Real release signing: android/key.properties is read at build time;\n  build-apk job decodes the keystore from secrets before each release.\n  Local builds fall back to debug signing when key.properties is\n  missing (with a warning printed by gradle).\n- keystore.jks + android/key.properties added to .gitignore.\nRepo secrets KEYSTORE_BASE64 / KEYSTORE_PASSWORD / KEY_ALIAS /\nKEY_PASSWORD / PUBLISH_TOKEN / NOTIFY_KEY are already provisioned.\nfeat: brewing tips library + conditional advice\n- 51-tip library grouped by topic (tea, water, sugar, vessel, F2,\n  troubleshooting, health, SCOBY care, cleanliness) with source URLs\n- new Tips screen reachable from the app bar (book icon)\n- optional 4-question brew setup (tea/sugar/water/vessel) persisted\n  to shared_preferences\n- conditional tips engine surfaces warnings on home screen when\n  setup answers cross known-bad thresholds (honey, chlorinated tap,\n  reactive metal, oiled tea, etc.) plus recipe-driven tips for\n  very long/short ferments and dense SCOBY",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/kombucha-calculator-v1.0.0",
+          "assets": [
+            {
+              "name": "kombucha-calculator-1_0_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/kombucha-calculator-v1.0.0/kombucha-calculator-1_0_0.apk"
+            }
+          ]
+        }
+      ]
     }
   }
 }
