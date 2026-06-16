@@ -940,6 +940,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.13.3",
+          "date": "2026-06-16T13:35:41Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.13.3",
+          "notes": "release: 0.13.3 — bottom tabs via jirip_app AppShell\nTab bodies survive switches via IndexedStack; the header now shows app name + version. Bumps the shared jirip_app dep to 0.3.0.\nci: drop `restore-keys: pub-` fallback so that dep-shape changes don't end up restoring a stale ~/.pub-cache whose package_graph.json conflicts with the fresh lockfile.\nRequired to invalidate CI's Pub cache after migrating to AppShell; CI was reusing a .dart_tool snapshot whose package_graph.json was inconsistent with the resolved deps. No source change.\nrelease: 0.13.3 — bottom tabs via jirip_app AppShell\nTab bodies survive switches via IndexedStack, and a header bar now shows the app name + version. Bumps the shared jirip_app dep to 0.3.0.\nrefactor(ui): migrate root shell to jirip_app AppShell (0.3.0)\nReplace the hand-rolled _RootShell + Column(UpdateBanner, NavigationBar) with a single AppShell. Adds showAppBar so the new app-name + version header renders above the banner; tab bodies now survive switches via IndexedStack. Selected-state icons added to the three tabs.\nrelease: 0.13.2 — regenerate icons via shared recipe\nVoicer's launcher icon is now produced by the shared\nflutter_common/scripts/icon/generate_icon.py recipe. The hand-painted\nPNGs are replaced with recipe output; visually indistinguishable on the\nadaptive layers (mean per-channel error 2.9), close on the legacy\ncomposite. Going forward any future re-theme runs the recipe on a\nmodified colour set rather than hand-editing PNGs.\nInputs that drive voicer's icon now live in two files at the repo\nroot:\n- icon-glyph.png       the white mic shape (extracted from the\n                       original icon.png so the legacy composite\n                       matches the hand-painted version's stroke\n                       width)\n- icon.config.yaml     6 colour stops + geometry ratios\nRun the recipe:\n  python3 ../flutter_common/scripts/icon/generate_icon.py \\\n      icon.config.yaml\n  dart run flutter_launcher_icons\nSee ../flutter_common/scripts/icon/README.md for the full schema.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.13.3",
+          "assets": [
+            {
+              "name": "voicer-0_13_3.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.3/voicer-0_13_3.aab"
+            },
+            {
+              "name": "voicer-0_13_3.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.3/voicer-0_13_3.apk"
+            }
+          ]
+        },
+        {
           "version": "0.13.2",
           "date": "2026-06-16T09:15:11Z",
           "source_repo": "jirip/voicer",
@@ -1098,24 +1116,6 @@
             {
               "name": "voicer-0_5_1.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.5.1/voicer-0_5_1.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.5.0",
-          "date": "2026-06-05T22:48:33Z",
-          "source_repo": "jirip/voicer",
-          "source_tag": "v0.5.0",
-          "notes": "release: 0.5.0 — consume jirip_app from flutter_common instead of local copy\nDelete lib/updater.dart and lib/widgets/update_banner.dart; depend on\njirip_app pinned to tag jirip_app-v0.1.0 from\nhttps://github.com/jirip/flutter_common.\nVoicerTheme.bannerStyle replaces the two free colour constants — the\nshared widget takes an UpdateBannerStyle from the host.\nThis is the first consumer of jirip_app. The package's API matches\nvoicer's pre-extraction code one-to-one, so the user-visible behaviour\nis unchanged.\nDrive-by: Settings → Version now shows the human-readable versionName\n(`0.5.0`) without the trailing build number, which is purely an\nAndroid `versionCode` marker.\n\nrelease: 0.5.0 — consume jirip_app from flutter_common instead of local copy\nDelete lib/updater.dart and lib/widgets/update_banner.dart; depend on\njirip_app pinned to tag jirip_app-v0.1.0 from\nhttps://github.com/jirip/flutter_common.\nVoicerTheme.bannerStyle replaces the two free colour constants — the\nshared widget takes an UpdateBannerStyle from the host.\nThis is the first consumer of jirip_app. The package's API matches\nvoicer's pre-extraction code one-to-one, so the user-visible behaviour\nis unchanged.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.5.0",
-          "assets": [
-            {
-              "name": "voicer-0_5_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.5.0/voicer-0_5_0.aab"
-            },
-            {
-              "name": "voicer-0_5_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.5.0/voicer-0_5_0.apk"
             }
           ]
         }
