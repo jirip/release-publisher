@@ -1142,6 +1142,24 @@
     "slot-watch": {
       "releases": [
         {
+          "version": "0.1.3",
+          "date": "2026-06-16T13:30:26Z",
+          "source_repo": "jirip/slot-watch",
+          "source_tag": "v0.1.3",
+          "notes": "release(ui): 0.1.3 — bottom tabs via jirip_app AppShell\nTab bodies survive switches via IndexedStack; the header now shows app name + version (was: per-tab title). Bumps the shared jirip_app dep to 0.3.0.\nci: drop `restore-keys: pub-` fallback so that dep-shape changes don't end up restoring a stale ~/.pub-cache whose package_graph.json conflicts with the fresh lockfile.\nrelease(ui): 0.1.3 — bottom tabs via jirip_app AppShell\nTab bodies survive switches via IndexedStack, and the header now shows the app name + version (was: per-tab title). Bumps the shared jirip_app dep to 0.3.0.\nrefactor(ui): migrate to jirip_app AppShell (0.3.0)\nDrop the hand-rolled MainShell + _RootShell wrapper; AppShell now hosts both tabs with IndexedStack state preservation and the new app-name + version AppBar. lib/screens/main_shell.dart deleted — its job is now done by AppShell.\nfeat(ui): canonical availability grid\nReplace separate venue-detail and slot-list viewer with one GridScreen:\ncourts × time slices, green/red cells, Day/Week scope pagers, hour range\nfilter, tappable column/row headers to hide/restore. Single-venue from\nthe Venues tab; multi-venue (grouped headers) from a Notification's new\nView button.\nNotification tile: tap → settings (was: viewer), grid icon → grid view.\nDrop VenueDetailScreen and ViewerScreen.\nClean-code: drop dead Sport.soccer + its negative test; move icon source\nPNGs to assets/icon/; strip stock analysis_options scaffolding; refresh\nREADME + AGENT.md to current signatures; remove stale comments; drop UA\nversion drift; clear hidden-slice state on sport change.\nBump to v0.1.2.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.1.3",
+          "assets": [
+            {
+              "name": "slot-watch-0_1_3.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.3/slot-watch-0_1_3.aab"
+            },
+            {
+              "name": "slot-watch-0_1_3.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.3/slot-watch-0_1_3.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.2",
           "date": "2026-06-16T00:57:54Z",
           "source_repo": "jirip/slot-watch",
