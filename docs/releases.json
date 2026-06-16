@@ -1142,6 +1142,24 @@
     "slot-watch": {
       "releases": [
         {
+          "version": "0.1.5",
+          "date": "2026-06-16T14:34:30Z",
+          "source_repo": "jirip/slot-watch",
+          "source_tag": "v0.1.5",
+          "notes": "feat(theme): brand-aligned icon ring + scheme-driven banner\n- Icon ring: cyan → indigo (#7B61FF) → magenta (#FF4FA3) so the mid stop\n  reads as a real apex; regenerate icon.png/bg/fg + Android mipmaps.\n- Update banner colours now derive from the active ColorScheme\n  (primaryContainer / onPrimaryContainer), matching the cyan theme\n  instead of the original amber. Wrap in a Builder so the banner has\n  Theme reach inside MaterialApp.\nBump to v0.1.5.\nrelease(ui): 0.1.4 — bump jirip_app to 0.4.0 (custom bottom bar)\nPicks up the new prague-mhd-style bottom bar in jirip_app 0.4.0: selected icon scales up, primary tint instead of a pill indicator, full-slot ripple, 70 dp tall.\nfeat(notifications): swipe-right to delete with undo\nWrap query tiles in Dismissible. Right swipe shows a red 'Delete'\nbackground, then deletes and shows a Snackbar with Undo. Removes the\noverflow menu (delete was the only action). Bump to v0.1.4.\nfeat: grid polish, shared icon recipe\nUI:\n- Grid: compact court headers (\"Court 1\" → \"1\") with narrower cells so\n  more fit on screen.\n- Query edit: collapse start/end/duration into two rows. Start–end row\n  with inline clear; duration as a dropdown.\nVenues:\n- Infinit Step badminton: drop 12 speculative resource IDs, keep only\n  the 8 day-view courts verified against the live UI.\nIcon:\n- Adopt the shared jirip_app icon recipe from flutter_common. Add\n  icon-glyph.png + icon.config.yaml at the repo root; generated icons\n  live there too. Regenerated Android mipmaps via flutter_launcher_icons.\nBump to v0.1.3.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.1.5",
+          "assets": [
+            {
+              "name": "slot-watch-0_1_5.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.5/slot-watch-0_1_5.aab"
+            },
+            {
+              "name": "slot-watch-0_1_5.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.5/slot-watch-0_1_5.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.4",
           "date": "2026-06-16T14:22:09Z",
           "source_repo": "jirip/slot-watch",
