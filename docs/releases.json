@@ -1142,6 +1142,24 @@
     "slot-watch": {
       "releases": [
         {
+          "version": "0.1.11",
+          "date": "2026-06-17T09:33:20Z",
+          "source_repo": "jirip/slot-watch",
+          "source_tag": "v0.1.11",
+          "notes": "feat(grid): single-row scope pager, hide sport on notification view\n- Replace the two side-by-side scope cards with one row: a\n  SegmentedButton(Day|Week) on the left and an inline < label >\n  pager on the right. Tap the centre label to reset to today /\n  this-week. `<` arrow still disabled at today / this-week.\n- GridScreen takes a `showSportSelector` flag (default true).\n  `buildQueryGrid` passes false so the Notifications-tab grid view\n  hides the sport chips — the query already fixes the sport.\nBump to v0.1.11.\nfeat: Olsanka venue, per-day cache, layout polish\nOlsanka (rezervace.sportolsanka.cz)\n- New OlsankaVenue under lib/venues/olsanka/. OIDC login (lazy,\n  in-memory token cache, retry once on empty-payload). Hardcoded\n  service-account creds (dedicated account, no sensitive data behind\n  it; baked into the APK by design).\n- Each scrape fetches /resg_<id>?date=YYYY-MM-DD&_rsc=1 per day and\n  parses the EventItems[] block from the Next.js server-rendered\n  payload. Sports: Badminton (resg_51), Stolní tenis (resg_16).\n- Single \"any court\" resource per (venue, sport) — the source only\n  exposes totalCapacity per hour. isFree = totalCapacity > 0.\nCache\n- Per-day key (venueId, sport, single date). Multi-day requests reuse\n  cached days and ask the venue only for the union of misses. Cap\n  bumped to 200 entries.\nGrid layout\n- Full-width: cellWidth computed per packing row to fill available\n  width (min 36, max 64 px); falls back to horizontal scroll only\n  when the minimum doesn't fit.\n- Date band rendered for every day, every packing row, using the\n  same friendly label as the pager (Today / Tomorrow / EEE d.M.).\n- Day pager '<' arrow disabled when focus is today; week pager '<'\n  disabled when focus is this week. Tap centre still resets.\nPersistence\n- Grid prefs extended to remember the chosen sport and scope (Day\n  vs Week) alongside the hour range. Notification launches still\n  override.\nIcon + theme\n- Switch to the terracotta + steel-grey palette ('mono' variant);\n  re-render the launcher icon + all Android mipmaps. App theme\n  reseeded with a steel-grey M3 seed so the in-app accents track\n  the ring colour.\n- Remove the 'All hours' chip — the range slider alone controls\n  hours.\nHygiene\n- Add *.har to .gitignore (HAR captures may carry auth tokens).\nBump to v0.1.10.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.1.11",
+          "assets": [
+            {
+              "name": "slot-watch-0_1_11.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.11/slot-watch-0_1_11.aab"
+            },
+            {
+              "name": "slot-watch-0_1_11.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.11/slot-watch-0_1_11.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.10",
           "date": "2026-06-17T08:49:52Z",
           "source_repo": "jirip/slot-watch",
@@ -1300,24 +1318,6 @@
             {
               "name": "slot-watch-0_1_2.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.2/slot-watch-0_1_2.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.1",
-          "date": "2026-06-15T23:50:38Z",
-          "source_repo": "jirip/slot-watch",
-          "source_tag": "v0.1.1",
-          "notes": "feat(ui): bottom-nav with Venues + Notifications tabs\n- MainShell hosts two tabs: read-only Venues explorer and the\n  existing saved-queries list (now \"Notifications\").\n- Venues tab: list of bundled venues; tap → sport + week picker\n  (this / next / +2), streams free slots per day across 7 days.\n- QueryEditScreen reworked: order-aware picker. Sport-first selects\n  all supporting venues; venue-first lists union of sports, user\n  picks exactly one. Optional latest-start replaces fixed window.\n- Model: SlotQuery.windowMinutes → nullable tEndMinutes (backwards\n  compatible via fromJson). Venue.findFreeSlots: windowSize →\n  optional tEnd, falling back to capabilities openUntil.\n- Drop dynamic cast in ViewerScreen; explicit Venue type.\n- Add lib/venues/AGENT.md spec for adding new venues.\n- Bump to v0.1.1.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.1.1",
-          "assets": [
-            {
-              "name": "slot-watch-0_1_1.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.1/slot-watch-0_1_1.aab"
-            },
-            {
-              "name": "slot-watch-0_1_1.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.1/slot-watch-0_1_1.apk"
             }
           ]
         }
