@@ -1142,6 +1142,24 @@
     "slot-watch": {
       "releases": [
         {
+          "version": "0.3.3",
+          "date": "2026-06-22T11:47:49Z",
+          "source_repo": "jirip/slot-watch",
+          "source_tag": "v0.3.3",
+          "notes": "feat(queries): day-range queries, chunked notifications, range-aware grid\nA saved query can now watch a range of days, not just one. Tapping a\nnotification opens the grid on exactly the days that notification covers.\n- Model: SlotQuery gains an optional endDate (null = single day). Adds\n  lastDate / spanDays helpers; isStale now keys on the span's last day,\n  so a query stays live until its whole range is past. JSON is backward\n  compatible (legacy entries without endDate load as single-day).\n- Checks: runCheck fetches every day in the span and unions the fitting\n  slots. Slot keys are date-qualified, so days never collide.\n- Notifications: a span is split into <=5-day chunks; one notification\n  fires per chunk, and only when that chunk has newly-free slots. Each\n  notification's id/tag is per-chunk so they coexist in the tray, and its\n  payload carries the chunk's day range.\n- Grid: opening a multi-day range selects Week scope focused on the range\n  start (switching to Day shows that first day; Next steps a week). A\n  single day still opens in Day scope. Highlight keys are now date-aware\n  so a 07:00 match on one day no longer lights up 07:00 on another.\n- Editor: an optional \"Until\" date (defaults to same day, clamped to the\n  start, clearable back to single-day). Home tiles show the range.\nTests: query span/stale/JSON, multi-day runCheck, chunk bucketing, and\nnotification payload round-trip. 50 tests pass; analyze clean.\nfix(erezervace): correct date navigation, multi-court bookings, stuck spinner\nThree correctness fixes for Badminton Arena Skalka (e-rezervace), found\ntesting days other than today.\n- Date navigation: the schedule POST used the JSF +1-day button\n  (j_id200), which ignores calendarInputDate and only steps one day from\n  today — so every day except today returned tomorrow's data. Switch to\n  the calendar's jump-to-date action (j_id205) so the requested date is\n  actually fetched.\n- Multi-court reservations: a single event can span several courts\n  (start[1] != end[1], e.g. a hall-wide block across all 13 courts).\n  Mark every court in the event's rectangle busy, not just the first,\n  so spanned courts no longer show falsely free.\n- Stuck spinner: stepping to another day while a fetch was in flight hit\n  the `_loading` guard in _run and was dropped, leaving the new date\n  spinning forever with no fetch. Remove the guard and rely on the runId\n  supersession that's already in place.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.3.3",
+          "assets": [
+            {
+              "name": "slot-watch-0_3_3.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.3/slot-watch-0_3_3.aab"
+            },
+            {
+              "name": "slot-watch-0_3_3.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.3/slot-watch-0_3_3.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.2",
           "date": "2026-06-18T20:08:20Z",
           "source_repo": "jirip/slot-watch",
@@ -1300,24 +1318,6 @@
             {
               "name": "slot-watch-0_1_9.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.9/slot-watch-0_1_9.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.8",
-          "date": "2026-06-16T20:36:11Z",
-          "source_repo": "jirip/slot-watch",
-          "source_tag": "v0.1.8",
-          "notes": "- Bump jirip_app dep to v0.5.0 (commit e906dfd). AppShell's\n  showAppBar:true now renders a slim 24 dp caption instead of a\n  full Material AppBar — visible UX change on both tabs.\n- Rewrite README to match v0.1.7 reality: tap-to-edit vs grid-icon\n  view, swipe-right delete, actual workmanager background story,\n  current project layout, current dependencies.\n- Drop the now-obsolete TODO.md (its only entry was the jirip_app\n  bump done in this commit).\n- Bump to v0.1.8.\nRecords the new tag SHA and what the bump entails for slot-watch (visible — top header shrinks from ~56dp to ~24dp because slot-watch uses showAppBar: true). Delete after the bump lands.\nfeat: periodic background notifications + grid polish\nNotifications\n- workmanager (0.9.0+3) periodic 15-min task. Top-level dispatcher\n  loads QueryStore, iterates enabled non-stale queries, runs the pure\n  check_runner (venue scrape → diff → filter to future starts), and\n  fires one flutter_local_notifications entry per query with new slots.\n  Title = query name; body = \"N new D-min slots: HH:mm, HH:mm…\".\n- Tap routes to GridScreen with the new slot keys highlighted with a\n  yellow border across their covered slices.\n- On app resume, queries with lastCheckedAt > 15min ago re-check in\n  the foreground; QueryStore mutations reconcile the worker\n  registration (enabled count > 0 → schedule; otherwise cancel).\n- Android: enable core library desugaring + desugar_jdk_libs for\n  flutter_local_notifications.\nGrid view\n- Drop past days entirely; on today, drop slice rows whose end is\n  ≤ now. Day headers suppress when nothing is visible.\n- Persist hour range + 'All hours' globally in SharedPreferences so\n  a chosen range follows across venues and restarts. Launch state\n  from a notification still wins for that opening.\n- Tap a court header → SnackBar shows the full label (e.g. \"Court 1\"\n  or \"Infinit Step — Court 1\"); short trailing token stays in the\n  header for density. Tooltip too for long-press.\n- Drop the surprise hide-court / hide-row gestures. Fix header/cell\n  alignment (SizedBox + Padding + DecoratedBox instead of margin).\n- Remove the duplicate loading spinner; per-day spinners suffice.\nTests\n- check_runner_test: first-fire reports every future slot, past-only\n  slots are filtered, deltas reflect lastSeen, unsupported sport is\n  skipped.\nBump to v0.1.7.\nfeat(icon): magnifier on calendar day-cell glyph\nReplace stopwatch with a magnifying glass centred on the middle cell of a 3x3 calendar grid — clearer 'inspect a day' affordance. Regenerated icon.png/bg/fg + Android mipmaps. Bump to v0.1.6.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.1.8",
-          "assets": [
-            {
-              "name": "slot-watch-0_1_8.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.8/slot-watch-0_1_8.aab"
-            },
-            {
-              "name": "slot-watch-0_1_8.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.8/slot-watch-0_1_8.apk"
             }
           ]
         }
