@@ -1142,6 +1142,24 @@
     "slot-watch": {
       "releases": [
         {
+          "version": "0.3.4",
+          "date": "2026-06-23T20:09:03Z",
+          "source_repo": "jirip/slot-watch",
+          "source_tag": "v0.3.4",
+          "notes": "feat: two venues, query-matching grid highlight, redesigned tab icons\nThree user-facing additions.\nVenues (both on the existing e-rezervace platform — config only, each\nverified against a live per-day POST + a fixture parser test):\n- Squash Holešovice (Praha 7) — adds Squash, a sport no other venue had.\n- Tenis Centrum Lužiny (Praha 13) — tennis (indoor hall), badminton and\n  table tennis; reached via the club's iframe at tenis-luziny.e-rezervace.cz.\nGrid highlight: opening a saved query's availability — from a notification\ntap, the in-app view button, or the new green eye — now amber-outlines the\nexact free cells (court + time) that fit the query's sport, duration and\nwindow. Recomputed from each day's freshly loaded schedule via the same\nmatcher the background checker uses (fittingSlots, now public), so the\nhighlight is identical to what would notify and persists across refreshes.\nDate-aware, so multi-day/Week ranges mark the correct day.\nTab icons: the bottom tabs get a \"find a slot in a timetable\" theme —\nSearch = magnifier+grid, Venues = pin+grid (a place's schedule),\nNotifications = bell with a green eye that appears only when a watched\nquery currently has a matching free slot (driven off lastSeenSlotKeys,\nshell rebuilt via a ListenableBuilder on the QueryStore). Needs the new\nAppShellTab.iconBadge from jirip_app 0.6.0 (pin bumped).\nTests: fittingSlots window math; the two venue fixtures. 54 pass; analyze\nclean.\nfeat(queries): day-range queries, chunked notifications, range-aware grid\nA saved query can now watch a range of days, not just one. Tapping a\nnotification opens the grid on exactly the days that notification covers.\n- Model: SlotQuery gains an optional endDate (null = single day). Adds\n  lastDate / spanDays helpers; isStale now keys on the span's last day,\n  so a query stays live until its whole range is past. JSON is backward\n  compatible (legacy entries without endDate load as single-day).\n- Checks: runCheck fetches every day in the span and unions the fitting\n  slots. Slot keys are date-qualified, so days never collide.\n- Notifications: a span is split into <=5-day chunks; one notification\n  fires per chunk, and only when that chunk has newly-free slots. Each\n  notification's id/tag is per-chunk so they coexist in the tray, and its\n  payload carries the chunk's day range.\n- Grid: opening a multi-day range selects Week scope focused on the range\n  start (switching to Day shows that first day; Next steps a week). A\n  single day still opens in Day scope. Highlight keys are now date-aware\n  so a 07:00 match on one day no longer lights up 07:00 on another.\n- Editor: an optional \"Until\" date (defaults to same day, clamped to the\n  start, clearable back to single-day). Home tiles show the range.\nTests: query span/stale/JSON, multi-day runCheck, chunk bucketing, and\nnotification payload round-trip. 50 tests pass; analyze clean.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.3.4",
+          "assets": [
+            {
+              "name": "slot-watch-0_3_4.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.4/slot-watch-0_3_4.aab"
+            },
+            {
+              "name": "slot-watch-0_3_4.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.4/slot-watch-0_3_4.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.3",
           "date": "2026-06-22T11:47:49Z",
           "source_repo": "jirip/slot-watch",
@@ -1300,24 +1318,6 @@
             {
               "name": "slot-watch-0_1_10.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.10/slot-watch-0_1_10.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.9",
-          "date": "2026-06-16T22:37:27Z",
-          "source_repo": "jirip/slot-watch",
-          "source_tag": "v0.1.9",
-          "notes": "feat: live-schedule venues, dedupe notifications, packed grid, cache\nVenue interface\n- Drop VenueCapabilities + static resource lists. Venue exposes\n  `sports`, `standardDurationsMinutes`, `getSchedule(sport, dates,\n  tStart?, tEnd?) → List<ResourceDay>`. Resources are whatever the\n  page returns at scrape time; venue chooses display names.\n- ResourceDay carries (id, displayName, blocks). id is venue-opaque,\n  used for cross-day column identity + notification keys.\nInfinit Step\n- No hardcoded resource ids. Per-sport menu indexes only. For each\n  requested day, parse `[[id, name], ...]` from the day callback and\n  tile open hours into free/busy TimeBlocks. Accept whatever name\n  format the venue emits (tennis 'n - group', badminton 'n').\n- R8 keep rules for androidx.work.*/androidx.startup.* so the\n  workmanager InitializationProvider doesn't reflect on a stripped\n  WorkDatabase_Impl on startup.\nNotifications\n- Diff at the opportunity level: (venueId, start). A second court at\n  the same venue + same start does not re-notify. Different venue or\n  different start does.\nGrid\n- Pack visible days side-by-side when they fit width (LayoutBuilder);\n  wrap to a new row otherwise. Shared time column per packing row.\n- Venue / group / date bands merge across consecutive columns with\n  the same value within a packing row.\n- Past slice rows drop only when every day in the packing row has the\n  hour in the past.\nCache\n- ScheduleCache wraps every Venue.getSchedule call. Key =\n  (venueId, sport, sortedDates); full open-hours result cached and\n  sliced to (tStart, tEnd) client-side. 15-min TTL, LRU at 50\n  entries. Grid uses cache; refresh icon forces refresh;\n  check_runner always forces refresh.\nBump to v0.1.9.\n- Bump jirip_app dep to v0.5.0 (commit e906dfd). AppShell's\n  showAppBar:true now renders a slim 24 dp caption instead of a\n  full Material AppBar — visible UX change on both tabs.\n- Rewrite README to match v0.1.7 reality: tap-to-edit vs grid-icon\n  view, swipe-right delete, actual workmanager background story,\n  current project layout, current dependencies.\n- Drop the now-obsolete TODO.md (its only entry was the jirip_app\n  bump done in this commit).\n- Bump to v0.1.8.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.1.9",
-          "assets": [
-            {
-              "name": "slot-watch-0_1_9.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.9/slot-watch-0_1_9.aab"
-            },
-            {
-              "name": "slot-watch-0_1_9.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.9/slot-watch-0_1_9.apk"
             }
           ]
         }
