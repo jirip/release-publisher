@@ -1369,6 +1369,28 @@
         }
       ],
       "webUrl": "https://kombucha-calculator.pages.dev/"
+    },
+    "rouletter": {
+      "releases": [
+        {
+          "version": "0.1.0",
+          "date": "2026-06-24T09:38:19Z",
+          "source_repo": "jirip/rouletter",
+          "source_tag": "v0.1.0",
+          "notes": "release: v0.1.0\nFirst public release of Rouletter. Verifies the end-to-end pipeline:\nsigned build -> GitHub release -> release-publisher dispatch -> Telegram\nnotification via the publisher fallback bot.\nrefactor: clean-code pass — dedupe constants, fix doc drift\n- rng: name HTTP-200 and Random.org URL constants; default pocketCount\n  to AmericanRoulette.pocketCount (single source of truth).\n- wheel: drop duplicated _pocketCount const and unreachable settle\n  guard; const top-pointer Icon; rename shouldRepaint param.\n- README + bootstrap-secrets.sh: correct the local keystore path\n  (keystore.jks at repo root, key.properties storeFile=../../keystore.jks)\n  to match the actual CI/local split.\n- dart format across lib and test.\ntest: use contains instead of indexOf (prefer_contains lint)\nCI runs flutter analyze with info-level lints treated as failures.\nfeat: animated rotating roulette wheel per draw\nEach draw now spins a wheel graphic (standard American pocket order) that\ndecelerates and lands the drawn number under the top pointer. A draw\nlasts max(1s, actual RNG request time), so every result reads as a real\nspin and a slow Random.org call simply extends it.\nReplaces the static result disc. Adds a wheel-order invariant test\n(every pocket present exactly once).\nci: trigger signed build with secrets in place",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/rouletter-v0.1.0",
+          "assets": [
+            {
+              "name": "rouletter-0_1_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/rouletter-v0.1.0/rouletter-0_1_0.aab"
+            },
+            {
+              "name": "rouletter-0_1_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/rouletter-v0.1.0/rouletter-0_1_0.apk"
+            }
+          ]
+        }
+      ]
     }
   }
 }
