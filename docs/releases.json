@@ -368,6 +368,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.9.12",
+          "date": "2026-06-25T09:48:06Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.9.12",
+          "notes": "feat(app): per-channel brightness normalisation (fixes green tint)\nThe single-luma scale was driving channels into asymmetric clipping\nunder fridge LED light: uniform brightening pushed the green-shifted\nphosphor highlights to 255 while red/blue still had headroom, with\nthe visible result of greenish casts on brighter frames.\nReplace it with a per-channel ColorMatrix:\n- measureBrightnessP95(Bitmap) → measureRgbP95(Bitmap): RgbP95\n- brightnessNormalisationFilter(Int, Float) → rgbNormalisationFilter(RgbP95, RgbP95)\n- Calibration target storage in AppSettings goes from Float (single\n  p95) to RgbP95 encoded as \"r;g;b\" — same pattern DefaultZoom uses.\n  Key bumped to brightness_target_v2:* so older single-float entries\n  are silently abandoned (user re-calibrates from a history frame).\nEach channel scales independently within the existing 0.6–2.0\nclamp. Brightness lift and white-balance correction now share one\nmatrix; no separate WB pass needed.\nThe settings card \"Brightness target\" row now reads\n\"R 220 · G 215 · B 218\" instead of a single number.\nBumps app 0.9.12.\nfeat(app): main screen photo card honours brightness target\nThe home-screen device card was rendering raw bitmaps while\nHistory + Viewer applied the normalisation filter — inconsistent.\nDevicesViewModel now exposes brightnessTarget(deviceId), DeviceList\nplumbs the flow into each row, the row decodes-and-measures p95\nalongside the existing bitmap fetch, and ZoomableDevicePhoto\naccepts a ColorFilter applied to the Image.\nSame algorithm + clamps as the history viewer (Normalise.kt),\nincluding the no-filter short-circuit when the scale would be\nwithin 1% of identity.\nBumps app 0.9.11.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.9.12",
+          "assets": [
+            {
+              "name": "fridgeye-0_9_12.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.12/fridgeye-0_9_12.aab"
+            },
+            {
+              "name": "fridgeye-0_9_12.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.12/fridgeye-0_9_12.apk"
+            }
+          ]
+        },
+        {
           "version": "0.9.11",
           "date": "2026-06-05T16:53:33Z",
           "source_repo": "jirip/fridgeye",
@@ -526,24 +544,6 @@
             {
               "name": "fridgeye-0_9_4.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.4/fridgeye-0_9_4.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.9.3",
-          "date": "2026-05-21T23:28:35Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.9.3",
-          "notes": "refactor: rename pin → calibration, fix calibrate-from-frame propagation [fw-release]\nRename: the word \"pin\" was unclear (overlap with PIN codes etc).\nEnd-to-end rename to \"calibration\" — the same word users already see\nin the UI:\n- Worker: CameraPin → Calibration. cameraPin field → calibration.\n  encodeCameraPin → encodeCalibration. calibrationToPin →\n  telemetryToCalibration. Cue header X-FridgEye-Cam-Pin →\n  X-FridgEye-Cam-Calibration.\n- Firmware: cam_pin.c → calibration.c. cam_pin_t → calibration_t.\n  cam_pin_load/save/clear/parse → calibration_load/save/clear/parse.\n  s_active_pin → s_active_calibration. s_have_pin →\n  s_have_calibration. camera_apply_pin → camera_apply_calibration.\n  upload_result_t.cam_pin_encoded → calibration_encoded.\n- App: data class CameraPin → Calibration. cameraPin → calibration.\nNVS key value stays \"cam_pin_v1\" for backward compatibility — already-\ncalibrated devices keep their stored values across the upgrade.\nPropagation fix: decorateCues was sending both the calibrate cue AND\nthe cameraPin header during calibrate-from-frame. The firmware\nprocessed the calibrate cue first (switching the sensor to AUTO,\nclearing local state), then the pin header (re-pinning). Effect:\nbenign but wasteful — and conceptually wrong: a server already\nholding the values shouldn't ask the device to \"calibrate\". Now the\ntwo paths are split:\n- Server has values → ship X-FridgEye-Cam-Calibration only.\n- Server staged a calibrate cue with no values → ship\n  X-FridgEye-Cmd-Calibrate only.\nBumps firmware 0.7.2, app 0.9.3.\nfeat: calibration ack flow + snackbar feedback + single-button card\nWorker now tracks \"pin set but not yet confirmed by device\" properly:\n- calibrate-from-frame writes the pin AND sets calibratePending=true.\n  The flag clears only when the device's next telemetry reports\n  aecValue + agcGain matching the pin (path 2 of\n  applyCalibrationFromTelemetry, alongside the existing regular\n  calibrate flow).\n- Cue decoration suppresses the X-FridgEye-Cam-Pin header once the\n  device's reported values already match the stored pin — no point\n  re-shipping bytes a calibrated device has already applied. Same\n  for X-FridgEye-Cmd-Calibrate.\nApp settings card collapses to one button per state:\n- \"Auto calibration\" + Calibrate button.\n- \"Calibration awaiting device confirmation\" + Remove button.\n- \"Calibration set\" + AEC/AGC/LDR rows + Remove button.\nRecalibrate / Unlock duplicated Calibrate / Remove for no reason;\ndropped.\nHistory swipe-right now snackbars the result:\n- Success: \"Calibration sent — awaiting device confirmation\".\n- 409 (frame too dark, missing metadata): surfaced from the\n  Worker's body verbatim.\n- Other failures: error message.\nViewModel exposes a Channel-backed events flow; snackbar host lives\non the Scaffold.\nBumps to 0.9.1.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.9.3",
-          "assets": [
-            {
-              "name": "fridgeye-0_9_3.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.3/fridgeye-0_9_3.aab"
-            },
-            {
-              "name": "fridgeye-0_9_3.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.3/fridgeye-0_9_3.apk"
             }
           ]
         }
