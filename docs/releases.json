@@ -1142,6 +1142,24 @@
     "slot-watch": {
       "releases": [
         {
+          "version": "0.3.5",
+          "date": "2026-06-29T21:42:23Z",
+          "source_repo": "jirip/slot-watch",
+          "source_tag": "v0.3.5",
+          "notes": "ci: don't fail the release when the APK artifact upload hits quota\nThe shared, account-wide Actions artifact-storage quota filled up and the\n\"Upload APK artifact\" step errored, which aborted the job before Create\nRelease / Dispatch ran — so v0.3.5 built and tested green but never\npublished. That upload is only a convenience copy; the GitHub release\nattaches the APK/AAB independently. Mark it continue-on-error so a quota\nhit on the throwaway copy can't block the actual release.\nRe-triggers the v0.3.5 release (version already bumped in ba107eb).\nfix(erezervace): derive slot length from headers; Lužiny tennis all 6 courts\nTwo correctness fixes for the e-rezervace venues added in v0.3.4.\nSlot length: the parser hardcoded 30-minute columns (Skalka's grid), but\nSquash Holešovice and Tenis Lužiny use hourly (60-min) columns — so every\nslot there was mislabeled (wrong end times, bookings mapped to the wrong\nrows). Derive the column width from the spacing between the first two\nscheduleTimeHeader labels instead of hardcoding it; the grid is uniform.\nSkalka stays 30-min, Holešovice/Lužiny become 60-min. Verified against the\nlive grids and a screenshot.\nLužiny tennis: the indoor hall (Kurt 2/3/4) and outdoor courts (Kurt 1/5/6)\nare two separate services, and the model mapped one service per sport, so\noutdoor never showed. A sport can now span several services\n(Map<Sport, List<ErezervaceService>>), fetched on one JSF session and\nmerged; an optional courtSuffix is appended as \"court - suffix\" so the\ngrid's group band shows it. Tennis = indoor \"hala\" + outdoor \"venku\" → all\n6 courts, grouped — consistent with how table tennis already shows\nhala/pod schody. Skalka/Holešovice use single-element lists, no suffix.\nTests: fixture slot lengths corrected to 60-min (Holešovice, Lužiny);\nSkalka unchanged. 54 pass; analyze clean. Merged tennis labels verified\nlive (Kurt 2/3/4 - hala, Kurt 1/5/6 - venku).\nfeat: two venues, query-matching grid highlight, redesigned tab icons\nThree user-facing additions.\nVenues (both on the existing e-rezervace platform — config only, each\nverified against a live per-day POST + a fixture parser test):\n- Squash Holešovice (Praha 7) — adds Squash, a sport no other venue had.\n- Tenis Centrum Lužiny (Praha 13) — tennis (indoor hall), badminton and\n  table tennis; reached via the club's iframe at tenis-luziny.e-rezervace.cz.\nGrid highlight: opening a saved query's availability — from a notification\ntap, the in-app view button, or the new green eye — now amber-outlines the\nexact free cells (court + time) that fit the query's sport, duration and\nwindow. Recomputed from each day's freshly loaded schedule via the same\nmatcher the background checker uses (fittingSlots, now public), so the\nhighlight is identical to what would notify and persists across refreshes.\nDate-aware, so multi-day/Week ranges mark the correct day.\nTab icons: the bottom tabs get a \"find a slot in a timetable\" theme —\nSearch = magnifier+grid, Venues = pin+grid (a place's schedule),\nNotifications = bell with a green eye that appears only when a watched\nquery currently has a matching free slot (driven off lastSeenSlotKeys,\nshell rebuilt via a ListenableBuilder on the QueryStore). Needs the new\nAppShellTab.iconBadge from jirip_app 0.6.0 (pin bumped).\nTests: fittingSlots window math; the two venue fixtures. 54 pass; analyze\nclean.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.3.5",
+          "assets": [
+            {
+              "name": "slot-watch-0_3_5.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.5/slot-watch-0_3_5.aab"
+            },
+            {
+              "name": "slot-watch-0_3_5.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.5/slot-watch-0_3_5.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.4",
           "date": "2026-06-23T20:09:03Z",
           "source_repo": "jirip/slot-watch",
@@ -1300,24 +1318,6 @@
             {
               "name": "slot-watch-0_1_11.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.11/slot-watch-0_1_11.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.1.10",
-          "date": "2026-06-17T08:49:52Z",
-          "source_repo": "jirip/slot-watch",
-          "source_tag": "v0.1.10",
-          "notes": "feat: Olsanka venue, per-day cache, layout polish\nOlsanka (rezervace.sportolsanka.cz)\n- New OlsankaVenue under lib/venues/olsanka/. OIDC login (lazy,\n  in-memory token cache, retry once on empty-payload). Hardcoded\n  service-account creds (dedicated account, no sensitive data behind\n  it; baked into the APK by design).\n- Each scrape fetches /resg_<id>?date=YYYY-MM-DD&_rsc=1 per day and\n  parses the EventItems[] block from the Next.js server-rendered\n  payload. Sports: Badminton (resg_51), Stolní tenis (resg_16).\n- Single \"any court\" resource per (venue, sport) — the source only\n  exposes totalCapacity per hour. isFree = totalCapacity > 0.\nCache\n- Per-day key (venueId, sport, single date). Multi-day requests reuse\n  cached days and ask the venue only for the union of misses. Cap\n  bumped to 200 entries.\nGrid layout\n- Full-width: cellWidth computed per packing row to fill available\n  width (min 36, max 64 px); falls back to horizontal scroll only\n  when the minimum doesn't fit.\n- Date band rendered for every day, every packing row, using the\n  same friendly label as the pager (Today / Tomorrow / EEE d.M.).\n- Day pager '<' arrow disabled when focus is today; week pager '<'\n  disabled when focus is this week. Tap centre still resets.\nPersistence\n- Grid prefs extended to remember the chosen sport and scope (Day\n  vs Week) alongside the hour range. Notification launches still\n  override.\nIcon + theme\n- Switch to the terracotta + steel-grey palette ('mono' variant);\n  re-render the launcher icon + all Android mipmaps. App theme\n  reseeded with a steel-grey M3 seed so the in-app accents track\n  the ring colour.\n- Remove the 'All hours' chip — the range slider alone controls\n  hours.\nHygiene\n- Add *.har to .gitignore (HAR captures may carry auth tokens).\nBump to v0.1.10.\nfeat: live-schedule venues, dedupe notifications, packed grid, cache\nVenue interface\n- Drop VenueCapabilities + static resource lists. Venue exposes\n  `sports`, `standardDurationsMinutes`, `getSchedule(sport, dates,\n  tStart?, tEnd?) → List<ResourceDay>`. Resources are whatever the\n  page returns at scrape time; venue chooses display names.\n- ResourceDay carries (id, displayName, blocks). id is venue-opaque,\n  used for cross-day column identity + notification keys.\nInfinit Step\n- No hardcoded resource ids. Per-sport menu indexes only. For each\n  requested day, parse `[[id, name], ...]` from the day callback and\n  tile open hours into free/busy TimeBlocks. Accept whatever name\n  format the venue emits (tennis 'n - group', badminton 'n').\n- R8 keep rules for androidx.work.*/androidx.startup.* so the\n  workmanager InitializationProvider doesn't reflect on a stripped\n  WorkDatabase_Impl on startup.\nNotifications\n- Diff at the opportunity level: (venueId, start). A second court at\n  the same venue + same start does not re-notify. Different venue or\n  different start does.\nGrid\n- Pack visible days side-by-side when they fit width (LayoutBuilder);\n  wrap to a new row otherwise. Shared time column per packing row.\n- Venue / group / date bands merge across consecutive columns with\n  the same value within a packing row.\n- Past slice rows drop only when every day in the packing row has the\n  hour in the past.\nCache\n- ScheduleCache wraps every Venue.getSchedule call. Key =\n  (venueId, sport, sortedDates); full open-hours result cached and\n  sliced to (tStart, tEnd) client-side. 15-min TTL, LRU at 50\n  entries. Grid uses cache; refresh icon forces refresh;\n  check_runner always forces refresh.\nBump to v0.1.9.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.1.10",
-          "assets": [
-            {
-              "name": "slot-watch-0_1_10.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.10/slot-watch-0_1_10.aab"
-            },
-            {
-              "name": "slot-watch-0_1_10.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.1.10/slot-watch-0_1_10.apk"
             }
           ]
         }
