@@ -990,6 +990,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.14.2",
+          "date": "2026-07-02T23:13:28Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.14.2",
+          "notes": "release: 0.14.2 — bump jirip_app to 0.8.1\nfix: harden clone trim, clip-exact preview\n- AacTrimmer: fail on zero samples or muxer finalise errors and delete\n  the half-written file instead of reporting success\n- preview: setClip so playback stops exactly at the window end (the\n  shipped position-listener never fired because play() was awaited\n  before _playing was set, so previews ran to end of file)\n- capture: wipe orphaned _scratch takes on open, exact wall-clock take\n  duration, delete orphan dest on failed trim, mounted guards around\n  cross-method async gaps\n- move trimAac onto AudioEngine, extract clampTrimWindow into\n  lib/trim_window.dart with unit tests\n- README: document voices & cloning; bump to 0.14.1+34",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.14.2",
+          "assets": [
+            {
+              "name": "voicer-0_14_2.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.14.2/voicer-0_14_2.aab"
+            },
+            {
+              "name": "voicer-0_14_2.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.14.2/voicer-0_14_2.apk"
+            }
+          ]
+        },
+        {
           "version": "0.14.1",
           "date": "2026-07-02T09:42:03Z",
           "source_repo": "jirip/voicer",
@@ -1148,24 +1166,6 @@
             {
               "name": "voicer-0_13_1.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.1/voicer-0_13_1.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.13.0",
-          "date": "2026-06-12T07:48:29Z",
-          "source_repo": "jirip/voicer",
-          "source_tag": "v0.13.0",
-          "notes": "release: 0.13.0 — voice cloning via Plachta/Seed-VC\nAdds neural voice cloning to playlists. Record 15-30 s of a friend, the\nvoice becomes a Voice choice in the picker. Select it on a playlist\ntrack and the first playback POSTs the recording + reference to the\npublic Plachta/Seed-VC HuggingFace Space, caches the converted WAV on\ndisk, and plays it. Subsequent plays of the same (recording, voice)\npair are instant.\nArchitecture:\n- Voice gains an optional cloneReferencePath field pointing at the 30 s\n  reference audio in app documents/voices/. Forward-compatible JSON.\n- VoiceClone (lib/voice_clone.dart): three-step Gradio client —\n  multipart upload, predict POST returning event_id, SSE stream until\n  the complete event carries the WAV URL. No auth (the Space is public).\n- CloneCache (lib/clone_cache.dart): sha1 of (recording.path, voice.id)\n  → File under Documents/clone-cache. Pure on-disk; persists across\n  launches.\n- CloneOrchestrator (lib/clone_orchestrator.dart): single in-process\n  coordinator — coalesces concurrent requests for the same pair, calls\n  cache then network, surfaces user-facing status.\n- VoiceCloneCaptureScreen: dedicated 30 s mic capture, lives under a\n  new \"Clone a voice\" entry next to \"Voice tone match\" (LTAS, kept\n  available but renamed to match what it actually does).\n- PlaylistDetailScreen resolves clone-capable voices via the\n  orchestrator before each playback; bakes the cloned audio into the\n  player path, so pitch/formant/LTAS are zeroed out for that pair (the\n  cloning already produced the final timbre).\nTrade-offs honestly documented:\n- Network dependency: Plachta's Space is public and free. Rate limit\n  + cold-start are the failure modes; first call after sleep may take\n  ~60s. Failures fall back to playing the original track so playlists\n  don't stall.\n- Privacy: voice samples + recordings leave the device for inference.\n  Acceptable for the personal/family use case this was built for.\n- Quality varies with the reference sample's cleanliness. The capture\n  screen tells the user to record 15-30 s of clean voice without\n  background noise.\nLTAS-based \"Match a voice\" is kept but renamed \"Voice tone match\" to\nhonestly describe what it does (spectral tilt copy, not identity clone).\nAdds http (1.2.x) and crypto (3.0.x) dependencies.\n\nrelease: 0.12.0 — offline STT via whisper.cpp + recording fix\nReplaces the live SpeechRecognizer-during-recording with offline\nwhisper.cpp transcription after the file is saved. The simultaneous\nSpeechRecognizer was stealing the mic stream on Android 13+ Pixels\n(ALT.AudioRecordSource silently detaches MediaRecorder), so recordings\nsince 0.9.0 produced empty files even though the UI showed timer\nticking.\nThe new flow: recording saves with a timestamp name immediately, then\na background isolate decodes the AAC, resamples to 16 kHz mono, and\nhands it to whisper.cpp (multilingual base.q5_1, ~57 MB asset). On\nsuccess the row renames in place to the transcribed phrase.\nLanguage picker is back at the top of Recordings with persisted\nchoice. 'Auto' lets whisper detect from the encoder output; explicit\ncodes (cs, en, sk, de, pl, …) skip detection and force the language.\nThree-dot menu on each recording gets an 'Auto-name' entry to re-run\nwhisper on existing clips (e.g. after changing the language).\nOther changes:\n- AndroidManifest now uses screenOrientation=fullUser; rotation\n  follows the system auto-rotate toggle and the OS shows the rotate\n  suggestion icon when the device is turned with auto-rotate off.\n- Voice list rows show 'matched tone' instead of 'pitch 0 · formant 0'\n  for LTAS-only matched voices.\n- Update banner moved from red (read as error) to amber on near-black.\nAPK size 58.8 MB → 120 MB (whisper.cpp + ggml-cpu + base model).",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.13.0",
-          "assets": [
-            {
-              "name": "voicer-0_13_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.0/voicer-0_13_0.aab"
-            },
-            {
-              "name": "voicer-0_13_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.0/voicer-0_13_0.apk"
             }
           ]
         }
