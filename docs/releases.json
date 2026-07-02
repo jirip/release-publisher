@@ -1156,6 +1156,20 @@
     "img2svg": {
       "releases": [
         {
+          "version": "0.1.15",
+          "date": "2026-07-02T13:38:54Z",
+          "source_repo": "jirip/pdf2jpg",
+          "source_tag": "img2svg-v0.1.15",
+          "notes": "release: img2svg crash fixes + morphology sliders",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/img2svg-v0.1.15",
+          "assets": [
+            {
+              "name": "img2svg.exe",
+              "url": "https://github.com/jirip/release-publisher/releases/download/img2svg-v0.1.15/img2svg.exe"
+            }
+          ]
+        },
+        {
           "version": "0.1.13",
           "date": "2026-06-11T16:57:07Z",
           "source_repo": "jirip/pdf2jpg",
