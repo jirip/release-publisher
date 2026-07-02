@@ -251,6 +251,24 @@
     "pexesongy": {
       "releases": [
         {
+          "version": "0.1.16",
+          "date": "2026-07-02T23:09:50Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.16",
+          "notes": "fix(scanner): fade AR video in on first frame\nmindARSys.start() resolves before the camera paints its first frame,\nand the Android System WebView draws its default media artwork (a\ncircled play glyph) on a frameless video element. Starting the 1s\nfade-in at start() resolution briefly flashed that glyph in the APK.\nGate the fade on the first painted frame via\nrequestVideoFrameCallback, falling back to loadeddata.\nci: dedupe version steps, guard publish dispatch\n- single Extract version step (name + filename outputs) instead of\n  two identical grep/sed blocks\n- dispatch now requires  too: source-tag only exists once\n  Create Release has run\n- empty release notes (bump-only release, everything filtered as\n  chore) fall back to the release commit subject\nfix(scripts): id normalization and small papercuts\n- generate.py: load cards via card_catalog.iter_all_cards so unquoted\n  YAML ids (int 10) match parse_card_ids' zero-padded strings;\n  resolve_front raises SystemExit; ImageReader import at top\n- find_youtube.py: zero-pad CLI ids ('5' now matches card '05')\n- devserver.py: allow_reuse_address + daemon_threads (instant rebind\n  after Ctrl+C)\n- bump_version.py: diff check compared worktree to index, not HEAD as\n  the comment claimed — use 'git diff HEAD'\nrefactor(anim): reuse homography, drop dead state\nplane.js: computeH now delegates to lib/homography.js instead of a\nsecond unit-square implementation; drawFrame bails on a null\nhomography; stale vignette comment and unused tile.ring removed.\nrays.js: glideActive was set in three places and never read.\nfix(scanner): cancel stale async work on exit\n- playCard: token check after each await so a pending first-scan\n  download can't start audio after the user exited playback\n- overlay.reset(): clears img.onload + dataset.cardId, preventing a\n  late onload ghost overlay and the empty-frame re-scan of the same\n  card (src was removed but the dedup marker survived)\n- injectTargets: guard against duplicate a-entities on Start retry /\n  exit-scan cycles\n- exitPlayback camera restart: .catch -> diagnostic label\n- null-guard matrix3dFromCorners at both call sites (degenerate\n  corners no longer reset the transform to origin)",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.16",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_16.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.16/pexesongy-0_1_16.aab"
+            },
+            {
+              "name": "pexesongy-0_1_16.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.16/pexesongy-0_1_16.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.15",
           "date": "2026-07-02T13:36:38Z",
           "source_repo": "jirip/pexesongy",
