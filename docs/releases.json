@@ -251,6 +251,24 @@
     "pexesongy": {
       "releases": [
         {
+          "version": "0.1.17",
+          "date": "2026-07-02T23:15:36Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.17",
+          "notes": "ci: fix release-notes range off by one tag\nThe notes step runs before Create Release, so the tag for the\ncurrent release doesn't exist yet and the newest existing tag is\nalready the previous release. head -2 | tail -1 reached one tag too\nfar back, duplicating the prior release's notes (visible on v0.1.16,\nmasked on v0.1.15 because the extra range was chore-only).",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.17",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_17.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.17/pexesongy-0_1_17.aab"
+            },
+            {
+              "name": "pexesongy-0_1_17.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.17/pexesongy-0_1_17.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.16",
           "date": "2026-07-02T23:09:50Z",
           "source_repo": "jirip/pexesongy",
