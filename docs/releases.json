@@ -3,6 +3,20 @@
     "pdf2jpg": {
       "releases": [
         {
+          "version": "0.1.15",
+          "date": "2026-07-02T13:38:29Z",
+          "source_repo": "jirip/pdf2jpg",
+          "source_tag": "pdf2jpg-v0.1.15",
+          "notes": "release: img2svg crash fixes + morphology sliders",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pdf2jpg-v0.1.15",
+          "assets": [
+            {
+              "name": "pdf2jpg.exe",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pdf2jpg-v0.1.15/pdf2jpg.exe"
+            }
+          ]
+        },
+        {
           "version": "0.1.13",
           "date": "2026-06-11T16:56:30Z",
           "source_repo": "jirip/pdf2jpg",
