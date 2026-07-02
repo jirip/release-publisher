@@ -824,6 +824,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.4.1",
+          "date": "2026-07-02T23:26:30Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.4.1",
+          "notes": "fix(game): stop undo crossing leg boundary\nnextLeg() keeps turn histories for match-wide stats, so undo at the\nstart of a new leg popped the previous leg's winning turn and added\nits score onto the freshly reset remaining, leaving legsWon and\nlegNumber inconsistent. The app-bar round number also kept counting\nacross legs, and player rows showed the previous leg's last turn.\nTrack the per-leg boundary in PlayerState.legStartTurn: round and\nundo now only look at turns since the leg started, and the back\nbutton reflects real undo capability via MatchState.canUndo.\nBump version to 1.4.1+40. Regression tests in game_model_test.dart.\nfeat(sfx,voice): trim sound pool, sexier cheer voice\nAfter auditioning all clips and phrases on device:\nSFX pool (12 → 10):\n- Drop cheer2.mp3 and cheer3.mp3 (both ~10s of generic crowd noise that\n  drag even with the 3s cap + fade).\nVoice cheer pool (20 → 18):\n- Drop: 'What a turn', 'Get in', 'Top shelf', 'Pure quality',\n  'World class'.\n- Add: 'Ohhh man', 'Once in a lifetime', 'go GO GO!'.\nVoice rendering:\n- New Voice.sayCheer(text) used for celebration phrases. Higher pitch\n  (1.25) + slower rate (0.42) + an auto-picked en-GB female voice (if\n  installed) for a flirtier delivery than the dry score callout.\n- Voice.init() now scans flutter_tts.getVoices() at startup; prefers\n  voices reporting gender=female or names containing 'female', and\n  prefers local variants over network ones for snappier playback. Falls\n  back gracefully if no en-GB female voice is installed.\n- New helpers Voice.listVoices() and Voice.sayWith(voice, text) were\n  added during debugging and remain available for future audits.\nBump to 1.4.0+39 to mark the audio rework.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.4.1",
+          "assets": [
+            {
+              "name": "darts-score-1_4_1.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.4.1/darts-score-1_4_1.aab"
+            },
+            {
+              "name": "darts-score-1_4_1.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.4.1/darts-score-1_4_1.apk"
+            }
+          ]
+        },
+        {
           "version": "1.4.0",
           "date": "2026-06-11T22:23:53Z",
           "source_repo": "jirip/darts-score",
@@ -982,24 +1000,6 @@
             {
               "name": "darts-score-1_2_28.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.28/darts-score-1_2_28.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.27",
-          "date": "2026-05-25T22:19:17Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.27",
-          "notes": "feat(sfx): 180 gets SFX + cheer + score; one shared pool\n180 now plays the full sequence:\n  random SFX clip (capped at 3s with fade) → voice cheer phrase\n  (\"Magnificent\", etc.) → 'One hundred and eighty!'\nVoice cheer plays to completion — no cap; only the SFX clip is timed.\nDrops the dedicated 180 pool; the existing 12-clip celebration pool is\nused for every 100+ score now.\nfeat(sfx): 6 more clips, shuffled-bag rotation\nAudio:\n- Adds cheer3, achievement, audience-cheer, trumpet-fanfare,\n  yay-children, magic-spell (all royalty-free from mixkit.co).\n- 100+ pool grows from 6 to 12 unique clips.\n- 180 pool grows from 4 to 7 clips with two distinct fanfares.\nRotation:\n- Both SFX and TTS cheers now use a shuffled-bag: every entry plays\n  once per cycle before any repeats; when a new bag is shuffled we\n  ensure the just-played clip isn't first, so you never hear the same\n  thing twice in a row across a bag boundary.\nfix(game): let cheer play, fade out; bigger and bolder last-turn chips\n- Sfx now reports the played clip's duration via getDuration(); the game\n  screen waits min(realDuration, 3s) before saying the score and fades\n  the last 350ms so the voice can cut in without a hard cutoff. Cheers\n  that are shorter than 3s play to completion.\n- Last-turn dart chips bump from 18pt to 28pt Bebas Neue, full-strength\n  text colour (white on active red, text on surface) so they read at a\n  glance instead of fading into the chip background. FittedBox scales\n  down for the rare 'D-BULL' label that wouldn't fit.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.27",
-          "assets": [
-            {
-              "name": "darts-score-1_2_27.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.27/darts-score-1_2_27.aab"
-            },
-            {
-              "name": "darts-score-1_2_27.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.27/darts-score-1_2_27.apk"
             }
           ]
         }
