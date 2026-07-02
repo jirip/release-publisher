@@ -368,6 +368,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.9.15",
+          "date": "2026-07-02T09:57:52Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.9.15",
+          "notes": "fix(app): stop sign-in loops and spurious logouts\nThree auth-layer bugs behind \"asks me to sign in repeatedly\" and\n\"randomly logs me out\":\n1. Ktor's BearerAuthProvider caches the loadTokens result for the\n   client's lifetime - it never re-reads DataStore. Sign-in,\n   sign-out and the 401 wipe all changed the stored token without\n   invalidating that cache, so requests kept sending a stale token\n   until a 401 forced a refresh - and if that refresh blipped, the\n   user got bounced to sign-in right after signing in. New\n   AuthTokenCache.clear() invalidates the provider at all three\n   sites.\n2. A single transient Credential Manager miss (Play Services blip)\n   made refreshTokens give up immediately, the request went out\n   unauthenticated, and the resulting 401 signed the user out.\n   Silent refresh now retries 3x with backoff.\n3. Google ID tokens expire after ~1 h. Reopening the app later\n   fired the device poll, photo fetches and update check with the\n   expired token; all 401ed in parallel and each spawned its own\n   Credential Manager call. loadTokens now checks the JWT exp and\n   refreshes proactively; a mutex serialises minting and reuses a\n   token refreshed by a concurrent request.\nAlso consume the activity-scoped SignInState.Success after routing\nso screen re-entry cannot replay it into onSignedIn.\nBumps app 0.9.15.\nfix(app): decode JPEGs off main thread, clamp Reinhard scale\nReview findings on the normalisation path:\n1. JPEG decode + stats measurement ran on the main dispatcher at\n   all four display sites — LaunchedEffect and viewModelScope both\n   schedule on the UI thread, so each UXGA decode (~50-100 ms)\n   froze composition. Scrolling the history list stuttered once\n   per row entering view. The comment claiming the work was \"on\n   the IO dispatcher\" was wrong. New suspend helper\n   decodeAndMeasure() wraps decode + measureRgbStats in\n   Dispatchers.Default; all sites route through it.\n2. Reinhard scale had no clamp: a valid-but-flat frame (std ~2)\n   against a normal reference (std ~50) got a 25x contrast stretch\n   that amplified sensor noise into static. Clamped to 0.25-4.0 —\n   wide enough for legitimate contrast matching, bounded enough\n   that degenerate frames wash out instead of exploding.\n3. Renamed stale measuredP95/computeFrameRgbP95 identifiers that\n   still carried the pre-Reinhard p95 naming.\nBumps app 0.9.14.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.9.15",
+          "assets": [
+            {
+              "name": "fridgeye-0_9_15.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.15/fridgeye-0_9_15.aab"
+            },
+            {
+              "name": "fridgeye-0_9_15.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.15/fridgeye-0_9_15.apk"
+            }
+          ]
+        },
+        {
           "version": "0.9.14",
           "date": "2026-07-02T08:59:58Z",
           "source_repo": "jirip/fridgeye",
@@ -526,24 +544,6 @@
             {
               "name": "fridgeye-0_9_7.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.7/fridgeye-0_9_7.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.9.5",
-          "date": "2026-06-02T09:40:34Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.9.5",
-          "notes": "fix(fw): fast-wifi failure falls back to full discovery in same call [fw-release]\nThe 0.7.5 fast-cache code only invalidated the cache on failure and\nreturned ESP_FAIL — meaning the *next* wake would retry with full\ndiscovery, but THIS wake would give up. On a battery device that's\n\"door opened, fast path failed, no frame uploaded, sleep\". One bad\ncache entry = one missed door-open per device. Bad.\nRefactor wifi_connect into a small try_associate(use_cache=bool)\nhelper called twice: fast path first, slow path on failure. Between\nthe two:\n- esp_wifi_stop() so the second esp_wifi_set_config + start cycle\n  doesn't race on stale state.\n- DHCP restarted + static IP cleared so the slow path doesn't carry\n  the bad pin into discovery.\n- Cache invalidated so the next wake won't re-attempt the dead pin.\nEnd result: a stale cache costs maybe an extra second of fast-path\nattempt before the slow path runs, never a missed wake.\nBumps firmware 0.7.6.\nperf(fw): cache BSSID + channel + static IP for faster cold boots [fw-release]\nAfter a successful Wi-Fi associate, persist {ssid, bssid, channel,\nip, netmask, gateway, dns} into NVS. On the next wifi_connect with\nthe same SSID, pin BSSID + channel and assign the IP statically\nbefore esp_wifi_start() — skipping channel scan and DHCP entirely.\nTypical saving per cold boot: 2–4 s. For the battery build that's\nmaterial per wake; for the USB build it's faster fridge-open →\nfresh-frame.\nSafety: any cached-path failure invalidates the cache and restarts\nDHCP for the current call, so the next wifi_connect falls back to\nfull discovery. Covers AP channel changes, DHCP lease expiry, router\nswaps. SSID match guards against cache reuse after re-pair.\nBumps firmware 0.7.5.\nrefactor: four-state calibration model, drop LDR floor + baseline [fw-release]\nWorker:\n- DeviceRecord gains appliedCalibration (what the device confirmed\n  it's using) alongside calibration (what the user wants). The pair\n  drives the four-state UI: auto / set-awaiting / set / reset-\n  awaiting. calibratePending field gone.\n- New cue header X-FridgEye-Cmd-Reset-Calibration: 1, sent when the\n  user removed the calibration server-side but the device hasn't\n  acked yet. Device drops NVS and switches to auto on receipt.\n- applyCalibrationFromTelemetry updates appliedCalibration purely\n  from device-reported AEC/AGC (no more calibratePending bookkeeping).\n- Calibration struct shrinks to {aecValue, agcGain, capturedAt} —\n  ldrBaseline dropped (LDR too noisy to be a useful per-device\n  signal). Wire format becomes \"aec,agc\".\n- handleCalibrateDevice (the manual Calibrate-button endpoint) is\n  gone. Only DELETE /calibrate (remove) and POST /calibrate/from-frame\n  remain. Calibration is set exclusively from history swipe-right.\n- LDR floor removed from handleCalibrateFromFrame: the user is\n  looking at the photo and chose it; they don't need a gatekeeper.\nFirmware:\n- calibration_t loses ldr_baseline. NVS key bumps \"cam_pin_v1\" →\n  \"calib_v2\"; old blobs are orphaned, device falls back to auto until\n  user recalibrates from history.\n- New X-FridgEye-Cmd-Reset-Calibration cue: clears NVS + enables\n  auto AEC.\n- is_low_light no longer takes a calibration_t* — global Kconfig\n  threshold for everyone.\nApp:\n- DeviceSummary gains appliedCalibration, loses calibratePending.\n  CalibrationCard derives the four-state UI from\n  (calibration, appliedCalibration). State 1 has no button (calibrate\n  is set from history only). States 2/3 show values + Remove. State 4\n  is informational (no button — server already cleared; just waiting).\n- WorkerApi.startCalibration removed.\nBumps firmware 0.7.4, app 0.9.5.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.9.5",
-          "assets": [
-            {
-              "name": "fridgeye-0_9_5.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.5/fridgeye-0_9_5.aab"
-            },
-            {
-              "name": "fridgeye-0_9_5.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.5/fridgeye-0_9_5.apk"
             }
           ]
         }
