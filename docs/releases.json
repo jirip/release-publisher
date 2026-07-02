@@ -237,6 +237,24 @@
     "pexesongy": {
       "releases": [
         {
+          "version": "0.1.15",
+          "date": "2026-07-02T13:36:38Z",
+          "source_repo": "jirip/pexesongy",
+          "source_tag": "v0.1.15",
+          "notes": "ci: dedupe version steps, guard publish dispatch\n- single Extract version step (name + filename outputs) instead of\n  two identical grep/sed blocks\n- dispatch now requires  too: source-tag only exists once\n  Create Release has run\n- empty release notes (bump-only release, everything filtered as\n  chore) fall back to the release commit subject\nfix(scripts): id normalization and small papercuts\n- generate.py: load cards via card_catalog.iter_all_cards so unquoted\n  YAML ids (int 10) match parse_card_ids' zero-padded strings;\n  resolve_front raises SystemExit; ImageReader import at top\n- find_youtube.py: zero-pad CLI ids ('5' now matches card '05')\n- devserver.py: allow_reuse_address + daemon_threads (instant rebind\n  after Ctrl+C)\n- bump_version.py: diff check compared worktree to index, not HEAD as\n  the comment claimed — use 'git diff HEAD'\nrefactor(anim): reuse homography, drop dead state\nplane.js: computeH now delegates to lib/homography.js instead of a\nsecond unit-square implementation; drawFrame bails on a null\nhomography; stale vignette comment and unused tile.ring removed.\nrays.js: glideActive was set in three places and never read.\nfix(scanner): cancel stale async work on exit\n- playCard: token check after each await so a pending first-scan\n  download can't start audio after the user exited playback\n- overlay.reset(): clears img.onload + dataset.cardId, preventing a\n  late onload ghost overlay and the empty-frame re-scan of the same\n  card (src was removed but the dedup marker survived)\n- injectTargets: guard against duplicate a-entities on Start retry /\n  exit-scan cycles\n- exitPlayback camera restart: .catch -> diagnostic label\n- null-guard matrix3dFromCorners at both call sites (degenerate\n  corners no longer reset the transform to origin)\nrefactor(scanner): dedup MindAR helpers in main.js\nThree near-identical idioms appeared multiple times each:\n- 'document.querySelector(\"body > video\")' (5×) → getArVideo()\n- 'if (mindARSys) { try { mindARSys.stop() } catch ... }' (2×) → stopMindAR()\n- remove + rAF re-add 'fade-in' class (2×) → restartArVideoFadeIn()\nAlso tighten the anim picker: replace the three-element for-of fallback\nwith a one-line find(), and document why the allowlist matters\n(unknown names must not pass through to the dynamic import or the\nURL could load an arbitrary module path).\nfeat(scanner): UI polish on Start screen and reticle\n- Stagger Start screen children in with a 0.5s rise; respects\n  prefers-reduced-motion.\n- Reticle becomes four corner brackets with a 2.4s pulse instead of a\n  single dashed square — frame-the-card intent is unambiguous.\n- Lighter #meta panel: drop the stacked black-on-black shadow stack\n  for a single soft halo so the title/artist no longer competes with\n  the sunburst behind it.\n- Label the animation picker as 'Effect' so first-time users know what\n  the two pills choose between.\n- Pull the four amber-tint rgbas into --accent-25/40/55/75 variables;\n  --accent can now be retuned without hunting through the stylesheet.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/pexesongy-v0.1.15",
+          "assets": [
+            {
+              "name": "pexesongy-0_1_15.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.15/pexesongy-0_1_15.aab"
+            },
+            {
+              "name": "pexesongy-0_1_15.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/pexesongy-v0.1.15/pexesongy-0_1_15.apk"
+            }
+          ]
+        },
+        {
           "version": "0.1.14",
           "date": "2026-05-13T23:45:44Z",
           "source_repo": "jirip/pexesongy",
