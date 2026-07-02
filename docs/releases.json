@@ -67,6 +67,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "1.10.8",
+          "date": "2026-07-02T23:39:33Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.10.8",
+          "notes": "fix(api): log failed and cancelled requests\nGolemio requests logged only start and success, so timeouts and DNS\nfailures left no trace — the gap behind #108's silent stalls. All four\nendpoints now go through a loggedGet helper that records status,\ncancellation, or failure with elapsed time.\nSaves 10 new annotation sessions (first metro A/B and bus coverage) and the\nv1.10.7 grid results. replay_grid.py now caches GTFS stop times on disk and\nskips trips that expired from the feed — #85 and #89 were lost to expiry\nbefore caching existed; everything else is now replayable offline.\nGrid over 16 sessions ranks current params (alpha .85 / age 10s / trans 20s)\n16th of 48. Recommended: age 15s + transition 25s (~7% better score, fewer\nbackward jumps and wrong AT_STOP calls). Not applied — see\nresults-v1.10.7.md.\nfix(nearby): cap stops-to-show by physical stop in split mode\nIn split mode each physical stop expands into one row per transport mode,\nbut the cap was still counting result rows. With stops-to-show = 3 and a\nnearby stop serving both tram and bus, only that single stop's two rows\nplus one row of the next stop fit — the third physical stop never\nappeared.\nThe cap now tracks the set of distinct physical stop names actually\nshown (excluding hidden ones); a stop's mode-rows do not consume budget.\nWith stops-to-show = 2 across three nearby stops, both modes of the\nfirst two stops appear and the third stop is dropped.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.10.8",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_10_8.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.8/prague-mhd-dashboard-1_10_8.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_10_8.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.8/prague-mhd-dashboard-1_10_8.apk"
+            }
+          ]
+        },
+        {
           "version": "1.10.7",
           "date": "2026-05-30T22:43:47Z",
           "source_repo": "jirip/prague-mhd-dashboard",
@@ -225,24 +243,6 @@
             {
               "name": "prague-mhd-dashboard-1_9_0.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.9.0/prague-mhd-dashboard-1_9_0.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.8.14",
-          "date": "2026-04-21T13:42:06Z",
-          "source_repo": "jirip/prague-mhd-dashboard",
-          "source_tag": "v1.8.14",
-          "notes": "feat(update): show \"What's new\" dialog on version update [release][publish]\nMessages tied to specific versions in UpdateMessages.kt. On first\nlaunch after update, shows dialog with all messages from versions\nbetween last seen and current. Gate GitHub Release on [release] tag,\nseparate from [publish] for WhatsApp notifications.\nfeat(tools): add /annotation skill and evaluation framework\n- /annotation skill: fetch new annotations, save locally, close issues, evaluate\n- evaluate.py: replay all saved annotations against current and old model params\n- Save annotation issues #74, #75, #76 as local JSON files\nfeat(trip): tune position model from annotation data [publish]\nParameters tuned against 67 annotations from 2 real tram rides:\n- TRANSITION_MS: 15s → 20s (longer departing/arriving phases)\n- MAX_ALPHA: 1.0 → 0.85 (never fully snap to API)\n- MIN_API_AGE_MS: 0 → 10s (smooth API corrections)\n- Add app version to annotation data\n- Save tuning results and replay script in model-tuning/\nBackward jumps reduced 60-70%, at-stop accuracy +5%, no backward guard\n(tested — hurts accuracy more than it helps).",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.8.14",
-          "assets": [
-            {
-              "name": "prague-mhd-dashboard-1_8_14.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.14/prague-mhd-dashboard-1_8_14.aab"
-            },
-            {
-              "name": "prague-mhd-dashboard-1_8_14.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.8.14/prague-mhd-dashboard-1_8_14.apk"
             }
           ]
         }
