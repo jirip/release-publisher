@@ -1224,6 +1224,24 @@
     "slot-watch": {
       "releases": [
         {
+          "version": "0.3.8",
+          "date": "2026-07-03T13:07:00Z",
+          "source_repo": "jirip/slot-watch",
+          "source_tag": "v0.3.8",
+          "notes": "fix(search): save action in controls row, drop FAB\nThe floating \"Save as notification\" button covered grid cells at any\nscroll position (the whole Search body is the schedule). Replace it\nwith a notification_add icon in the controls row - disabled when no\nsport/venues are picked - and revert the now-pointless bottom-padding\nworkaround in the embedded grid.\nfix: review hardening, one-row search controls\nFull-code review pass (5 bugs, 8 improvements) plus two Search-tab UI\nfixes.\nBugs:\n- Green eye: only counts matches whose start is still ahead - a slot\n  that already began no longer keeps the Notifications badge lit.\n- No-upper-bound queries: the grid opens with a full-day window instead\n  of clipping at the 22:00 default, so late slots the checker notifies\n  about are visible and highlighted.\n- runCheck tolerates a failing venue: fetches all venues and span days\n  concurrently, skips a down venue for the round while carrying its\n  previously-seen keys forward (recovery does not re-notify), and\n  throws CheckException only when every venue failed.\n- Memberzone requests get 20s timeouts - a hung socket no longer stalls\n  a grid day or a background check.\n- EPOS: a 401/403 on a stale persisted session triggers one\n  relogin-and-refetch instead of failing the whole background check.\nImprovements:\n- QueryStore.load survives a corrupt store and skips bad entries\n  instead of crash-looping before runApp.\n- Memberzone throttle extracted as FetchGate with permit transfer - the\n  wake-up race that could briefly exceed the concurrency cap is gone.\n- isport: TLS handshake is time-bounded and timeouts also take the\n  DNS-fallback path.\n- Multi-day notification bodies label starts with their weekday,\n  chronologically.\n- Hourly venues (Holesovice, Luziny) offer [60, 120] durations.\n- A fully past range shows a message instead of a blank grid; repeated\n  notification taps replace the prior grid instead of stacking; match\n  highlights recompute when the hour slider moves (no refetch).\nSearch tab:\n- Embedded grid pads its bottom so the \"Save as notification\" button\n  no longer hides the last rows.\n- Controls collapsed to one row: a single-select sport popover (same\n  anchored-menu interaction as the venue picker, applies and closes on\n  tap) beside the venue picker and refresh.\nTests: venue tolerance + all-fail, corrupt QueryStore, multi-day body\nlabels, FetchGate cap and FIFO transfer. 63 pass; analyze clean.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.3.8",
+          "assets": [
+            {
+              "name": "slot-watch-0_3_8.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.8/slot-watch-0_3_8.aab"
+            },
+            {
+              "name": "slot-watch-0_3_8.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.8/slot-watch-0_3_8.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.7",
           "date": "2026-07-02T23:55:21Z",
           "source_repo": "jirip/slot-watch",
@@ -1382,24 +1400,6 @@
             {
               "name": "slot-watch-0_2_1.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.2.1/slot-watch-0_2_1.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.2.0",
-          "date": "2026-06-17T14:51:48Z",
-          "source_repo": "jirip/slot-watch",
-          "source_tag": "v0.2.0",
-          "notes": "feat: per-day venue interface, platform abstraction, concurrent grid\nRework the venue layer around a per-day contract where each venue owns\nall caching, and add a VenuePlatform abstraction so venues sharing a\nbackend reuse one scraper.\n- Venue.getSchedule({sport, date, forceRefresh}) -> per-day ResourceDay;\n  drop the outer ScheduleCache (caching now lives in the platforms).\n- MemberzonePlatform (memberzone.cz) + EposPlatform (HaSaM EPOS) behind\n  thin InfinitStepVenue / OlsankaVenue subclasses.\n- EPOS sessions: persist auth_access_token per account and reuse across\n  launches (no new server-side session per cold start), per-account\n  cooldown on TooManyActiveSessionsError, and rotation across accounts\n  so a wedged account is skipped, not fatal. There is no working logout\n  for an HTTP client, so reuse is the only way to avoid the session cap.\n- Fix a getSchedule deadlock: whenComplete(() => _inFlight.remove(key))\n  returned the future to itself; block-body callback instead.\n- Grid fires every (day, venue) request concurrently; platforms\n  serialize their own login, so one login then all requests overlap.\n- Bounded per-(venue,day) retry (3x, 2s) so a transient network/DNS\n  drop doesn't strand a day on \"No courts\".\n- MemberzonePlatform throttles to 2 concurrent fetches; the creaky\n  ASP.NET backend drops connections on bursts.\nfeat(search): ad-hoc multi-venue explorer\nNew Search tab — sits first, becomes the app's default landing.\n- Pick a sport (chips), pick venues (bottom-sheet checklist; defaults\n  to all venues offering the sport, then remembers the last selection\n  in GridPrefs as searchVenueIds).\n- Body embeds the regular GridScreen so Day/Week scope, hour range,\n  packed days, etc. behave identically across entry points.\n- FAB \"Save as notification\" routes to QueryEditScreen pre-filled\n  with the current sport + venues; duration is asked there.\nPlumbing\n- GridScreen gains embedded:bool (no Scaffold/AppBar wrap when true)\n  and a public refresh() hook so the Search AppBar's refresh icon\n  can drive the underlying grid.\n- GridScreenState made public for the GlobalKey wiring.\n- QueryEditScreen accepts an optional QueryEditPrefill so callers\n  can hand in (sport, venueIds) without persisting a partial query.\n- GridPrefs adds searchVenueIds for cross-restart persistence of\n  the Search tab's last selection.\nTabs reordered: Search / Venues / Notifications.\nBump to v0.1.12.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.2.0",
-          "assets": [
-            {
-              "name": "slot-watch-0_2_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.2.0/slot-watch-0_2_0.aab"
-            },
-            {
-              "name": "slot-watch-0_2_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.2.0/slot-watch-0_2_0.apk"
             }
           ]
         }
