@@ -1008,6 +1008,24 @@
     "voicer": {
       "releases": [
         {
+          "version": "0.15.0",
+          "date": "2026-07-03T07:41:16Z",
+          "source_repo": "jirip/voicer",
+          "source_tag": "v0.15.0",
+          "notes": "feat: one sound picker, single per-track sound id\n- TrackItem: (effectId, voiceId) pair replaced by unified soundId\n  (\"e:<id>\" / \"v:<id>\" - the favorites scheme); legacy JSON migrates\n  on load, voice wins over effect like the old player behaviour\n- shared SoundPicker (favorites, voices, categorised effects, custom)\n  used by Live and the playlist track dialog; voice tiles render\n  disabled with a \"playlists only\" hint in live mode instead of\n  silently no-oping\n- single \"Create voice\" chooser replaces the three sibling picker\n  entries; builder/tone-match/clone flows pop with the created Voice\n  so the playlist picker selects it immediately\n- hide effect 29 (Giant) - duplicate of the Giant voice preset\n- fix: pitch-only voices played unchanged (plain streaming path has\n  no pitch); route any non-zero pitch through the WORLD transform\n- bump 0.15.0+36\nrelease: 0.14.2 — bump jirip_app to 0.8.1",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.15.0",
+          "assets": [
+            {
+              "name": "voicer-0_15_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.15.0/voicer-0_15_0.aab"
+            },
+            {
+              "name": "voicer-0_15_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.15.0/voicer-0_15_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.14.2",
           "date": "2026-07-02T23:13:28Z",
           "source_repo": "jirip/voicer",
@@ -1166,24 +1184,6 @@
             {
               "name": "voicer-0_13_2.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.2/voicer-0_13_2.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.13.1",
-          "date": "2026-06-14T19:31:28Z",
-          "source_repo": "jirip/voicer",
-          "source_tag": "v0.13.1",
-          "notes": "release: 0.13.1 — favorite + delete on voice tiles\nTwo small picker UX fixes:\n- Star on voice tiles too. FavoritesStore moved from a Set<int>\n  effect-id store to a Set<String> Sound-id store ('e:1', 'v:u_...'),\n  with one-shot migration of the legacy effect-ids key. The picker's\n  Favorites section + tile trailing star now applies to every Sound,\n  not just effects.\n- Delete affordance on custom voices. Trailing tile gains a delete\n  icon for user-saved Voices (built-ins and effects keep theirs\n  hidden). Confirms via dialog, calls VoicesStore.delete which already\n  removes the cloneReferencePath audio.\nIf the currently selected voice is deleted, the picker falls back to\nClean so the SelectedCard doesn't show a phantom name.\nAlso fixed a stale int->String comparison in the playlist Effect\npicker (favIds.contains(e.id) -> favIds.contains('e:${e.id}')).\n\nrelease: 0.13.0 — voice cloning via Plachta/Seed-VC\nAdds neural voice cloning to playlists. Record 15-30 s of a friend, the\nvoice becomes a Voice choice in the picker. Select it on a playlist\ntrack and the first playback POSTs the recording + reference to the\npublic Plachta/Seed-VC HuggingFace Space, caches the converted WAV on\ndisk, and plays it. Subsequent plays of the same (recording, voice)\npair are instant.\nArchitecture:\n- Voice gains an optional cloneReferencePath field pointing at the 30 s\n  reference audio in app documents/voices/. Forward-compatible JSON.\n- VoiceClone (lib/voice_clone.dart): three-step Gradio client —\n  multipart upload, predict POST returning event_id, SSE stream until\n  the complete event carries the WAV URL. No auth (the Space is public).\n- CloneCache (lib/clone_cache.dart): sha1 of (recording.path, voice.id)\n  → File under Documents/clone-cache. Pure on-disk; persists across\n  launches.\n- CloneOrchestrator (lib/clone_orchestrator.dart): single in-process\n  coordinator — coalesces concurrent requests for the same pair, calls\n  cache then network, surfaces user-facing status.\n- VoiceCloneCaptureScreen: dedicated 30 s mic capture, lives under a\n  new \"Clone a voice\" entry next to \"Voice tone match\" (LTAS, kept\n  available but renamed to match what it actually does).\n- PlaylistDetailScreen resolves clone-capable voices via the\n  orchestrator before each playback; bakes the cloned audio into the\n  player path, so pitch/formant/LTAS are zeroed out for that pair (the\n  cloning already produced the final timbre).\nTrade-offs honestly documented:\n- Network dependency: Plachta's Space is public and free. Rate limit\n  + cold-start are the failure modes; first call after sleep may take\n  ~60s. Failures fall back to playing the original track so playlists\n  don't stall.\n- Privacy: voice samples + recordings leave the device for inference.\n  Acceptable for the personal/family use case this was built for.\n- Quality varies with the reference sample's cleanliness. The capture\n  screen tells the user to record 15-30 s of clean voice without\n  background noise.\nLTAS-based \"Match a voice\" is kept but renamed \"Voice tone match\" to\nhonestly describe what it does (spectral tilt copy, not identity clone).\nAdds http (1.2.x) and crypto (3.0.x) dependencies.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/voicer-v0.13.1",
-          "assets": [
-            {
-              "name": "voicer-0_13_1.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.1/voicer-0_13_1.aab"
-            },
-            {
-              "name": "voicer-0_13_1.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/voicer-v0.13.1/voicer-0_13_1.apk"
             }
           ]
         }
