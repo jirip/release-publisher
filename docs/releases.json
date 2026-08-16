@@ -67,6 +67,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "1.11.0",
+          "date": "2026-08-16T22:51:45Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.11.0",
+          "notes": "refactor(update): use release-publisher manifest\nUpdate checks, version history, and My-Reports resolved-version lookup\nnow read the public release-publisher manifest (apps[\n\"prague-mhd-dashboard\"] in releases.json) instead of the private\nGitHub releases API, and APK downloads use the manifest's public\nmirrored assets — the same mechanism the Flutter apps consume through\nflutter_common's jirip_app. Removes the runtime GITHUB_TOKEN\n(BuildConfig field, qualifier, and auth header); the issues token is\nuntouched.\nfix(refresh): guard manual refresh against overlap\nmanualRefresh neither cancelled the auto loop nor rejected a second\npull, so rapid pulls (or an auto tick during a slow manual refresh)\nran concurrent chains that raced on state and doubled API calls —\nvisible in the #108 log as duplicate fetches and two done lines.\nClaim isRefreshing via compareAndSet and stop the countdown before\nthe manual block; start() after it already re-arms the loop.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.11.0",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_11_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.11.0/prague-mhd-dashboard-1_11_0.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_11_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.11.0/prague-mhd-dashboard-1_11_0.apk"
+            }
+          ]
+        },
+        {
           "version": "1.10.9",
           "date": "2026-08-16T20:01:09Z",
           "source_repo": "jirip/prague-mhd-dashboard",
@@ -225,24 +243,6 @@
             {
               "name": "prague-mhd-dashboard-1_10_0.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.0/prague-mhd-dashboard-1_10_0.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.9.6",
-          "date": "2026-04-28T13:26:38Z",
-          "source_repo": "jirip/prague-mhd-dashboard",
-          "source_tag": "v1.9.6",
-          "notes": "Removed the Upload APK artifact step. The same APK and AAB are already\nattached to the GitHub Release as assets, and the release-publisher\ndispatch reads from the release, so the Actions artifact was redundant\nand was hitting GitHub's storage quota — blocking v1.9.5 from cutting\na release.\nAdded a Prune old workflow artifacts step at the start of the build\nthat keeps the newest 3 artifacts and deletes the rest. Defensive\nagainst any future workflow that uploads artifacts.\nBumps to v1.9.6 since v1.9.5 never published; the artifact-quota\nfailure prevented Create Release from running.\nfix(nearby): per-mode distance + per-mode estimator [release][publish]\nTwo related improvements to the Nearby screen and trip detail sheet.\nNearby distance per mode group: when grouping is off, each mode row\n(e.g. \"Olovnice - Bus\" vs \"Olovnice - Train\") now shows the distance\nto the closest platform serving that mode, computed from the API\nplatformLocations response. Falls back to the cache distance when GPS\nor platform locations are unavailable. Also refines distance for\ngrouped stops since a name can span platforms hundreds of meters apart.\nVehicle position estimator parameterized by transport type: dwell and\ntransition durations now scale with mode (longer dwells for trains,\nfaster transitions for metro). Threaded TransportType through\nTripDetail, TripDetailController, and the minimized state so restore\npreserves the value. Replay grid script updated to match.\nfix(ui): align route numbers in departure rows\nFixed min width on route number text so single, double, and triple\ndigit route names align headsign text consistently.\nfix(nearby): sort favorite mode groups first in split stops (#86)\nAPI calls deduplicated by stop name. Mode groups sorted so favorited\nkey appears before non-favorited siblings. All checks use exact key\ncomparison — no base-name fallbacks.\nIncludes v1.9.1 (refactoring) and v1.9.2 (bugfixes #82, #83, #84).\nfix: dialog labels, first stop line, pull-to-refresh feedback (#82, #83, #84)\n#82: Group stops dialog used \"Grant/Deny\" from permission strings.\n     Now uses dedicated \"Switch/Cancel\" strings.\n#83: Route view drew a line above the first stop. Added isFirst guard.\n#84: Pull-to-refresh showed no spinner on NoLocation/NothingInRange\n     states. Now passes isRefreshing from ViewModel.\nrefactor: deduplicate logic, fix imports, improve encapsulation\nExtract TripDetailController, GroupDeparturesByModeUseCase, and\nVersionUtils to eliminate copy-pasted code across ViewModels.\nReplace all FQN references with proper imports, remove wildcard\nimports, eliminate unsafe !! assertions, privatize ViewModel\ninternals behind saveAnnotation(), fix misnamed Settings route,\nshare Json instance in GolemioApiService.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.9.6",
-          "assets": [
-            {
-              "name": "prague-mhd-dashboard-1_9_6.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.9.6/prague-mhd-dashboard-1_9_6.aab"
-            },
-            {
-              "name": "prague-mhd-dashboard-1_9_6.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.9.6/prague-mhd-dashboard-1_9_6.apk"
             }
           ]
         }
