@@ -67,6 +67,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "1.10.9",
+          "date": "2026-08-16T20:01:09Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.10.9",
+          "notes": "fix(refresh): guard manual refresh against overlap\nmanualRefresh neither cancelled the auto loop nor rejected a second\npull, so rapid pulls (or an auto tick during a slow manual refresh)\nran concurrent chains that raced on state and doubled API calls —\nvisible in the #108 log as duplicate fetches and two done lines.\nClaim isRefreshing via compareAndSet and stop the countdown before\nthe manual block; start() after it already re-arms the loop.\nfix(api): log failed and cancelled requests\nGolemio requests logged only start and success, so timeouts and DNS\nfailures left no trace — the gap behind #108's silent stalls. All four\nendpoints now go through a loggedGet helper that records status,\ncancellation, or failure with elapsed time.\nSaves 10 new annotation sessions (first metro A/B and bus coverage) and the\nv1.10.7 grid results. replay_grid.py now caches GTFS stop times on disk and\nskips trips that expired from the feed — #85 and #89 were lost to expiry\nbefore caching existed; everything else is now replayable offline.\nGrid over 16 sessions ranks current params (alpha .85 / age 10s / trans 20s)\n16th of 48. Recommended: age 15s + transition 25s (~7% better score, fewer\nbackward jumps and wrong AT_STOP calls). Not applied — see\nresults-v1.10.7.md.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.10.9",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_10_9.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.9/prague-mhd-dashboard-1_10_9.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_10_9.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.9/prague-mhd-dashboard-1_10_9.apk"
+            }
+          ]
+        },
+        {
           "version": "1.10.8",
           "date": "2026-07-02T23:39:33Z",
           "source_repo": "jirip/prague-mhd-dashboard",
@@ -225,24 +243,6 @@
             {
               "name": "prague-mhd-dashboard-1_9_6.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.9.6/prague-mhd-dashboard-1_9_6.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.9.0",
-          "date": "2026-04-22T00:36:42Z",
-          "source_repo": "jirip/prague-mhd-dashboard",
-          "source_tag": "v1.9.0",
-          "notes": "feat(stops): refactor stopName to stopKey with mode-aware departures\nRename StopData.stopName to stopKey throughout all layers. Stop keys\nencode transport mode (e.g. \"Ohrada|TRAM\") enabling per-mode favorites,\nhidden stops, and filtered departure boards.\n- Departure board splits into mode cards when grouping is off\n- Search results show mode-split cards based on setting\n- Favorites stored separately per grouping mode (swap on toggle)\n- Fix navigation tab stuck state when pendingSearchRoute persists\n[release][publish]\nfeat(nearby): split stops by transport mode setting (#60)\n\"Group stops by name\" toggle in Settings (default: on). When off,\nstops with multiple transport types get separate cards with suffix\n(e.g., \"Olovnice — Bus\", \"Olovnice — Train\"). Favorites/hidden\ncheck both display name and base name for compatibility.\nfeat(annotation): include user name from report settings\nfeat(update): show \"What's new\" dialog on version update [release][publish]\nMessages tied to specific versions in UpdateMessages.kt. On first\nlaunch after update, shows dialog with all messages from versions\nbetween last seen and current. Gate GitHub Release on [release] tag,\nseparate from [publish] for WhatsApp notifications.\nfeat(tools): add /annotation skill and evaluation framework\n- /annotation skill: fetch new annotations, save locally, close issues, evaluate\n- evaluate.py: replay all saved annotations against current and old model params\n- Save annotation issues #74, #75, #76 as local JSON files",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.9.0",
-          "assets": [
-            {
-              "name": "prague-mhd-dashboard-1_9_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.9.0/prague-mhd-dashboard-1_9_0.aab"
-            },
-            {
-              "name": "prague-mhd-dashboard-1_9_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.9.0/prague-mhd-dashboard-1_9_0.apk"
             }
           ]
         }
