@@ -1224,6 +1224,24 @@
     "slot-watch": {
       "releases": [
         {
+          "version": "0.3.11",
+          "date": "2026-08-16T20:33:59Z",
+          "source_repo": "jirip/slot-watch",
+          "source_tag": "v0.3.11",
+          "notes": "feat(grid): explain empty days, missing venues\nA venue that errored out or answered with nothing bookable used to\nvanish from the day's columns silently - indistinguishable from\n\"broken\". EPOS made this acute: for the current day it serves only\nthe remaining hours, so after closing time Olsanka legitimately\nreturns nothing and the whole day rendered as an unexplained blank.\nThe grid now says what happened: \"Could not load <venues>\" when\nfetches failed after retries, \"Nothing bookable left today\" when\ndata exists but every remaining row is past, \"No slots within the\nselected hours\" when the hour window excludes them, and a per-day\nnote under the table when some venues failed or had no data while\nothers rendered.\nfix(venues): epos auth epochs, derived action id\nTwo generality fixes for the EPOS platform:\nEpoch-guarded invalidation. The grid and worker sweep many days\nconcurrently over one cookie jar. With a dead persisted session every\nday's first response is the anonymous shell; the first one re-logs-in,\nbut the late shells (sent with the old cookies) also fired the\ninvalidation path - clobbering the fresh session, clearing its\npersisted cookies, and minting one server session per day until the\nper-account cap wedged all accounts. Rejections now carry the epoch\ntheir request was sent under and only a current-epoch rejection drops\nthe session; stale ones just retry with the new cookies. A sweep costs\nexactly one login again (the phone's stored session sitting on acct #1\nshows the rotation cascade had really happened).\nDerived login action id. The Next-Action id is a Next.js build hash\nthat rots on every site deploy (HTTP 404 \"Server action not found.\").\nOn 404 the platform now derives the live id from the login page's\nscript chunks (createServerReference(\"<id>\",...,\"logIn\")), persists\nit, and retries the login once; the hardcoded id is only a seed.\nMockClient tests cover the race (delayed shell), the rot-and-derive\npath, and the persisted-id fast path. test/olsanka_live_probe.dart is\nkept as an explicit-run diagnosis tool against the live site.\nfeat: default-on notifications, background health\nSaving a query now enables it immediately - the search tab's \"Save as\nnotification\" produced a query that sat disabled until the user found\nthe switch on the Notifications tab. Editing keeps the existing state.\nBackground checks stalling (OEM battery killers, force-stop) were\ninvisible: the periodic task just stops firing until the next manual\napp launch. Counter and surface it:\n- Heartbeat: the Workmanager dispatcher stamps every run, reconcile\n  stamps when watching starts (background_health.dart).\n- The Notifications tab warns when queries are watched but no\n  heartbeat landed for 2h, showing when checks last ran.\n- Battery-optimization exemption: MainActivity method channel to\n  PowerManager, one-time system prompt when a query is first enabled,\n  manual button on the warning card. The manifest permission existed\n  since v0.1.1 but nothing ever requested it. If the exemption is\n  granted and checks still stall, the card points at vendor autostart\n  and sleeping-app settings.\nfix(venues): olsanka dead-session recovery\nEPOS answers schedule GETs from a dead session with HTTP 200 and an\nanonymous shell (no eventItems key), never 401/403, while the access\ntoken auto-refreshes server-side only as long as the 60-day refresh\ntoken lives. The platform only invalidated auth on 401/403 and trusted\nempty payloads, so an expired persisted session (first ones minted\n2026-06-17, dying now) made the venue silently render zero courts\nforever.\nDetect the shell via the eventItems key - present in every\nauthenticated response, verified live even for far-future days - and\nroute it through the existing AuthRejected re-login-once path. A\ngenuinely empty day still carries the key, so no extra logins are\nminted for quiet days.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.3.11",
+          "assets": [
+            {
+              "name": "slot-watch-0_3_11.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.11/slot-watch-0_3_11.aab"
+            },
+            {
+              "name": "slot-watch-0_3_11.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.11/slot-watch-0_3_11.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.10",
           "date": "2026-08-16T19:52:01Z",
           "source_repo": "jirip/slot-watch",
@@ -1382,24 +1400,6 @@
             {
               "name": "slot-watch-0_3_2.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.2/slot-watch-0_3_2.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.3.1",
-          "date": "2026-06-18T12:53:09Z",
-          "source_repo": "jirip/slot-watch",
-          "source_tag": "v0.3.1",
-          "notes": "feat(grid): full-day hour slider, trim empty edge rows\n- Hour slider now spans the full day (00:00-24:00) instead of a fixed\n  7:00-22:00, so no venue's slots are clipped; the default selected\n  window stays focused and the user can widen it.\n- Trim leading/trailing rows that no venue has data for within the\n  selected window, so widening the slider past a venue's open hours\n  doesn't add empty rows above/below. Interior gaps and fully-booked\n  spans are kept.\nfeat: isport + e-rezervace venues, per-court Olsanka, grid overhaul\nTwo new venue platforms and a grid rework.\nVenues:\n- IsportPlatform (isportsystem.cz) + Tenis Praga. The tenant sits behind\n  Cloudflare's JS challenge, but the origin host serves the schedule\n  anonymously over plain HTTP, so we connect to the origin IP while\n  keeping SNI/Host on the real hostname (cert still validates) and parse\n  ajax.schema.php. DNS-resolve fallback if the pinned IP moves.\n- ErezervacePlatform (e-rezervace.cz, RichFaces/JSF) + Badminton Arena\n  Skalka. GET for JSESSIONID + ViewState, then POST per date; decode the\n  embedded scheduleData JSON (court = start[1], 30-min cols start[0]..end[0]\n  inclusive, every event = busy, notes ignored).\n- Olsanka now reconstructs individual courts from the capacity feed:\n  court k is free in a slot iff >= k courts are free there.\nGrid:\n- One day per section with the date frozen in the left column; the time\n  column and date stay visible while courts scroll horizontally.\n- Hide courts with no free slot in the visible window; a venue with none\n  collapses to a single \"full\" column so its data is still shown.\n- Heavier separator between venues, spanning the bands and the grid.\n- Left-align the band labels.\nSearch: venue picker opens as a popover anchored to its button with\nselect-all / deselect-all / done, instead of a bottom sheet.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.3.1",
-          "assets": [
-            {
-              "name": "slot-watch-0_3_1.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.1/slot-watch-0_3_1.aab"
-            },
-            {
-              "name": "slot-watch-0_3_1.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.1/slot-watch-0_3_1.apk"
             }
           ]
         }
