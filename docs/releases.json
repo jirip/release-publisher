@@ -1224,6 +1224,24 @@
     "slot-watch": {
       "releases": [
         {
+          "version": "0.3.10",
+          "date": "2026-08-16T19:52:01Z",
+          "source_repo": "jirip/slot-watch",
+          "source_tag": "v0.3.10",
+          "notes": "feat: default-on notifications, background health\nSaving a query now enables it immediately - the search tab's \"Save as\nnotification\" produced a query that sat disabled until the user found\nthe switch on the Notifications tab. Editing keeps the existing state.\nBackground checks stalling (OEM battery killers, force-stop) were\ninvisible: the periodic task just stops firing until the next manual\napp launch. Counter and surface it:\n- Heartbeat: the Workmanager dispatcher stamps every run, reconcile\n  stamps when watching starts (background_health.dart).\n- The Notifications tab warns when queries are watched but no\n  heartbeat landed for 2h, showing when checks last ran.\n- Battery-optimization exemption: MainActivity method channel to\n  PowerManager, one-time system prompt when a query is first enabled,\n  manual button on the warning card. The manifest permission existed\n  since v0.1.1 but nothing ever requested it. If the exemption is\n  granted and checks still stall, the card points at vendor autostart\n  and sleeping-app settings.\nfix(venues): olsanka dead-session recovery\nEPOS answers schedule GETs from a dead session with HTTP 200 and an\nanonymous shell (no eventItems key), never 401/403, while the access\ntoken auto-refreshes server-side only as long as the 60-day refresh\ntoken lives. The platform only invalidated auth on 401/403 and trusted\nempty payloads, so an expired persisted session (first ones minted\n2026-06-17, dying now) made the venue silently render zero courts\nforever.\nDetect the shell via the eventItems key - present in every\nauthenticated response, verified live even for far-future days - and\nroute it through the existing AuthRejected re-login-once path. A\ngenuinely empty day still carries the key, so no extra logins are\nminted for quiet days.\nfeat: per-sport icons, fix grey rows for fully-booked venues\nSport icons: Material Icons has a real glyph only for tennis, so add a\nSportIcon widget backed by four CustomPainter line-art glyphs\n(shuttlecock, tennis racket + ball, squash racket, table-tennis paddle) -\nno dependency, no assets, theme-tinted like an Icon. Used in the Search\nsport picker (button + menu), the Notifications-tab grid chips, and the\nquery editor chips.\nGrey rows: a fully-booked venue collapses to one \"full\" column, which\nused to claim data at every time slice - so when another venue closed\nbefore the slider's window end, those empty edge rows survived and\nrendered grey. The synthetic column now carries its venue's real busy\nslices (red only where actually booked), row-trimming keys on real data\nonly, and the cell builder reads its busy slices like any column. Closed\nedge hours are cut off; the fully-booked venue still shows its full\ncolumn across rows that have data.\nAnalyze clean; 63 tests pass.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.3.10",
+          "assets": [
+            {
+              "name": "slot-watch-0_3_10.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.10/slot-watch-0_3_10.aab"
+            },
+            {
+              "name": "slot-watch-0_3_10.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.10/slot-watch-0_3_10.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.9",
           "date": "2026-07-07T14:57:38Z",
           "source_repo": "jirip/slot-watch",
@@ -1382,24 +1400,6 @@
             {
               "name": "slot-watch-0_3_1.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.1/slot-watch-0_3_1.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.3.0",
-          "date": "2026-06-18T12:33:36Z",
-          "source_repo": "jirip/slot-watch",
-          "source_tag": "v0.3.0",
-          "notes": "feat: isport + e-rezervace venues, per-court Olsanka, grid overhaul\nTwo new venue platforms and a grid rework.\nVenues:\n- IsportPlatform (isportsystem.cz) + Tenis Praga. The tenant sits behind\n  Cloudflare's JS challenge, but the origin host serves the schedule\n  anonymously over plain HTTP, so we connect to the origin IP while\n  keeping SNI/Host on the real hostname (cert still validates) and parse\n  ajax.schema.php. DNS-resolve fallback if the pinned IP moves.\n- ErezervacePlatform (e-rezervace.cz, RichFaces/JSF) + Badminton Arena\n  Skalka. GET for JSESSIONID + ViewState, then POST per date; decode the\n  embedded scheduleData JSON (court = start[1], 30-min cols start[0]..end[0]\n  inclusive, every event = busy, notes ignored).\n- Olsanka now reconstructs individual courts from the capacity feed:\n  court k is free in a slot iff >= k courts are free there.\nGrid:\n- One day per section with the date frozen in the left column; the time\n  column and date stay visible while courts scroll horizontally.\n- Hide courts with no free slot in the visible window; a venue with none\n  collapses to a single \"full\" column so its data is still shown.\n- Heavier separator between venues, spanning the bands and the grid.\n- Left-align the band labels.\nSearch: venue picker opens as a popover anchored to its button with\nselect-all / deselect-all / done, instead of a bottom sheet.\nrefactor: clean-code audit fixes\nNo behaviour change; tightens the venue layer and docs.\n- Rewrite lib/venues/AGENT.md to the current Venue contract\n  (getSchedule -> List<ResourceDay> + VenuePlatform); it still\n  described the removed capabilities/findFreeSlots API.\n- Encapsulate EposPlatform's cookie jar: private _cookies with\n  cookie()/snapshot() accessors instead of a public mutable map.\n- Name EPOS magic numbers (_maxRedirectHops, _CookieClient redirect\n  cap and request timeout); drop a stray unused constant.\n- Collapse duplicated add/remove branches in QueryEditScreen._onVenueTap.\n- Rename capabilities_test -> infinit_step_venue_test; behaviour-named\n  tests; fix stale \"per-account 429\" comment to TooManyActiveSessionsError.\n- const constructor for _DeleteBackground.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.3.0",
-          "assets": [
-            {
-              "name": "slot-watch-0_3_0.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.0/slot-watch-0_3_0.aab"
-            },
-            {
-              "name": "slot-watch-0_3_0.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.0/slot-watch-0_3_0.apk"
             }
           ]
         }
