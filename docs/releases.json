@@ -1224,6 +1224,24 @@
     "slot-watch": {
       "releases": [
         {
+          "version": "0.3.12",
+          "date": "2026-08-17T18:48:12Z",
+          "source_repo": "jirip/slot-watch",
+          "source_tag": "v0.3.12",
+          "notes": "fix: grid error scoping, platform hygiene\n- Grid: the full-screen 'No data' error fired whenever no venue\n  returned a block, replacing the day sections - which suppressed the\n  per-day explanations added in 0.3.11 (an olsanka-only view after\n  closing time showed a scary error instead of 'Nothing bookable left\n  today'). It is now reserved for a total blackout: every venue\n  failing on every day.\n- isport: destroy the socket in a finally - a read timeout leaked one\n  socket per timed-out fetch.\n- memberzone: send the User-Agent on the initial GET too, matching\n  every other request in the flow.\nfix: notification correctness overhaul\nAudit findings, all in the check/notify pipeline:\n- QueryStore now does serialized read-modify-write against the\n  persisted blob. Two isolates write it (app + Workmanager worker);\n  any foreground mutation used to persist its stale in-memory list,\n  clobbering the worker's fresh lastSeenSlotKeys and re-notifying\n  already-seen slots. recordCheck() merges only the diff-state fields,\n  so checks can't clobber concurrent edits or resurrect deletions.\n- One notifying sweep (sweepEnabledQueries) shared by the worker and\n  app-resume. Resume checks used to baseline newly-free slots\n  silently - a slot freeing right before the user opened the app\n  never notified. Resume now reloads the store first, then sweeps\n  with the same chunked notifications. A sweep where every check\n  failed returns false so Workmanager retries with backoff instead\n  of waiting a full period; failures are logged, not swallowed.\n- Silent baseline on save/enable (baselineQuery, cached data): the\n  first check of a fresh query no longer notifies for every slot the\n  user was just looking at in the search grid.\n- DST: spanDays stepped by 24h Durations dropped the tail of spans\n  crossing spring DST (23h day overshoots the end guard); now steps\n  calendar days. Notification chunk offsets computed on UTC midnights\n  for the same reason.\n- Editor: end-time suggestion crashed for starts >= 22:00 (TimeOfDay\n  hour assert); an end at or before the start is now stored as\n  'until midnight' instead of an inverted window matching nothing.\nfeat(grid): explain empty days, missing venues\nA venue that errored out or answered with nothing bookable used to\nvanish from the day's columns silently - indistinguishable from\n\"broken\". EPOS made this acute: for the current day it serves only\nthe remaining hours, so after closing time Olsanka legitimately\nreturns nothing and the whole day rendered as an unexplained blank.\nThe grid now says what happened: \"Could not load <venues>\" when\nfetches failed after retries, \"Nothing bookable left today\" when\ndata exists but every remaining row is past, \"No slots within the\nselected hours\" when the hour window excludes them, and a per-day\nnote under the table when some venues failed or had no data while\nothers rendered.\nfix(venues): epos auth epochs, derived action id\nTwo generality fixes for the EPOS platform:\nEpoch-guarded invalidation. The grid and worker sweep many days\nconcurrently over one cookie jar. With a dead persisted session every\nday's first response is the anonymous shell; the first one re-logs-in,\nbut the late shells (sent with the old cookies) also fired the\ninvalidation path - clobbering the fresh session, clearing its\npersisted cookies, and minting one server session per day until the\nper-account cap wedged all accounts. Rejections now carry the epoch\ntheir request was sent under and only a current-epoch rejection drops\nthe session; stale ones just retry with the new cookies. A sweep costs\nexactly one login again (the phone's stored session sitting on acct #1\nshows the rotation cascade had really happened).\nDerived login action id. The Next-Action id is a Next.js build hash\nthat rots on every site deploy (HTTP 404 \"Server action not found.\").\nOn 404 the platform now derives the live id from the login page's\nscript chunks (createServerReference(\"<id>\",...,\"logIn\")), persists\nit, and retries the login once; the hardcoded id is only a seed.\nMockClient tests cover the race (delayed shell), the rot-and-derive\npath, and the persisted-id fast path. test/olsanka_live_probe.dart is\nkept as an explicit-run diagnosis tool against the live site.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.3.12",
+          "assets": [
+            {
+              "name": "slot-watch-0_3_12.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.12/slot-watch-0_3_12.aab"
+            },
+            {
+              "name": "slot-watch-0_3_12.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.12/slot-watch-0_3_12.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.11",
           "date": "2026-08-16T20:33:59Z",
           "source_repo": "jirip/slot-watch",
@@ -1382,24 +1400,6 @@
             {
               "name": "slot-watch-0_3_3.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.3/slot-watch-0_3_3.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.3.2",
-          "date": "2026-06-18T20:08:20Z",
-          "source_repo": "jirip/slot-watch",
-          "source_tag": "v0.3.2",
-          "notes": "fix(erezervace): correct date navigation, multi-court bookings, stuck spinner\nThree correctness fixes for Badminton Arena Skalka (e-rezervace), found\ntesting days other than today.\n- Date navigation: the schedule POST used the JSF +1-day button\n  (j_id200), which ignores calendarInputDate and only steps one day from\n  today — so every day except today returned tomorrow's data. Switch to\n  the calendar's jump-to-date action (j_id205) so the requested date is\n  actually fetched.\n- Multi-court reservations: a single event can span several courts\n  (start[1] != end[1], e.g. a hall-wide block across all 13 courts).\n  Mark every court in the event's rectangle busy, not just the first,\n  so spanned courts no longer show falsely free.\n- Stuck spinner: stepping to another day while a fetch was in flight hit\n  the `_loading` guard in _run and was dropped, leaving the new date\n  spinning forever with no fetch. Remove the guard and rely on the runId\n  supersession that's already in place.\nfeat(grid): full-day hour slider, trim empty edge rows\n- Hour slider now spans the full day (00:00-24:00) instead of a fixed\n  7:00-22:00, so no venue's slots are clipped; the default selected\n  window stays focused and the user can widen it.\n- Trim leading/trailing rows that no venue has data for within the\n  selected window, so widening the slider past a venue's open hours\n  doesn't add empty rows above/below. Interior gaps and fully-booked\n  spans are kept.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/slot-watch-v0.3.2",
-          "assets": [
-            {
-              "name": "slot-watch-0_3_2.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.2/slot-watch-0_3_2.aab"
-            },
-            {
-              "name": "slot-watch-0_3_2.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/slot-watch-v0.3.2/slot-watch-0_3_2.apk"
             }
           ]
         }
