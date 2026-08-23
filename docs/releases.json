@@ -1491,6 +1491,28 @@
           ]
         }
       ]
+    },
+    "baby-monitor": {
+      "releases": [
+        {
+          "version": "0.2.0",
+          "date": "2026-08-23T11:30:23Z",
+          "source_repo": "jirip/baby-monitor",
+          "source_tag": "v0.2.0",
+          "notes": "fix: CPU wakelock in service, no screen wakelock\nScreen wakelock kept the nursery display lit all night; what capture\nneeds is the CPU. The foreground service now holds a partial wakelock\nand both roles run it - microphone type on the nursery, mediaPlayback\non the parent so the dead-link alarm survives Doze. Also request the\nbattery-optimization exemption on the nursery.\nfeat: same-Wi-Fi WebRTC monitor with push-to-talk\nNursery role captures the mic and hosts pairing + signaling on an\nembedded HTTP/WebSocket server (token-gated, no STUN/TURN — works\nwith the internet down). Parent role scans the QR, listens live,\nsees nursery audio level + battery via a status heartbeat, alarms\nwhen the link goes stale, and holds a button to talk back (track\nenable, no renegotiation). Hand-rolled microphone foreground\nservice keeps capture alive with the screen off. Release APK\ndrops x86 ABIs (100.6 -> 60.7 MB). Full architecture including\nplanned hotspot / online / GSM-call-alert modes in DESIGN.md.\ndocs: add fleet new-app playbook, repo is reference",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/baby-monitor-v0.2.0",
+          "assets": [
+            {
+              "name": "baby-monitor-0_2_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/baby-monitor-v0.2.0/baby-monitor-0_2_0.aab"
+            },
+            {
+              "name": "baby-monitor-0_2_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/baby-monitor-v0.2.0/baby-monitor-0_2_0.apk"
+            }
+          ]
+        }
+      ]
     }
   }
 }
