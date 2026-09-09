@@ -1517,6 +1517,24 @@
     "sound-vibe": {
       "releases": [
         {
+          "version": "0.3.0",
+          "date": "2026-09-09T22:50:22Z",
+          "source_repo": "jirip/sound-vibe",
+          "source_tag": "v0.3.0",
+          "notes": "feat: listen to what this phone plays via playback capture\nAndroid playback capture behind a media-projection consent, running as\nits own foreground service and streaming 22050 Hz PCM to a second audio\nsource. The Live tab switches between microphone and this phone; the\nengine restarts on the new source when the input changes mid-session.\nfeat: drive the toys from the BeatNet port\nThe engine now feeds 22050 Hz microphone audio to BeatNet running in\nits own isolate and maps beats to pulses sized by the focus bands' rise\nat the beat, with a loudness body term gated by a measured noise floor.\nMean beat F-measure on ten real tracks is 73.4 against 74.4 for the\nPython reference; the previous tracker scored 22.4.\nfeat(beatnet): port BeatNet beat tracking to Dart\nFeature extraction (madmom log filterbank, 1408-point Bluestein DFT),\nthe pretrained GTZAN CRNN and the beat particle filter, verified against\nthe Python implementation on a reference clip (features within 0.003,\nactivations within 0.005 mean, beats F > 0.8). On six real tracks the\nport matches Python BeatNet online within a few F-measure points and\nscores 61 to 95 percent against the offline reference, where the previous\nhand-made tracker scored 1 to 61. Weights CC BY 4.0. Includes an offline\nrunner and a beat-time export for scoring.\nfeat(audio): SuperFlux onsets, fractional-period beat grid, offline tuning on real tracks\nTuned against ten real songs with tool/analyze.dart:\n- Onset function per bin: log-compressed magnitude, rise against the\n  neighbourhood two hops back (SuperFlux). Dense pop mixes now yield a\n  usable onset envelope; band power differences did not.\n- Per-band floors gate silence only; music is never carved up.\n- Tempo: 8 s window, prior around 120 BPM, hysteresis, sub-hop period by\n  parabolic interpolation. Integer periods drifted the grid several hops.\n- Phase: comb filter over the broadband envelope anchored at the newest\n  hop, with hysteresis. Lock has hysteresis and phase memory.\n- Pulses sized against the typical beat, held 100 ms, confirmed even when\n  the confirming hop is gated. Off-grid bumps damped by confidence squared.\n- Tool prints level histogram, on-beat pulses/min and strongest-onsets-on-\n  grid, plus per-band dumps.\nfix(audio): gate per band so kicks pass over sustained pads\nOverall-loudness gating measured the pad as the floor and dropped kicks\nonly 8 dB louder. Each band now has its own floor and contributes flux\nonly when above it. Adds tool/analyze.dart, an offline runner over WAV\nfiles that exposed the problem on a synthetic pad-plus-kick track.\nfeat(audio): beat tracking with tempo lock and tonality weighting\nAutocorrelation over the onset envelope finds the tempo and phase;\non-grid onsets become pulses sized by their own loudness, off-grid\nbumps are damped by the lock confidence. Flat spectra count less than\ntonal ones, leakage bands are ignored, and sub-bass rumble is cut.\nLive shows the BPM once locked.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/sound-vibe-v0.3.0",
+          "assets": [
+            {
+              "name": "sound-vibe-0_3_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/sound-vibe-v0.3.0/sound-vibe-0_3_0.aab"
+            },
+            {
+              "name": "sound-vibe-0_3_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/sound-vibe-v0.3.0/sound-vibe-0_3_0.apk"
+            }
+          ]
+        },
+        {
           "version": "0.2.3",
           "date": "2026-09-09T21:04:10Z",
           "source_repo": "jirip/sound-vibe",
