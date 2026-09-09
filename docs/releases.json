@@ -1517,6 +1517,24 @@
     "sound-vibe": {
       "releases": [
         {
+          "version": "0.2.3",
+          "date": "2026-09-09T21:04:10Z",
+          "source_repo": "jirip/sound-vibe",
+          "source_tag": "v0.2.3",
+          "notes": "feat(audio): SuperFlux onsets, fractional-period beat grid, offline tuning on real tracks\nTuned against ten real songs with tool/analyze.dart:\n- Onset function per bin: log-compressed magnitude, rise against the\n  neighbourhood two hops back (SuperFlux). Dense pop mixes now yield a\n  usable onset envelope; band power differences did not.\n- Per-band floors gate silence only; music is never carved up.\n- Tempo: 8 s window, prior around 120 BPM, hysteresis, sub-hop period by\n  parabolic interpolation. Integer periods drifted the grid several hops.\n- Phase: comb filter over the broadband envelope anchored at the newest\n  hop, with hysteresis. Lock has hysteresis and phase memory.\n- Pulses sized against the typical beat, held 100 ms, confirmed even when\n  the confirming hop is gated. Off-grid bumps damped by confidence squared.\n- Tool prints level histogram, on-beat pulses/min and strongest-onsets-on-\n  grid, plus per-band dumps.\nfix(audio): gate per band so kicks pass over sustained pads\nOverall-loudness gating measured the pad as the floor and dropped kicks\nonly 8 dB louder. Each band now has its own floor and contributes flux\nonly when above it. Adds tool/analyze.dart, an offline runner over WAV\nfiles that exposed the problem on a synthetic pad-plus-kick track.\nfeat(audio): beat tracking with tempo lock and tonality weighting\nAutocorrelation over the onset envelope finds the tempo and phase;\non-grid onsets become pulses sized by their own loudness, off-grid\nbumps are damped by the lock confidence. Flat spectra count less than\ntonal ones, leakage bands are ignored, and sub-bass rumble is cut.\nLive shows the BPM once locked.\nfix(live): cap intensity at 100 percent\nAbove 100 percent it only compressed reactions towards the maximum and\nmade half of the Manual slider useless.\nfeat(live): faint scrolling trace of the sent level behind the dial\nAlso install in place over USB so settings survive each build.\nfeat: react to musical events instead of volume, add Manual mode\nFFT-based spectral flux per band drives an onset term normalised by its\nrecent peak, plus a body term from loudness relative to the running\naverage. Punch and body are mixed per mode and adjustable live. The\nnoise floor is measured automatically on start and keeps adapting, so\nquiet rooms stay quiet without a calibrate button. Manual mode turns\nthe Live tab into a drag-to-set level with intensity applied.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/sound-vibe-v0.2.3",
+          "assets": [
+            {
+              "name": "sound-vibe-0_2_3.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/sound-vibe-v0.2.3/sound-vibe-0_2_3.aab"
+            },
+            {
+              "name": "sound-vibe-0_2_3.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/sound-vibe-v0.2.3/sound-vibe-0_2_3.apk"
+            }
+          ]
+        },
+        {
           "version": "0.2.2",
           "date": "2026-09-09T17:33:12Z",
           "source_repo": "jirip/sound-vibe",
