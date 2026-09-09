@@ -1513,6 +1513,28 @@
           ]
         }
       ]
+    },
+    "sound-vibe": {
+      "releases": [
+        {
+          "version": "0.2.0",
+          "date": "2026-09-09T14:25:32Z",
+          "source_repo": "jirip/sound-vibe",
+          "source_tag": "v0.2.0",
+          "notes": "fix(audio): never take audio focus or Bluetooth SCO while listening\nfix: harden session safety and audio floor tracking\n- Noise floor rises fast only near the floor, so steady music never\n  fades out as room noise\n- Android foreground service with wake lock keeps the microphone alive\n  with the screen off\n- Game Mode commands carry a dead-man timer renewed by a keepalive\n- Direct Bluetooth toys reconnect after a drop\n- Toys are zeroed when the Flutter engine detaches\n- Bluetooth permission check no longer accepts location alone\n- Engine, GATT selection and keepalive covered by tests\nfix(live): keep start button visible below scrolling controls\nfeat: listening modes, band filter, live intensity and sensitivity",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/sound-vibe-v0.2.0",
+          "assets": [
+            {
+              "name": "sound-vibe-0_2_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/sound-vibe-v0.2.0/sound-vibe-0_2_0.aab"
+            },
+            {
+              "name": "sound-vibe-0_2_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/sound-vibe-v0.2.0/sound-vibe-0_2_0.apk"
+            }
+          ]
+        }
+      ]
     }
   }
 }
