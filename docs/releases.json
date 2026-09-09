@@ -1517,6 +1517,24 @@
     "sound-vibe": {
       "releases": [
         {
+          "version": "0.2.2",
+          "date": "2026-09-09T17:33:12Z",
+          "source_repo": "jirip/sound-vibe",
+          "source_tag": "v0.2.2",
+          "notes": "fix(live): cap intensity at 100 percent\nAbove 100 percent it only compressed reactions towards the maximum and\nmade half of the Manual slider useless.\nfeat(live): faint scrolling trace of the sent level behind the dial\nAlso install in place over USB so settings survive each build.\nfeat: react to musical events instead of volume, add Manual mode\nFFT-based spectral flux per band drives an onset term normalised by its\nrecent peak, plus a body term from loudness relative to the running\naverage. Punch and body are mixed per mode and adjustable live. The\nnoise floor is measured automatically on start and keeps adapting, so\nquiet rooms stay quiet without a calibrate button. Manual mode turns\nthe Live tab into a drag-to-set level with intensity applied.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/sound-vibe-v0.2.2",
+          "assets": [
+            {
+              "name": "sound-vibe-0_2_2.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/sound-vibe-v0.2.2/sound-vibe-0_2_2.aab"
+            },
+            {
+              "name": "sound-vibe-0_2_2.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/sound-vibe-v0.2.2/sound-vibe-0_2_2.apk"
+            }
+          ]
+        },
+        {
           "version": "0.2.0",
           "date": "2026-09-09T14:25:32Z",
           "source_repo": "jirip/sound-vibe",
