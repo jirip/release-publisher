@@ -87,10 +87,14 @@ jobs:
           # Resolve the asset list ourselves rather than trust whatever the
           # source-side dispatcher claimed. Reject filenames with shell or
           # path-traversal metacharacters before letting them name a file.
-          assets=$(gh release view "$SOURCE_TAG" \
-            --repo "$SOURCE_REPO" \
-            --json assets \
-            --jq '[.assets[] | {name: .name, url: .apiUrl}]')
+          #
+          # Two hops on purpose: the release-by-tag response embeds a cached
+          # asset list that stayed empty for a fresh release long after its
+          # uploads finished (sound-vibe v0.3.1, 2026-09-23), while the
+          # per-release assets endpoint was consistent throughout.
+          release_id=$(gh api "/repos/$SOURCE_REPO/releases/tags/$SOURCE_TAG" --jq '.id')
+          assets=$(gh api "/repos/$SOURCE_REPO/releases/$release_id/assets" \
+            --jq '[.[] | {name: .name, url: .url}]')
           if [ "$(echo "$assets" | jq 'length')" -eq 0 ]; then
             echo "::error::Source release $SOURCE_REPO@$SOURCE_TAG has no assets"
             exit 1
