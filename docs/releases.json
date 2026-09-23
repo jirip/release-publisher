@@ -1517,6 +1517,24 @@
     "sound-vibe": {
       "releases": [
         {
+          "version": "0.3.1",
+          "date": "2026-09-23T09:48:56Z",
+          "source_repo": "jirip/sound-vibe",
+          "source_tag": "v0.3.1",
+          "notes": "fix: name the input in stream errors, show version\nfeat(live): show beat lock and BPM\nfeat(toy): remember toys across launches\nPersist each toy's memento and restore it after the first frame, letting\nit reconnect in the background. Scan now asks to turn Bluetooth on.\nfix(toy): keep reconnecting after a drop on both transports\nBLE retry was scheduled while the reconnecting flag was still set, so it\ngave up after one failure. Game Mode toys never probed again once\nunreachable, and per-toy entries never became reachable at all. Both now\nretry with 5 s to 60 s backoff until removed.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/sound-vibe-v0.3.1",
+          "assets": [
+            {
+              "name": "sound-vibe-0_3_1.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/sound-vibe-v0.3.1/sound-vibe-0_3_1.aab"
+            },
+            {
+              "name": "sound-vibe-0_3_1.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/sound-vibe-v0.3.1/sound-vibe-0_3_1.apk"
+            }
+          ]
+        },
+        {
           "version": "0.3.0",
           "date": "2026-09-09T22:50:22Z",
           "source_repo": "jirip/sound-vibe",
