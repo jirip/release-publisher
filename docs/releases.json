@@ -67,6 +67,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "1.13.0",
+          "date": "2026-10-01T13:09:58Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v1.13.0",
+          "notes": "build: target SDK 36\nVerified on API 35 and API 36 emulators: edge-to-edge, bottom nav\ninsets, Nearby, Settings, departure board and trip detail.\nrefactor: import hiltViewModel from its new package\nbuild: bump AndroidX, Compose, Ktor and serialization\nCompose BOM 2026.09.00, Navigation 2.10.2, Lifecycle 2.11.0, Hilt\nNavigation Compose 1.4.0, DataStore 1.2.1, AppCompat 1.8.0, Play\nServices Location 21.4.0, Ktor 3.6.0, kotlinx-serialization 1.11.0,\ncoroutines 1.11.0. The new AndroidX artifacts require compileSdk 37\nand Navigation 2.10 requires minSdk 24, dropping Android 6.\nbuild: migrate to AGP 9 built-in Kotlin, Gradle 9.8\nHilt 2.59+ requires AGP 9, and AGP 9's new DSL rejects the standalone\nkotlin-android plugin, so the module now relies on AGP's built-in\nKotlin. The explicit Compose and serialization plugins pull Kotlin\n2.4.20 onto the classpath, which the built-in integration picks up.\njvmTarget follows compileOptions.targetCompatibility and needs no\nseparate block.\nrefactor(data): tidy AppSettings and departure mapper\nCompanion object moves to the end of AppSettings and the three\ntracked-issue accessors share one decoder. The mapper derives the\ntransport type once per departure and reuses a precompiled regex.\nrefactor(ui): lifecycle effect, shared locals, controller-owned annotations\n- Replace the hand-rolled LifecycleEventObserver in Nearby and\n  Departure Board with LifecycleResumeEffect.\n- Move the composition locals out of PlatformDeparturesList into\n  their own file and stopKeyDisplayName next to the other stop-key\n  helpers in the domain model.\n- TripAnnotationStore stamps the reporter name itself and\n  TripDetailController owns saving, so both ViewModels stop\n  duplicating that logic.\n- Localize the trip-stop countdown and the version-list error.\nrefactor(nav): read update and nearby state from ViewModels\nThe scaffold top bar no longer depends on SettingsScreen pushing\n(version, state, action) up through a callback or on NearbyScreen\nhanding its ViewModel back via onViewModelReady. AppViewModel exposes\nthe update state directly and NearbyViewModel is scoped to the Nearby\ntab graph so both the destination and the top bar resolve the same\ninstance. SettingsViewModel loses its never-invoked download path.\nrefactor: drop unused repository and model members\nStopPreferences (last-stop DataStore), the last-stop methods on\nStopSearchRepository, the per-key lookups and getAllKnownKeys on\nStopDataRepository, AppLogger.getLog and TransportType.displayName had\nno callers.\nfix(clock): parse Date header without weekday check\nSome runtimes reject an RFC 1123 header whose weekday disagrees with\nthe one derived from the date (seen on API 37 in issue #113's log), so\nthe server offset never got applied. Strip the weekday before parsing.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.13.0",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-1_13_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.13.0/prague-mhd-dashboard-1_13_0.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-1_13_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.13.0/prague-mhd-dashboard-1_13_0.apk"
+            }
+          ]
+        },
+        {
           "version": "1.12.0",
           "date": "2026-09-23T09:43:21Z",
           "source_repo": "jirip/prague-mhd-dashboard",
@@ -225,24 +243,6 @@
             {
               "name": "prague-mhd-dashboard-1_10_3.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.3/prague-mhd-dashboard-1_10_3.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.10.1",
-          "date": "2026-04-28T23:46:54Z",
-          "source_repo": "jirip/prague-mhd-dashboard",
-          "source_tag": "v1.10.1",
-          "notes": "refactor: split AppUpdateManager + extract BuildNearbyResultUseCase, add tests [release][publish]\nAppUpdateManager (god-object with 4 concerns) split into three focused singletons:\n- UpdateChecker — owns updateState + cool-off + checkForUpdate / setDownloading\n- TrackedReportsRepository — owns trackedReports / hasResolvedReports / dismiss\n- AnnotationUploader — owns uploadAnnotation + sweep of stale on-disk sessions\nNearbyViewModel.loadDeparturesForStops (~85 LOC of join/filter/sort/limit logic) split:\n- VM keeps Phase A (suspend repository fetches per unique physical stop name)\n- New BuildNearbyResultUseCase handles Phase B (pure: group, filter, distance,\n  cap to stopsToShow). 12 tests cover hidden-stops, mode-split, favorite ordering,\n  show-all behavior, distance fallback.\nDomain model:\n- PlatformGroup, groupDepartures, platformComparator moved from ui/components to\n  domain/model so the new use case doesn't reach back into UI.\nTests (70 total, all passing):\n- VersionUtilsTest (8) — including the 1.10 vs 1.9 ordering trap\n- GeoUtilsTest (5) — Prague-anchored sanity checks + dateline crossing\n- VehiclePositionEstimatorTest (12) — schedule-only and API-anchored paths\n- StopDataTest (4) — stopKey* helpers\n- PlatformGroupTest (9) — comparator + filtering rules\n- DepartureBoardMapperTest (17) — every route_type code + shortName fallbacks\n- BuildNearbyResultUseCaseTest (12)\n- PlatformDeparturesListTest (3) — parseEpochOrNull edges\nCI:\n- testDebugUnitTest now runs on every PR and master push\n- Bumped actions/checkout v4→v6, actions/setup-java v4→v5, actions/cache v4→v5,\n  softprops/action-gh-release v2→v3 (Node 20 → Node 24 deprecation)\nWave 1 — correctness:\n- Hilt: drop manual @Provides, use @param:ApplicationContext on local stores\n- AutoRefreshController: cancel interval-off collector inside refreshJob\n- TripRepository: bound stop_times cache (LRU 32, TTL 6 h, mutex-guarded)\n- AppUpdateManager: 30-min cool-off so cold start doesn't always hit network\n- ServerClock: reject implausible drift (>2 h), log failures\n- MainActivity: replace runBlocking on DataStore with lifecycleScope\n- StopDataRepository: drop empty migration noop on every version bump\nWave 2 — architecture:\n- Centralize Json via SerializationModule\n- Inject API tokens via @GolemioApiKey / @GitHubReleaseToken / @GitHubIssuesToken\n  qualifiers; data layer no longer reads BuildConfig\n- GolemioApiService: drop manual decode, rely on Ktor ContentNegotiation\n- NetworkModule: HttpTimeout, HttpRequestRetry, drop prettyPrint\n- ApkInstaller: timeouts, bodyAsChannel().copyTo, FileProvider scoped to updates/\n- StopSearchRepository: gain findByExactName / findNearby / ensureCache so\n  NearbyViewModel no longer reaches into StopCache directly\n- Move AutoRefreshController and TripDetailController to ui/util\nWave 3 — build infra:\n- Java 17 source/target + jvmTarget (was 1.8)\n- Release builds: minify + shrinkResources on, proguard-rules.pro added\n- Fail loudly on missing keystore env vars in assembleRelease/bundleRelease\n- Manifest: data extraction + backup rules excluding datastore/\n- CI: split PR (debug + lint) from master push (lint + release + bundle)\nWave 4 — UI/Compose:\n- staticCompositionLocalOf with required-error defaults\n- Memoize partition+sort in PlatformDepartureRows; parse ISO once per departure\n- Fix Icons.Filled.Accessible deprecation, drop dead !! derefs\n- Externalize hardcoded English strings; TripDetailUiState.Error and\n  ReportState.Error now carry @StringRes IDs\nWave 5 — polish:\n- Replace Math.pow version comparator with compareVersions-based one\n- Drop stale TODO and unused StopCache.isEmpty",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.10.1",
-          "assets": [
-            {
-              "name": "prague-mhd-dashboard-1_10_1.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.1/prague-mhd-dashboard-1_10_1.aab"
-            },
-            {
-              "name": "prague-mhd-dashboard-1_10_1.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.1/prague-mhd-dashboard-1_10_1.apk"
             }
           ]
         }
