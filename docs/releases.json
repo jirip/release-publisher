@@ -849,6 +849,24 @@
     "darts-score": {
       "releases": [
         {
+          "version": "1.6.1",
+          "date": "2026-10-02T11:51:06Z",
+          "source_repo": "jirip/darts-score",
+          "source_tag": "v1.6.1",
+          "notes": "feat(voice): add baby jeer phrase\nfix(sfx): drop cartoon laugh from jeer pool\nfix(sfx): drop fart clip from jeer pool\nfix(voice): drop Pub standard jeer\nfeat(sfx): jeers for poor visits, bigger sound pools\nA visit of 10 or under, thrown from 51+ remaining, now gets a jeer (crowd\nboo, sad trombone, laugh, or a spoken put-down) before the score is read.\nFinishing territory is exempt so a deliberate setup dart is not booed.\n- CheerTier.poor with 20 jeer phrases; every cheer tier grown to 20\n- Jeer pool of 10 clips, cheer pool grown from 10 to 20 (mixkit, plus two\n  CC BY 4.0 crowd boos credited in README); all capped at 4 s, -12 LUFS\n- Voice.jeerFor rule covered by test/voice_test.dart\n- Bump to 1.6.0+45",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.6.1",
+          "assets": [
+            {
+              "name": "darts-score-1_6_1.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.6.1/darts-score-1_6_1.aab"
+            },
+            {
+              "name": "darts-score-1_6_1.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.6.1/darts-score-1_6_1.apk"
+            }
+          ]
+        },
+        {
           "version": "1.6.0",
           "date": "2026-10-01T14:09:29Z",
           "source_repo": "jirip/darts-score",
@@ -1007,24 +1025,6 @@
             {
               "name": "darts-score-1_3_0.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.3.0/darts-score-1_3_0.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.2.33",
-          "date": "2026-05-27T15:27:46Z",
-          "source_repo": "jirip/darts-score",
-          "source_tag": "v1.2.33",
-          "notes": "fix(game): cap player card height at 140px so 1-2 players don't bloat\nfix(voice): await speak completion so cheer isn't cut off\nFlutterTts.speak() resolves the moment playback starts, not when the\nutterance finishes. The previous await was a no-op: we'd start the\ncheer, immediately call stop() and speak() with the score, killing\nthe cheer mid-word.\nawaitSpeakCompletion(true) flips that so speak() resolves only when\nthe platform-side queue marks the utterance complete. Now: cheer\nplays in full → score is announced after it.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/darts-score-v1.2.33",
-          "assets": [
-            {
-              "name": "darts-score-1_2_33.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.33/darts-score-1_2_33.aab"
-            },
-            {
-              "name": "darts-score-1_2_33.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/darts-score-v1.2.33/darts-score-1_2_33.apk"
             }
           ]
         }
