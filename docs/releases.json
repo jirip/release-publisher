@@ -1650,6 +1650,26 @@
           ]
         }
       ]
+    },
+    "learning": {
+      "releases": [
+        {
+          "version": "0.1.0",
+          "date": "2026-10-10T20:22:52Z",
+          "source_repo": "jirip/learning",
+          "source_tag": "v0.1.0",
+          "notes": "ci: create Pages project on first deploy\ndocs: secrets come from the webapp_common keystore\ndocs: set secrets with the shared bootstrap script\ndocs: record remaining deploy steps",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/learning-v0.1.0",
+          "assets": [
+            {
+              "name": "learning-site-0_1_0.zip",
+              "url": "https://github.com/jirip/release-publisher/releases/download/learning-v0.1.0/learning-site-0_1_0.zip",
+              "label": "site zip"
+            }
+          ]
+        }
+      ],
+      "webUrl": "https://jirip-learning.pages.dev/"
     }
   }
 }
