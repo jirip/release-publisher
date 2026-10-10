@@ -1654,6 +1654,21 @@
     "learning": {
       "releases": [
         {
+          "version": "0.1.1",
+          "date": "2026-10-10T20:26:14Z",
+          "source_repo": "jirip/learning",
+          "source_tag": "v0.1.1",
+          "notes": "feat: visits page and ping over Pages Functions and KV\nPorts pexesongy's /api/visit, /api/name and /info functions. The hub\nand each training send a fire-and-forget ping with a per-device id;\nCI creates the learning-visits KV namespace and binds it as VISITS.\ndocs: deploy done, publisher PAT check remains",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/learning-v0.1.1",
+          "assets": [
+            {
+              "name": "learning-site-0_1_1.zip",
+              "url": "https://github.com/jirip/release-publisher/releases/download/learning-v0.1.1/learning-site-0_1_1.zip",
+              "label": "site zip"
+            }
+          ]
+        },
+        {
           "version": "0.1.0",
           "date": "2026-10-10T20:22:52Z",
           "source_repo": "jirip/learning",
