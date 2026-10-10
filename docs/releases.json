@@ -1654,6 +1654,21 @@
     "learning": {
       "releases": [
         {
+          "version": "0.1.2",
+          "date": "2026-10-10T20:33:52Z",
+          "source_repo": "jirip/learning",
+          "source_tag": "v0.1.2",
+          "notes": "feat(azbuka): stress marks and read-aloud\nWords carry a combining acute on the stressed vowel in the data; state\nkeys and typed answers use the plain spelling. Letter names, example\nwords and feedback cards are spoken by the browser's Russian voice via\ncommon/speech.js, with a setting to turn it off.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/learning-v0.1.2",
+          "assets": [
+            {
+              "name": "learning-site-0_1_2.zip",
+              "url": "https://github.com/jirip/release-publisher/releases/download/learning-v0.1.2/learning-site-0_1_2.zip",
+              "label": "site zip"
+            }
+          ]
+        },
+        {
           "version": "0.1.1",
           "date": "2026-10-10T20:26:14Z",
           "source_repo": "jirip/learning",
