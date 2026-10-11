@@ -1654,6 +1654,21 @@
     "learning": {
       "releases": [
         {
+          "version": "0.1.7",
+          "date": "2026-10-11T12:23:48Z",
+          "source_repo": "jirip/learning",
+          "source_tag": "v0.1.7",
+          "notes": "feat: kana and music trainings\nKana: hiragana and katakana from one romaji table, rows in teaching\norder, look-alike distractors, typed readings with accepted variants,\nwords readable with the introduced kana, Japanese read-aloud.\nMusic: notes on the staff in treble and bass clef drawn as SVG, and\nintervals by ear played with the Web Audio API, each with a song that\nstarts with it. Note names in English or German/Czech.\nShared view helpers in common/views.js carry the stats, session and\nsettings pieces used by the new trainings.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/learning-v0.1.7",
+          "assets": [
+            {
+              "name": "learning-site-0_1_7.zip",
+              "url": "https://github.com/jirip/release-publisher/releases/download/learning-v0.1.7/learning-site-0_1_7.zip",
+              "label": "site zip"
+            }
+          ]
+        },
+        {
           "version": "0.1.6",
           "date": "2026-10-11T12:06:00Z",
           "source_repo": "jirip/learning",
