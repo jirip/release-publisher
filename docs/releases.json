@@ -1654,6 +1654,21 @@
     "learning": {
       "releases": [
         {
+          "version": "0.1.5",
+          "date": "2026-10-11T11:49:53Z",
+          "source_repo": "jirip/learning",
+          "source_tag": "v0.1.5",
+          "notes": "feat: daily activity stats and progress on the visits page\nEvery answer counts toward a per-day tally. The stats tab shows the\nstreak, active days, answers, accuracy, a 12-week activity grid and\nwords by stage. The learner may enter a name in settings. The visit\nping carries that name and each training's summary, validated and\nstored in KV metadata, so /info shows who is learning and how far.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/learning-v0.1.5",
+          "assets": [
+            {
+              "name": "learning-site-0_1_5.zip",
+              "url": "https://github.com/jirip/release-publisher/releases/download/learning-v0.1.5/learning-site-0_1_5.zip",
+              "label": "site zip"
+            }
+          ]
+        },
+        {
           "version": "0.1.4",
           "date": "2026-10-11T09:24:26Z",
           "source_repo": "jirip/learning",
