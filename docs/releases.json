@@ -1654,6 +1654,21 @@
     "learning": {
       "releases": [
         {
+          "version": "0.1.6",
+          "date": "2026-10-11T12:06:00Z",
+          "source_repo": "jirip/learning",
+          "source_tag": "v0.1.6",
+          "notes": "feat(habits): Atomic Habits training\nThirty-three ideas from the book in our own words, grouped by chapter,\nas spaced-repetition cards with recognition and recall modes, plus\ntwenty scenarios asking which of the four laws a tactic applies.\nCzech and English, same stats and settings as azbuka.\nfeat(hub): inline name card instead of a native prompt",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/learning-v0.1.6",
+          "assets": [
+            {
+              "name": "learning-site-0_1_6.zip",
+              "url": "https://github.com/jirip/release-publisher/releases/download/learning-v0.1.6/learning-site-0_1_6.zip",
+              "label": "site zip"
+            }
+          ]
+        },
+        {
           "version": "0.1.5",
           "date": "2026-10-11T11:49:53Z",
           "source_repo": "jirip/learning",
