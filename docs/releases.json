@@ -1654,6 +1654,21 @@
     "learning": {
       "releases": [
         {
+          "version": "0.1.4",
+          "date": "2026-10-11T09:24:26Z",
+          "source_repo": "jirip/learning",
+          "source_tag": "v0.1.4",
+          "notes": "feat: on new access, we could ask for user nam\nIdea from jp (@jirip_t) via Telegram (#2).\nci: remove the gateway idea workflow\nci: point the idea workflow at the real gateway URL\nci: triage and implement ideas from the Telegram gateway\nci: inherit secrets for the idea workflow\nci: accept ideas from the Telegram gateway",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/learning-v0.1.4",
+          "assets": [
+            {
+              "name": "learning-site-0_1_4.zip",
+              "url": "https://github.com/jirip/release-publisher/releases/download/learning-v0.1.4/learning-site-0_1_4.zip",
+              "label": "site zip"
+            }
+          ]
+        },
+        {
           "version": "0.1.3",
           "date": "2026-10-10T20:57:35Z",
           "source_repo": "jirip/learning",
