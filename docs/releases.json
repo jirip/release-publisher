@@ -1654,6 +1654,21 @@
     "learning": {
       "releases": [
         {
+          "version": "0.1.9",
+          "date": "2026-10-12T13:10:41Z",
+          "source_repo": "jirip/learning",
+          "source_tag": "v0.1.9",
+          "notes": "feat(azbuka): add handwritten letter form\nLearners meet Russian in handwriting as much as in print, and the\ntypographic italic the training offered was not enough: real cursive\nforms of т, д, г and others come from a script face. The Marck Script\nfont and the --cyrillic-hand token were already vendored; this wires\nthem into the azbuka training.\nThe letter card now shows three tiles, print, italic and handwritten,\nso every form is seen when a letter is introduced. The \"italic\" toggle\nin settings becomes a form choice (print / italic / handwritten) that\napplies to quiz prompts, the word drill and the Read list. A new\nletterForm() helper in trainer.js validates the stored value and keeps\nhonouring the old boolean `italic` setting. DEFAULT_SETTINGS carries no\n`form` on purpose: loadSettings() merges defaults over the stored\nobject, and a default would have hidden the old toggle from the helper.\nPicking a form drops the stale `italic` key. A unit test covers the\nhelper, including the merged shape loadSettings() produces. The glyph\nrow wraps so three tiles fit on narrow phones. Marck Script has a small\nx-height, so the handwritten form is sized up a notch where it stands\nalone: recall-quiz option buttons and the Read list. The Т hint and the\nREADME mention handwriting alongside italic.\nIdea from anna herdova via Telegram (#3).\nfeat(theme): vendor Marck Script for handwritten Cyrillic\nAdds the OFL font as two woff2 subsets under site/common/fonts with\nan @font-face and a --cyrillic-hand token, so the cursive letter\nforms do not depend on a font service.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/learning-v0.1.9",
+          "assets": [
+            {
+              "name": "learning-site-0_1_9.zip",
+              "url": "https://github.com/jirip/release-publisher/releases/download/learning-v0.1.9/learning-site-0_1_9.zip",
+              "label": "site zip"
+            }
+          ]
+        },
+        {
           "version": "0.1.8",
           "date": "2026-10-11T13:05:19Z",
           "source_repo": "jirip/learning",
