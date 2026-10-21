@@ -67,6 +67,24 @@
     "prague-mhd-dashboard": {
       "releases": [
         {
+          "version": "2.0.0",
+          "date": "2026-10-21T14:34:06Z",
+          "source_repo": "jirip/prague-mhd-dashboard",
+          "source_tag": "v2.0.0",
+          "notes": "fix(build): pin shared_preferences_android to 2.4.x\n2.5.x switched to Pigeon JNI and R8 strips its suspend methods in release builds, so the app hung on the splash with NoSuchMethodError on getAll. 2.4.x is what the other jirip apps ship.\nMerge branch 'master' into flutter-2.0\n# Conflicts:\n#\tapp/build.gradle.kts\ndocs: Flutter build rules, skills and port status\nci: build and release the Flutter app\nFlutter pipeline from the sibling apps with the credentials passed as dart-defines, this repo's release notes, asset wait and publisher dispatch steps kept.\nfeat(ui): port screens, widgets and controllers to Flutter\nNearby, Search, Departure board, Settings with saved stops and filter editor, Report and My Reports, the trip detail sheet with the timeline and minimized bar, and the tab shell on jirip_app's AppShell with the updater banner. Strings are generated from the 1.x resources as ARB files for English and Czech.\nfeat(data): port API client, caches, settings and stores to Dart\nGolemio client with the 1.x timeout and retry policy, stop cache reusing the 1.x on-disk file, settings and saved stops under the 1.x keys and JSON schema, a DataStore protobuf reader to migrate 1.x preferences on first launch, GitHub issue and manifest services, tracked reports, and a geolocator-based position stream.\nfeat(domain): port models, estimator and nearby use cases to Dart\nPorted with the Kotlin unit tests so the position model, time anchors, grouping and nearby result are checked against the same cases. Europe/Prague arithmetic is hand-rolled (EU DST rule) instead of a tz database.\nbuild: scaffold Flutter project with the 1.x application id",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v2.0.0",
+          "assets": [
+            {
+              "name": "prague-mhd-dashboard-2_0_0.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v2.0.0/prague-mhd-dashboard-2_0_0.aab"
+            },
+            {
+              "name": "prague-mhd-dashboard-2_0_0.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v2.0.0/prague-mhd-dashboard-2_0_0.apk"
+            }
+          ]
+        },
+        {
           "version": "1.14.1",
           "date": "2026-10-21T13:17:47Z",
           "source_repo": "jirip/prague-mhd-dashboard",
@@ -225,24 +243,6 @@
             {
               "name": "prague-mhd-dashboard-1_10_5.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.5/prague-mhd-dashboard-1_10_5.apk"
-            }
-          ]
-        },
-        {
-          "version": "1.10.4",
-          "date": "2026-05-08T00:43:26Z",
-          "source_repo": "jirip/prague-mhd-dashboard",
-          "source_tag": "v1.10.4",
-          "notes": "fix(trip-view): anchor schedule by trip, not by stop\nThe route view computed each stop's epoch ms independently against today's\ncalendar date with a one-shot \"≥12h ahead → subtract a day\" patch. Stops\nwhose clock time crosses midnight (e.g. opening the view at 23:50 with\nlater stops at 00:02) collapsed into early-morning of *today*, breaking\nthe trip's monotonic ordering. The estimator then walked the list and\nlocked the active dot to a phantom stop placed ~24h in the past.\nReplace the per-stop computation with a trip-wide anchor: the first stop\nis placed on whichever calendar day puts it within ±12h of now; from\nthere we walk forward and advance the day every time a stop's\ntime-of-day appears to step backwards relative to its predecessor. The\nlist is monotonic by construction, regardless of midnight crossings or\nGTFS 24+ extended-form strings (`25:30`).\n`computeStopCountdown` now reads the pre-anchored ms instead of\nre-parsing per stop, which also removes the latent risk of double-\napplying delay in the row.\nDrops WhatsApp from .github/notify.txt; future `` runs go to\nTelegram only.\nfix: nearby cap, split-mode order, retryable report, dev annotations\n- Nearby `stopsToShow` cap is now enforced inside the mode-group loop, so\n  split mode no longer overshoots the configured count by one\n  (`BuildNearbyResultUseCase`).\n- Split-mode groups within a stop are ordered metro → train → tram → bus →\n  ferry by importance instead of relying on `groupBy` iteration order\n  (`GroupDeparturesByModeUseCase`).\n- Report screen keeps the Submit button visible on Error and shows the error\n  text alongside it, so a failed submit is retryable without losing typed\n  fields (`ReportScreen`).\n- Developer route view: drop the `±5` gate around the active stop on\n  arrive/depart annotation buttons; the buttons now appear on every stop in\n  developer mode (`TripDetailSheet`).\n- New regression tests for the cap-in-split-mode and split-mode ordering.\n- Bumps to 1.10.3 (versionCode 94).",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/prague-mhd-dashboard-v1.10.4",
-          "assets": [
-            {
-              "name": "prague-mhd-dashboard-1_10_4.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.4/prague-mhd-dashboard-1_10_4.aab"
-            },
-            {
-              "name": "prague-mhd-dashboard-1_10_4.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/prague-mhd-dashboard-v1.10.4/prague-mhd-dashboard-1_10_4.apk"
             }
           ]
         }
