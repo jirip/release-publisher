@@ -1654,6 +1654,21 @@
     "learning": {
       "releases": [
         {
+          "version": "0.1.10",
+          "date": "2026-10-28T16:09:10Z",
+          "source_repo": "jirip/learning",
+          "source_tag": "v0.1.10",
+          "notes": "feat(crypto): add cryptography course training\nA user asked for a cryptography topic with a thorough explanation\nand exercises behind it, and the owner chose to start with a proper\ncourse rather than a flat card deck. This adds `site/crypto/` built\nthe same way as habits and music: four lessons (what a cipher is,\nthe shift cipher, Atbash and substitution, Vigenère) as {en, cs}\ntext with a playground under each, concept cards drilled by the\nshared SM-2 scheduler, and exercise skills that unlock once a\nlesson's ideas are all introduced.\nExercises are generated, not stored: decrypt a Caesar text with a\nknown shift, encrypt with a shift, find the shift between a word\nand its ciphertext, decrypt Atbash, and encrypt or decrypt with a\nVigenère keyword. The cipher functions live in a DOM-free\n`ciphers.js` (shift, Caesar, Atbash, Vigenère, normalisation of case\nand diacritics; only what the trainer uses) and `tests/crypto.test.mjs`\ncovers known vectors, round trips, exercise solvability, session\nbuilding and that every UI string exists in both languages. In Czech\na training session is \"trénink\" so it is not confused with the\ncourse lessons (\"lekce\").\nThe wording of an exercise (its question with the key filled in,\nand a key or shift answer as the learner reads it) is formatted in\n`trainer.js` and tested too, so `app.js` stays glue. The `{var}`\nsubstitution the translator already did is now `fill()` in\n`common/i18n.js` for that reuse. A cleared shift box in the Caesar\nplayground shows the placeholder instead of treating '' as shift 0.\nLater lessons (frequency analysis, XOR, hashing, RSA) can then be\nadded as data.\nRegistered on the hub and in the README.\nIdea from jp (@jirip_t) via Telegram (#4).",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/learning-v0.1.10",
+          "assets": [
+            {
+              "name": "learning-site-0_1_10.zip",
+              "url": "https://github.com/jirip/release-publisher/releases/download/learning-v0.1.10/learning-site-0_1_10.zip",
+              "label": "site zip"
+            }
+          ]
+        },
+        {
           "version": "0.1.9",
           "date": "2026-10-12T13:10:41Z",
           "source_repo": "jirip/learning",
@@ -1784,21 +1799,6 @@
             {
               "name": "learning-site-0_1_1.zip",
               "url": "https://github.com/jirip/release-publisher/releases/download/learning-v0.1.1/learning-site-0_1_1.zip",
-              "label": "site zip"
-            }
-          ]
-        },
-        {
-          "version": "0.1.0",
-          "date": "2026-10-10T20:22:52Z",
-          "source_repo": "jirip/learning",
-          "source_tag": "v0.1.0",
-          "notes": "ci: create Pages project on first deploy\ndocs: secrets come from the webapp_common keystore\ndocs: set secrets with the shared bootstrap script\ndocs: record remaining deploy steps",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/learning-v0.1.0",
-          "assets": [
-            {
-              "name": "learning-site-0_1_0.zip",
-              "url": "https://github.com/jirip/release-publisher/releases/download/learning-v0.1.0/learning-site-0_1_0.zip",
               "label": "site zip"
             }
           ]
