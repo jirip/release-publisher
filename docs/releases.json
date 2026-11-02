@@ -436,6 +436,24 @@
     "fridgeye": {
       "releases": [
         {
+          "version": "0.9.19",
+          "date": "2026-11-02T11:45:57Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.9.19",
+          "notes": "",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.9.19",
+          "assets": [
+            {
+              "name": "fridgeye-0_9_19.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.19/fridgeye-0_9_19.aab"
+            },
+            {
+              "name": "fridgeye-0_9_19.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.19/fridgeye-0_9_19.apk"
+            }
+          ]
+        },
+        {
           "version": "0.9.18",
           "date": "2026-09-23T10:45:18Z",
           "source_repo": "jirip/fridgeye",
@@ -594,24 +612,6 @@
             {
               "name": "fridgeye-0_9_10.apk",
               "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.10/fridgeye-0_9_10.apk"
-            }
-          ]
-        },
-        {
-          "version": "0.9.9",
-          "date": "2026-06-05T16:18:53Z",
-          "source_repo": "jirip/fridgeye",
-          "source_tag": "v0.9.9",
-          "notes": "feat(app): display-time brightness normalisation\nTwo-layer brightness consistency now:\n1. Device-side calibration (unchanged): pins AEC/AGC at the sensor.\n2. App-side normalisation (new): rescales each displayed JPEG so\n   its 95th-percentile luma matches the user-picked target.\nWhen the user swipes-right on a history frame to calibrate, the\napp additionally measures that frame's p95 and persists it in\nDataStore (per-device, local-only). All subsequent frame renders\nin both the history strip and fullscreen viewer apply a\nColorFilter that scales toward the saved target, clamped to\n0.6×–2.0× to keep broken frames from being amplified to noise.\nSettings → Camera exposure card now distinguishes device-side\ncalibration from app-side brightness target. Two buttons:\n- \"Reset device\" — clears server-side calibration (existing).\n- \"Reset in app\" — clears local brightness target.\nShown only when each side has something to reset.\nA new \"Brightness target only\" state covers the case where the\nuser removed device calibration but kept the local target — the\nphone still normalises display brightness even with auto AEC.\nBumps app 0.9.9.\nfeat: show calibration values per history frame\nWorker: GET /devices/:id/history now returns rows of\n{tsMs, aecValue?, agcGain?, ldrRaw?} instead of bare timestamps.\nValues come from R2 customMetadata stamped at upload time. R2's\nlist() needs `include: [\"customMetadata\"]` to surface them\n(missing from the pinned @cloudflare/workers-types — cast-scoped\nto the option site).\nApp: HistoryListResponse shape changes to match. The list row\nshows \"AEC 234 · AGC 5\" under the timestamp in onSurfaceVariant.\nHidden entirely for frames without metadata (pre-fw-0.7.x).\nBreaking JSON shape — no compatibility shim. Acceptable for the\ncurrent single-user state.\nBumps app 0.9.8.\nfix: rip out LDR low-light gate; fix reset-cue infinite loop [fw-release]\nTwo bugs reported by serial-monitor traces from a real device:\n1. EVERY frame was being dropped as \"low light\" because the LDR\n   reads 280–310 with the fridge bulb fully on, while\n   CONFIG_FRIDGEYE_LDR_THRESHOLD_RAW was 1500. The threshold was\n   set for the ULP-wake use case where it works fine; treating it\n   as a \"scene is dark enough to skip JPEG upload\" signal was\n   misguided. No frames reached R2 → history empty → calibrate-\n   from-frame can't find metadata → calibration was effectively\n   broken end-to-end.\n   Camera AEC already handles dim scenes; the LDR added noise, not\n   signal. is_low_light() and the dark-frame gate are gone.\n   MIN_JPEG_BYTES still catches genuinely broken frames (sensor\n   stuck → 2–5 KB output).\n2. The reset-calibration cue was firing on every upload forever.\n   applyCalibrationFromTelemetry's state-4→1 cleanup only cleared\n   appliedCalibration when the device's reported AEC differed from\n   what was previously applied. But auto AEC in stable lighting\n   converges to the same numbers, so calibrationsMatch returned\n   true and the cleanup never ran. The reset cue is single-shot\n   from the device's perspective (calibration_clear + auto AEC);\n   the next telemetry arriving at all proves it was processed.\n   Cleared unconditionally now.\nBumps firmware 0.7.7.\nPlain serial monitor doesn't need the build dir — that only matters\nfor panic-trace symbol decoding, which is rare enough not to\nwarrant two dedicated targets. The per-variant split inherited from\nfirmware-flash-* added confusion (\"which one is my device?\")\nwithout benefit. For symbolicate-on-panic, call\n`idf.py -B build-usb monitor` directly.",
-          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-v0.9.9",
-          "assets": [
-            {
-              "name": "fridgeye-0_9_9.aab",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.9/fridgeye-0_9_9.aab"
-            },
-            {
-              "name": "fridgeye-0_9_9.apk",
-              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-v0.9.9/fridgeye-0_9_9.apk"
             }
           ]
         }
