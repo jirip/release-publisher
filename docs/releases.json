@@ -1809,6 +1809,26 @@
     "fridgeye-alpha": {
       "releases": [
         {
+          "version": "0.9.20-alpha.2",
+          "date": "2026-11-02T17:23:07Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.9.20-alpha.2",
+          "notes": "",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-alpha-v0.9.20-alpha.2",
+          "assets": [
+            {
+              "name": "fridgeye-0_9_20-alpha_2.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-alpha-v0.9.20-alpha.2/fridgeye-0_9_20-alpha_2.aab",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye-0_9_20-alpha_2.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-alpha-v0.9.20-alpha.2/fridgeye-0_9_20-alpha_2.apk",
+              "hidden": true
+            }
+          ]
+        },
+        {
           "version": "0.9.20-alpha.1",
           "date": "2026-11-02T12:34:02Z",
           "source_repo": "jirip/fridgeye",
