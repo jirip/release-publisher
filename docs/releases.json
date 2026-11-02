@@ -1849,6 +1849,35 @@
           ]
         }
       ]
+    },
+    "fridgeye-firmware-alpha": {
+      "releases": [
+        {
+          "version": "0.7.9-alpha.1",
+          "date": "2026-11-02T17:23:30Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "fw-v0.7.9-alpha.1",
+          "notes": "",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-firmware-alpha-v0.7.9-alpha.1",
+          "assets": [
+            {
+              "name": "fridgeye-battery.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-alpha-v0.7.9-alpha.1/fridgeye-battery.bin",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye-usb.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-alpha-v0.7.9-alpha.1/fridgeye-usb.bin",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye.bin",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-firmware-alpha-v0.7.9-alpha.1/fridgeye.bin",
+              "hidden": true
+            }
+          ]
+        }
+      ]
     }
   }
 }
