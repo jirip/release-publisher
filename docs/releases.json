@@ -1809,6 +1809,26 @@
     "fridgeye-alpha": {
       "releases": [
         {
+          "version": "0.9.20-alpha.5",
+          "date": "2026-11-10T10:13:41Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.9.20-alpha.5",
+          "notes": "feat(app): show what changed since the last analysis\nfeat(worker): push changed contents to the owner\nEach analysis after the first is diffed against the one before it and\nstored as inventoryChanges. A non-empty diff goes to the owner's\nregistered phones through FCM HTTP v1 with a service-account JWT signed\nin the Worker. PUT/DELETE /push/token keep the tokens. Without the\nFCM_SERVICE_ACCOUNT secret nothing is sent.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-alpha-v0.9.20-alpha.5",
+          "assets": [
+            {
+              "name": "fridgeye-0_9_20-alpha_5.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-alpha-v0.9.20-alpha.5/fridgeye-0_9_20-alpha_5.aab",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye-0_9_20-alpha_5.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-alpha-v0.9.20-alpha.5/fridgeye-0_9_20-alpha_5.apk",
+              "hidden": true
+            }
+          ]
+        },
+        {
           "version": "0.9.20-alpha.4",
           "date": "2026-11-10T10:03:39Z",
           "source_repo": "jirip/fridgeye",
