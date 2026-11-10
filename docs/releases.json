@@ -1809,6 +1809,26 @@
     "fridgeye-alpha": {
       "releases": [
         {
+          "version": "0.9.20-alpha.4",
+          "date": "2026-11-10T10:03:39Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.9.20-alpha.4",
+          "notes": "feat(app): tick which items show on the device card\nItems in \"What's inside\" are chips. Unticking one hides it from the\ndevice card strip. The choice is per phone, keyed by the item name,\nnew items show by default.\nfeat(worker): send known item names with each frame\nThe DO keeps the union of item names earlier analyses produced (newest\nfirst, at most 60) and sends it as known_items so claude_worker calls\nthe same thing the same way across sessions.\nfix(worker): analyse frames uploaded before the deploy\nThe DO learns latestFrameKey only from uploads, so a device whose last\nupload predates the inventory code answered 409 to \"Analyse now\". The\nhandler now names the R2 key and the deviceId in the manual trigger.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-alpha-v0.9.20-alpha.4",
+          "assets": [
+            {
+              "name": "fridgeye-0_9_20-alpha_4.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-alpha-v0.9.20-alpha.4/fridgeye-0_9_20-alpha_4.aab",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye-0_9_20-alpha_4.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-alpha-v0.9.20-alpha.4/fridgeye-0_9_20-alpha_4.apk",
+              "hidden": true
+            }
+          ]
+        },
+        {
           "version": "0.9.20-alpha.3",
           "date": "2026-11-10T08:03:50Z",
           "source_repo": "jirip/fridgeye",
