@@ -1809,6 +1809,26 @@
     "fridgeye-alpha": {
       "releases": [
         {
+          "version": "0.9.20-alpha.7",
+          "date": "2026-11-10T16:06:38Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.9.20-alpha.7",
+          "notes": "refactor(app): drop the \"Seen\" time from the inventory\nIt tracks the device's last upload, which the card already shows.",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-alpha-v0.9.20-alpha.7",
+          "assets": [
+            {
+              "name": "fridgeye-0_9_20-alpha_7.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-alpha-v0.9.20-alpha.7/fridgeye-0_9_20-alpha_7.aab",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye-0_9_20-alpha_7.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-alpha-v0.9.20-alpha.7/fridgeye-0_9_20-alpha_7.apk",
+              "hidden": true
+            }
+          ]
+        },
+        {
           "version": "0.9.20-alpha.6",
           "date": "2026-11-10T15:21:28Z",
           "source_repo": "jirip/fridgeye",
