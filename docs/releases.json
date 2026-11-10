@@ -1809,6 +1809,26 @@
     "fridgeye-alpha": {
       "releases": [
         {
+          "version": "0.9.20-alpha.3",
+          "date": "2026-11-10T08:03:50Z",
+          "source_repo": "jirip/fridgeye",
+          "source_tag": "v0.9.20-alpha.3",
+          "notes": "refactor: trim inventory to what the app shows\nReview against the karpathy guidelines: drop the stored costUsd that\nnothing displays, the Worker-side wait on the analyser's next attempt\nthat only saved a few GETs, the FastAPI error-list flattener, the\nduplicate gating in inventoryDue and the job fields the app never\nreads.\ndocs: inventory flow through claude_worker\nfeat(app): what's inside card and strip\nDevice cards show the last inventory under the photo and refresh\nevery 30 s while the latest frame's job is open. Device settings get\na \"What's inside\" card with the item list, the job state (queued,\nanalysing, waiting on budget or pause, unreachable, failed) and an\n\"Analyse now\" button that submits the latest frame.\nfeat(worker): hand inventory frames to claude_worker\nOne Claude vision call per door session, run on claude_worker on the\nNAS (Claude subscription through the Agent SDK) instead of the\nAnthropic API. The Durable Object alarm submits the session's last\nframe as an idempotent job (deviceId:lastUploadAt) and polls until it\nis settled: 30 s for 5 min, then 5 min, with 1 to 30 min backoff\nwhile the analyser is unreachable. claude_worker retries on its side,\nso one job per frame always ends done, failed or superseded.\nDrops the Anthropic SDK, the API key, the pricing table and the USD\ncap. Config is CLAUDE_WORKER_URL (var) and CLAUDE_WORKER_TOKEN\n(secret, keystore WORKER_FRIDGEYE_TOKEN).",
+          "release_url": "https://github.com/jirip/release-publisher/releases/tag/fridgeye-alpha-v0.9.20-alpha.3",
+          "assets": [
+            {
+              "name": "fridgeye-0_9_20-alpha_3.aab",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-alpha-v0.9.20-alpha.3/fridgeye-0_9_20-alpha_3.aab",
+              "hidden": true
+            },
+            {
+              "name": "fridgeye-0_9_20-alpha_3.apk",
+              "url": "https://github.com/jirip/release-publisher/releases/download/fridgeye-alpha-v0.9.20-alpha.3/fridgeye-0_9_20-alpha_3.apk",
+              "hidden": true
+            }
+          ]
+        },
+        {
           "version": "0.9.20-alpha.2",
           "date": "2026-11-02T17:23:07Z",
           "source_repo": "jirip/fridgeye",
